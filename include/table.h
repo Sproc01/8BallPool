@@ -1,0 +1,43 @@
+// Author: Alberto Pasqualetto
+
+#ifndef TABLE_H
+#define TABLE_H
+
+#include <opencv2/core/types.hpp>
+#include <opencv2/core/matx.hpp>
+#include <opencv2/core/mat.hpp>
+#include <vector>
+#include "ball.h"
+
+
+class Table {
+	cv::Rect bbox_;
+	cv::Vec3b color_;
+	cv::Mat transform_;
+	std::vector<Ball> balls_;
+
+public:
+	Table(cv::Rect bbox, cv::Vec3b color, cv::Mat transform, std::vector<Ball> balls): bbox_(bbox), color_(color), transform_(transform), balls_(balls) {}
+	Table(cv::Rect bbox, cv::Vec3b color, cv::Mat transform): bbox_(bbox), color_(color), transform_(transform), balls_(std::vector<Ball>()) {}
+	Table(cv::Rect bbox, cv::Vec3b color): bbox_(bbox), color_(color), transform_(cv::Mat::eye(3, 3, CV_64F)), balls_(std::vector<Ball>()) {}
+	Table(cv::Rect bbox): bbox_(bbox), color_(cv::Vec3b(0, 0, 0)), transform_(cv::Mat::eye(3, 3, CV_64F)), balls_(std::vector<Ball>()) {}
+	Table(): bbox_(cv::Rect(0, 0, 0, 0)), color_(cv::Vec3b(0, 0, 0)), transform_(cv::Mat::eye(3, 3, CV_64F)), balls_(std::vector<Ball>()) {}
+
+	cv::Rect getBbox() const;
+	cv::Vec3b getColor() const;
+	cv::Mat getTransform() const;
+	std::vector<Ball> getBalls() const;
+
+	void setBbox(cv::Rect bbox);
+	void setColor(cv::Vec3b color);
+	void setTransform(cv::Mat transform);
+	void setBalls(std::vector<Ball> balls);
+
+	void addBall(Ball ball);
+	void removeBall(Ball ball);
+	void removeBall(int index);
+	void clearBalls();
+};
+
+
+#endif //TABLE_H

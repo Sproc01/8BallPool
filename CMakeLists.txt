@@ -9,6 +9,12 @@ find_package(OpenCV REQUIRED)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 
+include_directories(include)
+
+add_library(Table src/table.cpp include/table.h)
+
 add_executable(${PROJECT_NAME} src/main.cpp)
 
-target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
+target_link_libraries(${PROJECT_NAME}
+        ${OpenCV_LIBS}
+        Table)

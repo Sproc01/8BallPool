@@ -7,7 +7,9 @@ set(CMAKE_CXX_STANDARD 17)
 
 find_package(OpenCV REQUIRED)
 
-include_directories(${OpenCV_INCLUDE_DIRS})
+include_directories(${OpenCV_INCLUDE_DIRS} include/)
+
+add_library(ObjectDetection src/ObjectDetection.cpp)
 
 include_directories(include)
 
@@ -17,4 +19,5 @@ add_executable(${PROJECT_NAME} src/main.cpp)
 
 target_link_libraries(${PROJECT_NAME}
         ${OpenCV_LIBS}
-        Table)
+        Table
+        ObjectDetection)

@@ -14,6 +14,7 @@ add_library(ObjectDetection src/ObjectDetection.cpp)
 include_directories(include)
 
 add_library(Table src/table.cpp include/table.h)
+add_library(Ball src/ball.cpp include/ball.h)
 
 add_executable(${PROJECT_NAME} src/main.cpp)
 

@@ -33,8 +33,8 @@ void detectTable(cv::Mat &frame)
         pt2.y = cvRound(y0 - 1300*(a));
         line(imgLine, pt1, pt2, Scalar(0, 0, 255), 1, LINE_AA);
     }
-    imshow("Line", imgLine);
-    waitKey(0);
+    // imshow("Line", imgLine);
+    // waitKey(0);
 }
 
 void detectBalls(cv::Mat &frame)
@@ -48,12 +48,12 @@ void detectBalls(cv::Mat &frame)
     // convertScaleAbs(gradY, abs_grad_y);
     // addWeighted(abs_grad_x, 0.5, abs_grad_y, 0.5, 0, grad);
     // add(gray, grad, imgBorder);
-    imshow("Canny", imgBorder);
+    //imshow("Canny", imgBorder);
     vector<Vec3f> circles;
     vector<Rect> boundRect;
     Mat frameRect = frame.clone();
     add(imgBorder, gray, gray);
-    HoughCircles(gray, circles, HOUGH_GRADIENT, 1, 20, 300, 0.9, 1, 10);
+    HoughCircles(gray, circles, HOUGH_GRADIENT, 1, 25, 300, 0.9, 2, 15);
     vector<Vec3f> circlesFiltered;
     // for(size_t i = 0; i < circles.size(); i++)
     // {
@@ -79,37 +79,37 @@ void detectBalls(cv::Mat &frame)
         }
         else
         {
-            subImg = frameRect.colRange(c[0]-c[2], c[0]+c[2]).rowRange(c[1]-c[2], c[1]+c[2]);
+            int halfRad = (int)(c[2]/2);
+            // printf("%d: %d\n", i, c[2]);
+            // printf("%d: %d\n", i, halfRad);
+            subImg = frameRect.colRange(c[0]-halfRad, c[0]+halfRad).rowRange(c[1]-halfRad, c[1]+halfRad);
             meanStdDev(subImg, mean, stddev);
-            printf("Mean: %f, StdDev: %f\n", mean[0], stddev[0]);
-            if(stddev[0] < 20)
-            {
-                if(mean[0] > 200)
-                {
-                    circle(frame, center, radius, Scalar(255, 255, 255), 1, LINE_AA);
-                    rectangle(frameRect, boundRect[i], Scalar(255, 255, 255), 1, LINE_AA);
-                }
-                else
-                {
-                    circle(frame, center, radius, Scalar(0, 0, 0), 1, LINE_AA);
-                    rectangle(frameRect, boundRect[i], Scalar(0, 0, 0), 1, LINE_AA);
-                }
+            //printf("Mean len: %d, StdDev len: %d\n", (int)mean.size(), (int)stddev.size());
+            //printf("Mean: %f, StdDev: %f\n", mean[0], stddev[0]);
+            if(mean[0] > 150 && mean[1] > 150 && mean[2] > 150 && stddev[0] < 25 && stddev[0] < 25 && stddev[0] < 25)
+            { // white
+                circle(frame, center, radius, Scalar(255, 255, 255), 1, LINE_AA);
+                rectangle(frameRect, boundRect[i], Scalar(255, 255, 255), 1, LINE_AA);
+            }
+            else if(mean[0] < 100 && mean[1] < 100 && mean[2] < 100 && stddev[0] < 30 &&  stddev[1] < 30 &&  stddev[2] < 30)
+            { // black
+                circle(frame, center, radius, Scalar(0, 0, 0), 1, LINE_AA);
+                rectangle(frameRect, boundRect[i], Scalar(0, 0, 0), 1, LINE_AA);
+            }
+            else if(stddev[0] < 50 && stddev[1] < 50 && stddev[2] < 50)
+            { // full red
+                circle(frame, center, radius, Scalar(0, 0, 255), 1, LINE_AA);
+                rectangle(frameRect, boundRect[i], Scalar(0, 0, 255), 1, LINE_AA);
             }
             else
-                if(stddev[0] > 50)
-                {
-                    circle(frame, center, radius, Scalar(0, 0, 255), 1, LINE_AA);
-                    rectangle(frameRect, boundRect[i], Scalar(0, 0, 255), 1, LINE_AA);
-                }
-                else
-                {
-                    circle(frame, center, radius, Scalar(0, 255, 0), 1, LINE_AA);
-                    rectangle(frameRect, boundRect[i], Scalar(0, 255, 0), 1, LINE_AA);
-                }   
+            { // half green
+                circle(frame, center, radius, Scalar(0, 255, 0), 1, LINE_AA);
+                rectangle(frameRect, boundRect[i], Scalar(0, 255, 0), 1, LINE_AA);
+            }   
         }  
     }
     imshow("detected circles", frame);
-    imshow("detected rectangles", frameRect);
+    //imshow("detected rectangles", frameRect);
     
     waitKey(0);
 }

@@ -9,8 +9,8 @@ find_package(OpenCV REQUIRED)
 
 include_directories(${OpenCV_INCLUDE_DIRS} include/)
 
-add_library(ObjectDetection include/ObjectDetection.h src/ObjectDetection.cpp)
-
+add_library(ObjectDetection include/objectDetection.h src/objectDetection.cpp)
+add_library(Segment include/segment.h src/segment.cpp)
 add_library(Table include/table.h src/table.cpp)
 add_library(Ball include/ball.h src/ball.cpp)
 
@@ -20,4 +20,5 @@ target_link_libraries(${PROJECT_NAME}
         ${OpenCV_LIBS}
         Table
         Ball
-        ObjectDetection)
+        ObjectDetection
+        Segment)

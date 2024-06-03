@@ -5,7 +5,7 @@
 
 #include <opencv2/opencv.hpp>
 
-void detectTable(cv::Mat &frame);
-void detectBalls(cv::Mat &frame);
+void detectTable(const cv::Mat &frame);
+void detectBalls(const cv::Mat &frame);
 
 #endif // OBJECTDETECTION_H

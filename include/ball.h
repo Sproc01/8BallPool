@@ -17,8 +17,6 @@ class Ball
 public:
     Ball(cv::Rect bbox, Category category, cv::Rect bbox_prec) : bbox_(bbox), category_(category), bbox_prec_(bbox_prec) {}
     Ball(cv::Rect bbox, Category category) : bbox_(bbox), category_(category), bbox_prec_(cv::Rect(0, 0, 0, 0)) {}
-    Ball(cv::Rect bbox) : bbox_(bbox), category_(background), bbox_prec_(cv::Rect(0, 0, 0, 0)) {}
-    Ball() : bbox_(cv::Rect(0, 0, 0, 0)), category_(background), bbox_prec_(cv::Rect(0, 0, 0, 0)) {}
 
     cv::Rect getBbox() const;
     Category getCategory() const;

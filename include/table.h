@@ -34,7 +34,6 @@ public:
 	void setBalls(std::vector<Ball> balls);
 
 	void addBall(Ball ball);
-	void removeBall(Ball ball);
 	void removeBall(int index);
 	void clearBalls();
 };

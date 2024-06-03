@@ -7,6 +7,9 @@
 using namespace cv;
 using namespace std;
 
+// S>50, V>90 to be a color and not black or white
+const int S_CHANNEL_COLOR_THRESHOLD = 50;
+const int V_CHANNEL_COLOR_THRESHOLD = 90;
 
 // Gives the equation of the line passing through two points in the form y = mx + q
 void equationFormula(double x1, double y1, double x2, double y2, double &m, double &q){
@@ -61,7 +64,7 @@ void detectTable(cv::Mat &frame)
 	Mat thisImg;
 	cvtColor(frame, thisImg, COLOR_BGR2HSV);
 	Mat mask;
-	inRange(thisImg, Scalar(colorRange[0], 20, 20), Scalar(colorRange[1], 255, 255), mask); // S>20; V>20 to be a color and not black or white
+	inRange(thisImg, Scalar(colorRange[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD), Scalar(colorRange[1], 255, 255), mask);
 	imshow("Mask", mask);
 //	thisImg.copyTo(frame);
 //	bitwise_and(frame, frame, frame, mask);
@@ -76,20 +79,20 @@ void detectTable(cv::Mat &frame)
 //    cv::convertScaleAbs(frame,frame);
 //    cv::normalize(frame,frame,0,255,cv::NORM_MINMAX);
 
-	Mat kernel = getStructuringElement(MORPH_RECT, Size(11,11));
+	Mat kernel = getStructuringElement(MORPH_ELLIPSE, Size(23,23));
 	morphologyEx(mask, mask, MORPH_CLOSE, kernel);
 	imshow("Morphology", mask);
 
 
-	GaussianBlur(mask, mask, Size(11,11), 0);
+	GaussianBlur(mask, mask, Size(3,  3), 0);
     imshow("Gaussian Blur", mask);
 //    cvtColor(frame, imgGray, COLOR_BGR2GRAY);
-    Canny(mask, imgBorder, 50, 60);
+    Canny(mask, imgBorder, 30, 60);
     imshow("Canny Result", imgBorder);
     vector<Vec2f> lines;
     vector<Vec2f> linesFiltered;
     imgLine = frame.clone();
-    HoughLines(imgBorder, lines, 1, CV_PI/180, 130);
+    HoughLines(imgBorder, lines, 1, CV_PI/180, 120);
     // for(size_t i = 0; i < 8; i++)
     // {
     //     linesFiltered.push_back(lines[i]);

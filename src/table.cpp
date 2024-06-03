@@ -56,10 +56,6 @@ void Table::addBall(Ball ball) {
 	balls_.push_back(ball);
 }
 
-void Table::removeBall(Ball ball) {
-	balls_.erase(std::remove(balls_.begin(), balls_.end(), ball), balls_.end());
-}
-
 void Table::removeBall(int index) {
 	balls_.erase(balls_.begin() + index);
 }

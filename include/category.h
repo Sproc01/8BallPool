@@ -3,14 +3,14 @@
 #ifndef CATEGORY_H
 #define CATEGORY_H
 
-enum Category 
-    {   
-        background = 0, 
-        white_ball, 
-        black_ball, 
-        solid_ball,
-        striped_ball,
-        playing_field 
-    };
+enum Category
+	{
+		BACKGROUND = 0,
+		WHITE_BALL,
+		BLACK_BALL,
+		SOLID_BALL,
+		STRIPED_BALL,
+		PLAYING_FIELD
+	};
 
 #endif //CATEGORY_H

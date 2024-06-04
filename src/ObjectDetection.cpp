@@ -3,6 +3,7 @@
 #include <opencv2/opencv.hpp>
 #include "objectDetection.h"
 #include <iostream>
+#include <opencv2/features2d.hpp> 
 
 using namespace cv;
 using namespace std;
@@ -11,11 +12,48 @@ using namespace std;
 const int S_CHANNEL_COLOR_THRESHOLD = 50;
 const int V_CHANNEL_COLOR_THRESHOLD = 90;
 
-// Gives the equation of the line passing through two points in the form y = mx + q
-void equationFormula(double x1, double y1, double x2, double y2, double &m, double &q)
+// Gives the equation of the line passing through two points in the form  ax + by + c = 0
+void equationFormula(float x1, float y1, float x2, float y2, float &a, float &b, float &c)
 {
-	m = (y2-y1)/(x2-x1);
-	q = -x1*m + y1;
+    cout << "x1: " << x1 << " y1: " << y1 << " x2: " << x2 << " y2: " << y2 << endl;
+    if(x2==x1)
+    {
+        b = 0;
+        a = -1;
+        c = x1;
+        cout << "a: " << a << " b: " << b << " c:" << c << endl;
+        cout << endl;
+    }
+    else
+    {
+        b = -1;
+        a = (y2-y1)/(x2-x1);
+        c = -a*x1 - b*y1;
+        cout << "a: " << a << " b: " << b << " c:" << c << endl;
+        cout << endl;
+    }
+}
+
+void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point &intersection)
+{
+    float a1 = line1[0], b1 = line1[1], c1 = line1[2];
+    float a2 = line2[0], b2 = line2[1], c2 = line2[2];
+    float det = a1*b2 - a2*b1;
+    if(det != 0)
+    {
+        intersection.x = (b1*c2 - b2*c1) / det;
+        intersection.y = (a2*c1 - a1*c2) / det;
+    }
+    else
+    {
+        intersection.x = -1;
+        intersection.y = -1;
+    }
+    cout << "Method" << endl;
+    cout << a1 << " " << b1 << " " << c1 << endl;
+    cout << a2 << " " << b2 << " " << c2 << endl;
+    cout << "Intersection: " << intersection << endl;
+
 }
 
 
@@ -50,8 +88,8 @@ Vec2b histogram(const Mat &img)
     // find the argmax
 	Mat argmax;
 	reduceArgMax(hist, argmax, 0);
-	cout<<hist<<endl;
-	cout << argmax << endl;
+	//cout<<hist<<endl;
+	//cout << argmax << endl;
 	int start = range[1] / histSize * argmax.at<int>(0);
 	int diameter = (range[1] / histSize);
 	imshow("Histogram", histImg);
@@ -61,60 +99,94 @@ Vec2b histogram(const Mat &img)
 
 void detectTable(const Mat &frame)
 {
-    Mat imgGray, imgLine, imgBorder;
+    // const used during the function
+    const int DIM_STRUCTURING_ELEMENT = 23;
+    const int DIM_GAUSSIAN_KERNEL = 3;
+    const int CANNY_THRESHOLD1 = 70;
+    const int CANNY_THRESHOLD2 = 90;
+    const int THRESHOLD_HOUGH = 120;
+
+    // variables
+    Mat imgGray, imgLine, imgBorder, thisImg, mask, kernel;
+    vector<Vec2f> lines;
 	int rowsover4 = frame.rows/4, colsover4 = frame.cols/4;
+    Scalar line_color = Scalar(0, 0, 255);
+    vector<Point> intersections;
+    vector<float> xCoefficients;
+    vector<float> yCoefficients;
+    vector<float> biases;
 
+    // get the color range
 	Vec2b colorRange = histogram(frame.rowRange(rowsover4, 3*rowsover4).colRange(colsover4, 3*colsover4));
-	cout<<"Color range: "<<colorRange<<endl;
+	//cout<<"Color range: "<<colorRange<<endl;
 
-	Mat thisImg;
+    // mask the image
 	cvtColor(frame, thisImg, COLOR_BGR2HSV);
-	Mat mask;
 	inRange(thisImg, Scalar(colorRange[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD), 
                 Scalar(colorRange[1], 255, 255), mask);
 	imshow("Mask", mask);
 
-//	thisImg.copyTo(frame);
-//	bitwise_and(frame, frame, frame, mask);
-//	frame.copyTo(frame, mask);
-//	imshow("Masked", frame);
-
-//	mask.copyTo(frame);
-
-//	frame.convertTo(frame,CV_32F);
-//    frame = frame + 1;
-//    cv::log(frame,frame);
-//    cv::convertScaleAbs(frame,frame);
-//    cv::normalize(frame,frame,0,255,cv::NORM_MINMAX);
-
-	Mat kernel = getStructuringElement(MORPH_ELLIPSE, Size(23,23));
+    // morphological operations
+	kernel = getStructuringElement(MORPH_ELLIPSE, Size(DIM_STRUCTURING_ELEMENT, DIM_STRUCTURING_ELEMENT));
 	morphologyEx(mask, mask, MORPH_CLOSE, kernel);
 	imshow("Morphology", mask);
 
-
-	GaussianBlur(mask, mask, Size(3,  3), 0);
+    // edge detection
+	GaussianBlur(mask, mask, Size(DIM_GAUSSIAN_KERNEL, DIM_GAUSSIAN_KERNEL), 0);
     imshow("Gaussian Blur", mask);
-    Canny(mask, imgBorder, 30, 60);
+    Canny(mask, imgBorder, CANNY_THRESHOLD1, CANNY_THRESHOLD2);
     imshow("Canny Result", imgBorder);
 
-
-    vector<Vec2f> lines;
+    // Hough transform
     imgLine = frame.clone();
-    HoughLines(imgBorder, lines, 1, CV_PI/180, 120);
+    HoughLines(imgBorder, lines, 1, CV_PI/180, THRESHOLD_HOUGH);
+
+    // lines drawing
     for(size_t i = 0; i < lines.size(); i++)
     {
+        float aLine, bLine, cLine;
         float rho = lines[i][0], theta = lines[i][1];
         Point pt1, pt2;
         double a = cos(theta), b = sin(theta);
         double x0 = a*rho, y0 = b*rho;
-        pt1.x = cvRound(x0 + 1300*(-b));
-        pt1.y = cvRound(y0 + 1300*(a));
-        pt2.x = cvRound(x0 - 1300*(-b));
-        pt2.y = cvRound(y0 - 1300*(a));
-        line(imgLine, pt1, pt2, Scalar(0, 0, 255), 1, LINE_AA);
+        pt1.x = cvRound(x0 + frame.cols*(-b));
+        pt1.y = cvRound(y0 + frame.cols*(a));
+        pt2.x = cvRound(x0 - frame.cols*(-b));
+        pt2.y = cvRound(y0 - frame.cols*(a));
+        equationFormula(pt1.x, pt1.y, pt2.x, pt2.y, aLine, bLine, cLine);
+        xCoefficients.push_back(aLine);
+        yCoefficients.push_back(bLine);
+        biases.push_back(cLine);
+        line(imgLine, pt1, pt2, line_color, 1, LINE_AA);
     }
-     imshow("Line", imgLine);
-    // waitKey(0);
+
+
+    // find intersections
+    for(size_t i = 0; i < xCoefficients.size(); i++)
+    {
+        for(size_t j = i+1; j < xCoefficients.size(); j++)
+        {
+            Point intersection;
+            computeIntersection(Vec3f(xCoefficients[i], yCoefficients[i], biases[i]), 
+                                Vec3f(xCoefficients[j], yCoefficients[j], biases[j]), intersection);
+            if (intersection.x >= 0 && intersection.x < frame.cols && intersection.y >= 0 && intersection.y < frame.rows)
+                intersections.push_back(intersection);
+        }
+    }
+    cout << intersections << endl;
+
+    // sort the intersections before near the center and select the first 4
+    sort(intersections.begin(), intersections.end(), [frame](Point a, Point b) -> bool
+    {
+        Point center = Point(frame.cols/2, frame.rows/2);
+        return norm(a - center) < norm(b - center);
+    });
+    for(size_t i = 0; i < 4; i++)
+    {
+        circle(imgLine, intersections[i], 5, Scalar(255, 255, 255), -1);
+    }
+    imshow("Line", imgLine);
+    waitKey(0);
 }
 
 void detectBalls(const Mat &frame)

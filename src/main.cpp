@@ -2,7 +2,7 @@
 
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
-#include "ObjectDetection.h"
+#include "objectDetection.h"
 #include <iostream>
 
 using namespace std;
@@ -24,7 +24,7 @@ int main()
         }    
         imshow("frame", frame);
         detectTable(frame);
-        detectBalls(frame);
+        //detectBalls(frame);
         //if (waitKey(0) == 'q')
         break;
 

@@ -15,13 +15,13 @@ int main()
     while (vid.isOpened())
     {
         bool ret = vid.read(frame);
-    
+
         // if frame is read correctly ret is True
         if (!ret)
         {
             printf("Can't receive frame (stream end?). Exiting ... maybe end of file\n");
             break;
-        }    
+        }
         imshow("frame", frame);
         detectTable(frame);
         detectBalls(frame);

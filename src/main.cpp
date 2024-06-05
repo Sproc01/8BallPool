@@ -4,12 +4,15 @@
 #include <opencv2/videoio.hpp>
 #include "ObjectDetection.h"
 #include <iostream>
+#include "ball.h"
+#include "table.h"
 
 using namespace std;
 using namespace cv;
 
 int main()
 {
+    vector<Ball> balls;
     VideoCapture vid = VideoCapture("../Dataset/game1_clip1/game1_clip1.mp4");
     Mat frame;
     while (vid.isOpened())
@@ -24,7 +27,7 @@ int main()
         }
         imshow("frame", frame);
         detectTable(frame);
-        detectBalls(frame);
+        detectBalls(frame, balls);
         //if (waitKey(0) == 'q')
         break;
 

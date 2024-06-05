@@ -9,19 +9,19 @@
 
 
 class BallTracker {
-private:
+	// Index in ballsVec_ is the same as the index in ballTrackers_
 	std::vector<cv::Ptr<cv::Tracker>> ballTrackers_;
-	std::vector<Ball> ballsVec_;
+	cv::Ptr<std::vector<Ball>> ballsVec_;
 	bool isInitialized_;
 
 	void createTrackers();
 
 public:
-	BallTracker(const std::vector<Ball> &balls);
+	explicit BallTracker(cv::Ptr<std::vector<Ball>> balls);
 
 	cv::Rect trackOne(unsigned short ballIndex, const cv::Mat &frame, bool callInit);
 
-	std::vector<Ball> trackAll(const cv::Mat &frame);
+	cv::Ptr<std::vector<Ball>> trackAll(const cv::Mat &frame);
 };
 
 

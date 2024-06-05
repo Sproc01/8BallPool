@@ -11,7 +11,8 @@ include_directories(${OpenCV_INCLUDE_DIRS} include/)
 
 add_library(Ball include/ball.h src/ball.cpp)
 add_library(Table include/table.h src/table.cpp)
-add_library(ObjectDetection include/ObjectDetection.h src/ObjectDetection.cpp)
+add_library(ObjectDetection include/objectDetection.h src/objectDetection.cpp)
+add_library(Segment include/segment.h src/segment.cpp)
 #add_library(Tracking include/tracking.h src/tracking.cpp)
 
 add_executable(${PROJECT_NAME} src/main.cpp)
@@ -24,10 +25,10 @@ target_link_libraries(${PROJECT_NAME}
         #Tracking
         
 
-target_link_libraries(ObjectDetection
-        ${OpenCV_LIBS}
-        Table
-        Ball)
+# target_link_libraries(ObjectDetection
+#         ${OpenCV_LIBS}
+#         Table
+#         Ball)
 
 #target_link_libraries(Tracking
  #       ${OpenCV_LIBS})

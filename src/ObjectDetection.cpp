@@ -189,7 +189,7 @@ void detectTable(const Mat &frame)
     waitKey(0);
 }
 
-void detectBalls(const Mat &frame)
+void detectBalls(cv::Mat &frame, std::vector<Ball> &balls)
 {
     Mat gray, gradX, gradY, abs_grad_x, abs_grad_y, grad, imgBorder;
     cvtColor(frame, gray, COLOR_BGR2GRAY);
@@ -219,25 +219,31 @@ void detectBalls(const Mat &frame)
             //printf("Mean len: %d, StdDev len: %d\n", (int)mean.size(), (int)stddev.size());
             //printf("Mean: %f, StdDev: %f\n", mean[0], stddev[0]);
             if(mean[0] > 150 && mean[1] > 150 && mean[2] > 150 && stddev[0] < 25 && stddev[0] < 25 && stddev[0] < 25)
-            { // white ball
-                circle(frameCircle, center, radius, Scalar(255, 255, 255), 1, LINE_AA);
+            { // white
+                category = Category::WHITE_BALL;
+                circle(frame, center, radius, Scalar(255, 255, 255), 1, LINE_AA);
                 rectangle(frameRect, boundRect[i], Scalar(255, 255, 255), 1, LINE_AA);
             }
             else if(mean[0] < 100 && mean[1] < 100 && mean[2] < 100 && stddev[0] < 30 &&  stddev[1] < 30 &&  stddev[2] < 30)
             { // black
-                circle(frameCircle, center, radius, Scalar(0, 0, 0), 1, LINE_AA);
+                category = Category::BLACK_BALL;
+                circle(frame, center, radius, Scalar(0, 0, 0), 1, LINE_AA);
                 rectangle(frameRect, boundRect[i], Scalar(0, 0, 0), 1, LINE_AA);
             }
             else if(stddev[0] < 50 && stddev[1] < 50 && stddev[2] < 50)
-            { // solid blue
-                circle(frameCircle, center, radius, Scalar(255, 0, 0), 1, LINE_AA);
-                rectangle(frameRect, boundRect[i], Scalar(255, 0, 0), 1, LINE_AA);
-            }
-            else
-            { // striped red
-                circle(frameCircle, center, radius, Scalar(0, 0, 255), 1, LINE_AA);
+            { // full red
+                category = Category::SOLID_BALL;
+                circle(frame, center, radius, Scalar(0, 0, 255), 1, LINE_AA);
                 rectangle(frameRect, boundRect[i], Scalar(0, 0, 255), 1, LINE_AA);
             }
+            else
+            { // half green
+                category = Category::STRIPED_BALL;
+                circle(frame, center, radius, Scalar(0, 255, 0), 1, LINE_AA);
+                rectangle(frameRect, boundRect[i], Scalar(0, 255, 0), 1, LINE_AA);
+            }
+            Ball ball(boundRect[i], category);
+            balls.push_back(ball);
         }
         else
         {

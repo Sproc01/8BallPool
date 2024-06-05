@@ -4,6 +4,8 @@
 #define OBJECTDETECTION_H
 
 #include <opencv2/opencv.hpp>
+#include "ball.h"
+#include "table.h"
 
 void detectTable(const cv::Mat &frame);
 void detectBalls(const cv::Mat &frame);

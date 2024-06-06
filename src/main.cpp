@@ -6,6 +6,7 @@
 #include <iostream>
 #include "ball.h"
 #include "table.h"
+#include "segment.h"
 
 using namespace std;
 using namespace cv;
@@ -14,6 +15,7 @@ int main()
 {
     vector<Ball> balls;
     vector<Point> tableCorners;
+    Mat segmentedFrame;
     VideoCapture vid = VideoCapture("../Dataset/game1_clip1/game1_clip1.mp4");
     Mat frame;
     while (vid.isOpened())
@@ -29,7 +31,12 @@ int main()
         imshow("frame", frame);
         detectTable(frame, tableCorners);
         detectBalls(frame, balls, tableCorners);
+        segmentedFrame = frame.clone();
+        // segmentTable(segmentedFrame, tableCorners);
+        // segmentBalls(segmentedFrame, balls);
+        // imshow("segmentedFrame", segmentedFrame);
         //if (waitKey(0) == 'q')
+        //waitKey(0);
         break;
 
     }

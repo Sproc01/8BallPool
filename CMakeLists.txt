@@ -21,7 +21,8 @@ target_link_libraries(${PROJECT_NAME}
         ${OpenCV_LIBS}
         Table
         Ball
-        ObjectDetection)
+        ObjectDetection
+        Segment)
         #Tracking
         
 

@@ -7,13 +7,16 @@
 using namespace cv;
 using namespace std;
 
-void segmentTable(const Mat &frame, const vector<Point> &tableCorners)
+void segmentTable(Mat &frame, const vector<Point> &tableCorners)
 {
-    polylines(frame, tableCorners, true, Scalar(0, 255, 0), 2);
+    fillConvexPoly(frame, tableCorners, Scalar(0, 255, 0));
+    //polylines(frame, tableCorners, true, Scalar(0, 255, 0), 2);
 }
 
-void segmentBalls(const Mat &frame, const vector<Ball> &balls)
+void segmentBalls(Mat &frame, const vector<Ball> &balls)
 {
+    float radius;
+    Point center;
     Scalar c = Scalar(0, 0, 0);
     for (const Ball &ball : balls)
     {
@@ -25,6 +28,9 @@ void segmentBalls(const Mat &frame, const vector<Ball> &balls)
             c = Scalar(0, 0, 255);
         else if(ball.getCategory() == Category::STRIPED_BALL)
             c = Scalar(255, 0, 0);
-        //circle(frame, ball.getCenter(), ball.getRadius(), c, 2);
+        Rect b = ball.getBbox();
+        radius = b.width / 2;
+        center = Point(b.tl().x + radius, b.tl().y + radius);
+        circle(frame, center, radius, c, 2);
     }
 }

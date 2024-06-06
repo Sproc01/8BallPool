@@ -7,7 +7,7 @@
 #include "ball.h"
 #include "table.h"
 
-void segmentTable(const cv::Mat &frame, const std::vector<cv::Point> &tableCorners);
-void segmentBalls(const cv::Mat &frame, const std::vector<Ball> &balls);
+void segmentTable(cv::Mat &frame, const std::vector<cv::Point> &tableCorners);
+void segmentBalls(cv::Mat &frame, const std::vector<Ball> &balls);
 
 #endif // SEGMENT_H

@@ -192,7 +192,7 @@ void detectTable(const Mat &frame, vector<Point> &corners)
         return norm(a - center) < norm(b - center);
     });
 
-    cout << intersectionsGood << endl;
+    //cout << intersectionsGood << endl;
 
     for(size_t i = 0; i < 4; i++)
     {
@@ -219,18 +219,20 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const vector<Point> &tab
 {
     // const used during the function
     const int MIN_RADIUS = 5;
-    const int MAX_RADIUS = 25;
-    const int HOUGH_PARAM1 = 120;
-    const int HOUGH_PARAM2 = 15;
+    const int MAX_RADIUS = 15;
+    const int HOUGH_PARAM1 = 110;
+    const int HOUGH_PARAM2 = 5;
     const int ACCUMULATOR_RESOLUTION = 1;
-    const int MIN_DISTANCE = 40;
+    const int MIN_DISTANCE = 35;
 
-    Mat gray, gradX, gradY, abs_grad_x, abs_grad_y, grad, imgBorder;
+    // variables
+    Mat gray, gradX, gradY, abs_grad_x, abs_grad_y, grad, imgBorder, HSVImg;
     cvtColor(frame, gray, COLOR_BGR2GRAY);
     vector<Vec3f> circles;
     vector<Rect> boundRect;
     Mat frameRect = frame.clone();
     Mat frameCircle = frame.clone();
+    cvtColor(frame, HSVImg, COLOR_BGR2HSV);
     for(int i = 0; i < gray.rows; i++)
     {
         for(int j = 0; j < gray.cols; j++)
@@ -252,36 +254,30 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const vector<Point> &tab
         Point center = Point(c[0], c[1]);
         int radius = c[2];
         boundRect.push_back(Rect(c[0]-c[2], c[1]-c[2], 2*c[2], 2*c[2]));
-        //printf("Ball %d: center = (%d, %d), radius = %d\n", (int)i, c[0], c[1], c[2]);
-        //printf("Cols: %d, Rows: %d\n", frame.cols, frame.rows);
         if(c[0]-c[2] > 0 && c[1]-c[2] > 0 && c[0]+c[2] < frame.cols && c[1]+c[2] < frame.rows)
         {
-            int halfRad = static_cast<int>(c[2]/2);
-            // printf("%d: %d\n", i, c[2]);
-            // printf("%d: %d\n", i, halfRad);
-            subImg = frameRect.colRange(c[0]-halfRad, c[0]+halfRad).rowRange(c[1]-halfRad, c[1]+halfRad);
+            int halfRad = static_cast<int>(5*c[2]/8);
+            subImg = HSVImg.colRange(c[0]-halfRad, c[0]+halfRad).rowRange(c[1]-halfRad, c[1]+halfRad);
             meanStdDev(subImg, mean, stddev);
-            //printf("Mean len: %d, StdDev len: %d\n", (int)mean.size(), (int)stddev.size());
-            //printf("Mean: %f, StdDev: %f\n", mean[0], stddev[0]);
-            if(mean[0] > 150 && mean[1] > 150 && mean[2] > 150 && stddev[0] < 25 && stddev[0] < 25 && stddev[0] < 25)
+            if(mean[1] < 90 && mean[2] > 240)
             { // white ball
                 category = Category::WHITE_BALL;
                 circle(frameCircle, center, radius, Scalar(255, 255, 255), 1, LINE_AA);
                 rectangle(frameRect, boundRect[i], Scalar(255, 255, 255), 1, LINE_AA);
             }
-            else if(mean[0] < 100 && mean[1] < 100 && mean[2] < 100 && stddev[0] < 30 &&  stddev[1] < 30 &&  stddev[2] < 30)
+            else if(mean[2] < 80)
             { // black ball
                 category = Category::BLACK_BALL;
                 circle(frameCircle, center, radius, Scalar(0, 0, 0), 1, LINE_AA);
                 rectangle(frameRect, boundRect[i], Scalar(0, 0, 0), 1, LINE_AA);
             }
-            else if(stddev[0] < 50 && stddev[1] < 50 && stddev[2] < 50)
+            else if(stddev[0] < 10)
             { // solid blue
                 category = Category::SOLID_BALL;
                 circle(frameCircle, center, radius, Scalar(255, 0, 0), 1, LINE_AA);
                 rectangle(frameRect, boundRect[i], Scalar(255, 0, 0), 1, LINE_AA);
             }
-            else
+            else if(stddev[0] > 40)
             { // striped red
                 category = Category::STRIPED_BALL;
                 circle(frameCircle, center, radius, Scalar(0, 0, 255), 1, LINE_AA);

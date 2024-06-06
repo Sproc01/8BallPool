@@ -13,6 +13,7 @@ using namespace cv;
 int main()
 {
     vector<Ball> balls;
+    vector<Point> tableCorners;
     VideoCapture vid = VideoCapture("../Dataset/game1_clip1/game1_clip1.mp4");
     Mat frame;
     while (vid.isOpened())
@@ -26,8 +27,8 @@ int main()
             break;
         }
         imshow("frame", frame);
-        detectTable(frame);
-        detectBalls(frame, balls);
+        detectTable(frame, tableCorners);
+        detectBalls(frame, balls, tableCorners);
         //if (waitKey(0) == 'q')
         break;
 

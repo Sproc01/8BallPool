@@ -4,8 +4,10 @@
 #define SEGMENT_H
 
 #include <opencv2/opencv.hpp>
+#include "ball.h"
+#include "table.h"
 
-void segmentTable(const cv::Mat &frame);
-void segmentBalls(const cv::Mat &frame);
+void segmentTable(const cv::Mat &frame, const std::vector<cv::Point> &tableCorners);
+void segmentBalls(const cv::Mat &frame, const std::vector<Ball> &balls);
 
 #endif // SEGMENT_H

@@ -95,7 +95,7 @@ Vec2b histogram(const Mat &img)
 	//cout << argmax << endl;
 	int start = range[1] / histSize * argmax.at<int>(0);
 	int diameter = (range[1] / histSize);
-	imshow("Histogram", histImg);
+	//imshow("Histogram", histImg);
 	return Vec2b(start, start + diameter);
 }
 
@@ -191,20 +191,25 @@ void detectTable(const Mat &frame, vector<Point> &corners)
         Point center = Point(frame.cols/2, frame.rows/2);
         return norm(a - center) < norm(b - center);
     });
-
-    //cout << intersectionsGood << endl;
-
-    for(size_t i = 0; i < 4; i++)
-    {
-        circle(imgLine, intersectionsGood[i], 10, Scalar(255, 255, 0), -1);
-    }
+    // clockwise order
     sort(intersectionsGood.begin(), intersectionsGood.end(), [frame](Point a, Point b) -> bool
     {
         Point center = Point(frame.cols/2, frame.rows/2);
-        int d1 = (a.x - center.x) * (a.x - center.x) + (a.y - center.y) * (a.y - center.y);
-        int d2 = (b.x - center.x) * (b.x - center.x) + (b.y - center.y) * (b.y - center.y);
-        return d1 < d2;
+        if (a.x < center.x && b.x < center.x)
+            return a.y > b.y;
+        else if (a.x < center.x && b.x > center.x)
+            return true;
+        else if (a.x > center.x && b.x > center.x)
+            return a.y < b.y;
+        else
+            return false;
     });
+    vector<Scalar> colors = {Scalar(255, 0, 0), Scalar(0, 255, 0), Scalar(0, 0, 255), Scalar(255, 255, 0)};
+    for(size_t i = 0; i < 4; i++)
+    {
+        circle(imgLine, intersectionsGood[i], 10, colors[i], -1);
+    }
+
     //cout << intersectionsGood << endl;
     for(size_t i = 0; i < 4; i++)
     {
@@ -233,14 +238,11 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const vector<Point> &tab
     Mat frameRect = frame.clone();
     Mat frameCircle = frame.clone();
     cvtColor(frame, HSVImg, COLOR_BGR2HSV);
-    for(int i = 0; i < gray.rows; i++)
-    {
-        for(int j = 0; j < gray.cols; j++)
-        {
-            if(i < tableCorners[0].y || i > tableCorners[1].y || j < tableCorners[0].x || j > tableCorners[2].x)
-                gray.at<uchar>(i, j) = 0;
-        }
-    }
+    int maxY = max(tableCorners[0].y, tableCorners[3].y);
+    int minY = min(tableCorners[1].y, tableCorners[2].y);
+    int maxX = max(tableCorners[2].x, tableCorners[3].x);
+    int minX = min(tableCorners[0].x, tableCorners[1].x);
+    gray = gray.rowRange(minY, maxY).colRange(minX, maxX);
     imshow("Cropped image", gray);
     HoughCircles(gray, circles, HOUGH_GRADIENT, 
                     ACCUMULATOR_RESOLUTION, MIN_DISTANCE, HOUGH_PARAM1, HOUGH_PARAM2, MIN_RADIUS, MAX_RADIUS);
@@ -251,9 +253,9 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const vector<Point> &tab
     for( size_t i = 0; i < circles.size(); i++ )
     {
         Vec3i c = circles[i];
-        Point center = Point(c[0], c[1]);
+        Point center = Point(c[0] + minX, c[1] + minY);
         int radius = c[2];
-        boundRect.push_back(Rect(c[0]-c[2], c[1]-c[2], 2*c[2], 2*c[2]));
+        boundRect.push_back(Rect(center.x-c[2], center.y-c[2], 2*c[2], 2*c[2]));
         if(c[0]-c[2] > 0 && c[1]-c[2] > 0 && c[0]+c[2] < frame.cols && c[1]+c[2] < frame.rows)
         {
             int halfRad = static_cast<int>(5*c[2]/8);

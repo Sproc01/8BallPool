@@ -6,15 +6,15 @@
 #include <utility>
 
 
-cv::Rect Table::getBbox() const {
-	if(bbox_.empty())
+cv::Vec<cv::Point, 4> Table::getBoundaries() const {
+	if(boundaries_ == cv::Vec<cv::Point, 4>{cv::Point{0, 0}, cv::Point{0, 0}, cv::Point{0, 0}, cv::Point{0, 0}})
 		throw std::runtime_error("bbox is uninitialized");
 
-	return bbox_;
+	return boundaries_;
 }
 
 cv::Vec3b Table::getColor() const {
-	if (color_ == cv::Vec3b(0, 0, 0))   // black = uninitialized
+	if (color_ == cv::Vec3b(0, 0, 0))   // black(0,0,0) = uninitialized
 		throw std::runtime_error("color is uninitialized");
 
 	return color_;
@@ -27,7 +27,7 @@ cv::Mat Table::getTransform() const {
 	return transform_;
 }
 
-std::vector<Ball> Table::getBalls() const {
+cv::Ptr<std::vector<Ball>> Table::getBalls() const {
 	if (balls_.empty())
 		throw std::runtime_error("balls is uninitialized");
 
@@ -35,31 +35,31 @@ std::vector<Ball> Table::getBalls() const {
 }
 
 
-void Table::setBbox(cv::Rect bbox) {
-	bbox_ = bbox;
+void Table::setBoundaries(const cv::Vec<cv::Point, 4> &boundaries) {
+	boundaries_ = boundaries;
 }
 
-void Table::setColor(cv::Vec3b color) {
+void Table::setColor(cv::Vec3b color) { // NOLINT(*-unnecessary-value-param)
 	color_ = color;
 }
 
-void Table::setTransform(cv::Mat transform) {
+void Table::setTransform(const cv::Mat &transform) {
 	transform_ = std::move(transform);
 }
 
-void Table::setBalls(std::vector<Ball> balls) {
+void Table::setBalls(cv::Ptr<std::vector<Ball>> balls) { // NOLINT(*-unnecessary-value-param)
 	balls_ = balls; // TODO check if it's a copy or a reference (copy constructor? use std::move?)
 }
 
 
 void Table::addBall(Ball ball) {
-	balls_.push_back(ball);
+	balls_->push_back(ball);
 }
 
 void Table::removeBall(int index) {
-	balls_.erase(balls_.begin() + index);
+	balls_->erase(balls_->begin() + index);
 }
 
 void Table::clearBalls() {
-	balls_.clear();
+	balls_->clear();
 }

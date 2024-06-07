@@ -30,6 +30,7 @@ int main()
 	BallTracker tracker = BallTracker(table.getBalls());
 
 
+	waitKey();
 	return 0;
 
     while (vid.isOpened())  // work on middle frames

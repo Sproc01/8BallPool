@@ -3,22 +3,12 @@
 #include <opencv2/opencv.hpp>
 #include "transformation.h"
 #include "ObjectDetection.h"
+#include "minimapConstants.h"
 
 using namespace cv;
 using namespace std;
 
-struct Edge{
-    Point corners[2];
-    Point center;
-    Rect center_rect;
-    double backgroud_percentile;
-};
-
-bool compareByPercentile(const Edge &e1, const Edge &e2)
-{
-    return e1.backgroud_percentile < e2.backgroud_percentile;
-}
-
+//TODO: it is duplicated, also in tableOrientation
 // Return the center point between two points
 Point getCenter(Point p1, Point p2) {
     Point center;
@@ -32,63 +22,61 @@ Point getCenter(Point p1, Point p2) {
     return center;
 }
 
-//Return the percentile of pixels in the color_range within the rectangle in the image
-double computePercentile(Mat &frame, Rect rect, Vec2b color_range) {
-    int count = 0;
-    for(int x = rect.x; x < rect.x + rect.width; x++) {
-        for(int y = rect.y; y < rect.y + rect.height; y++) {
-            if(frame.at<Vec3d> >= Scalar(color_range[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD)
-                && frame.at<Vec3d> <= Scalar(color_range[1], 255, 255)) {
-                count++;
-                }
+//compute the transformation matrix as product of rotation and perspective
+Mat computeTransformation(Table table) {
+    Vec<Point, 4> img_vertices =  table.getBoundaries();
+
+    //compute rotation transform
+    double slope = (img_vertices[1].y - img_vertices[0].y) / (double)(img_vertices[1].x - img_vertices[0].x);
+    Point center = getCenter(img_vertices[0], img_vertices[2]);
+    Mat rotationTransform = getRotationMatrix2D(center, slope, 1);
+
+    //compute perspective transform
+    Vec<Point, 4> map_vertices = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
+    Mat perspectiveTransform = getPerspectiveTransform	(img_vertices, map_vertices);
+
+    return rotationTransform * perspectiveTransform;
+}
+
+//compute the positions of the balls in the minimap
+vector<Point> computeBallsPositions(vector<Ball> &balls, Mat &transform) {
+    vector<Point> map_balls;
+
+    cv::transform(balls, map_balls, transform);
+
+    return map_balls;
+}
+
+//given the ball positions and the minimap draw the balls with their category color
+void drawBallsOnMap(Mat &map_img, vector<Point> balls_map, vector<Ball> balls) {
+
+    //TODO: see if the position is correct (or if it starts from the top left of the image without considering the border
+    Point position;
+
+    //compute the color of the current ball using its category
+    Vec3b color;
+    for(int i = 0; i < balls_map.size(); i++) {
+        position = balls_map[i];
+        switch (balls[i].getCategory()) {
+            case BLACK_BALL:
+                color = BLACK_BGR_COLOR;
+                break;
+            case WHITE_BALL:
+                color = WHITE_BGR_COLOR;
+                break;
+            case STRIPED_BALL:
+                color = STRIPED_BGR_COLOR;
+                break;
+            case SOLID_BALL:
+                color = SOLID_BGR_COLOR;
+                break;
+            default:
+                //TODO: throw error if no correct category is found
+                // throw error
+                break;
         }
-    }
-    return count/rect.area();
-}
 
-Orientation detectTableOrientation(Table table, Mat &frame) {
-
-    //compute the centers of each table edge
-    vector<Edge> edges;
-
-    int next_corner;
-    for(int i = 0; i < 4; i++) {
-        next_corner = i+1;
-        if(i == 3)
-            next_corner = 0;
-        edges[i].corners[0] = table.corners[i];
-        edges[i].corners[1] = table.corners[next_corner];
-    }
-
-    for(Edge edge : edges) {
-        edge.center = getCenter(edge.corners[0], edge.corners[1]);
-    }
-
-    //compute the rects around the centers shifted more to the center of the table
-    const int rect_width = 10;
-    const int rect_height = 10;
-
-    for(Edge edge : edges) {
-        edge.center_rect = Rect(edge.center.x, edge.center.y - rect_height/2, rect_width, rect_height);
-    }
-
-    //compute the rects with and without the pools
-    //compute the percentile of rectangle with color close to the table background
-    Vec2b background = table.getColor();
-    for(Edge edge : edges) {
-        edge.backgroud_percentile = computePercentile(frame, edge.center_rect, background);
-    }
-
-    //order the edges by the percentile of background in the rectangle around the center of the edge
-    vector<Edge> ordered_edges = edges;
-    sort(edges.begin(), edges.end(), compareByPercentile);
-
-    //edges[0] and edges[1] are the longer edges
-    //edges[2] and edges[3] are the shortes edges
-    if(edges[0].center == ordered_edges[0].center || edges[0].center == ordered_edges[2].center) {
-        return HORIZONTAL;
-    }
-    else {
-        return VERTICAL;
+        circle(map_img, position, MAP_BALL_RADIUS, color, -1);
     }
 }
+

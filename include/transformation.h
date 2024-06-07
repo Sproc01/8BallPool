@@ -8,13 +8,8 @@
 #include "ball.h"
 #include "table.h"
 
-enum Orientation
-{
-    HORIZONTAL = 0,
-    VERTICAL
-};
-
-Orientation detectTableOrientation(Table table, cv::Mat &frame);
-void computeTransformation(std::vector<cv::Point> corners);
+cv::Mat computeTransformation(Table table);
+std::vector<cv::Point> computeBallsPositions(std::vector<Ball> &balls, cv::Mat transform);
+void drawBallsOnMap(cv::Mat &map_img, std::vector<cv::Point> balls_map, std::vector<Ball> balls);
 
 #endif //TRANSFORMATION_H

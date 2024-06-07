@@ -2,11 +2,11 @@
 
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
-#include "detection.h"
 #include <iostream>
 #include "ball.h"
 #include "table.h"
-#include "segment.h"
+#include "detection.h"
+#include "segmentation.h"
 #include "tracking.h"
 
 using namespace std;

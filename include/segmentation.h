@@ -1,7 +1,7 @@
 // Author: Michele Sprocatti
 
-#ifndef SEGMENT_H
-#define SEGMENT_H
+#ifndef SEGMENTATION_H
+#define SEGMENTATION_H
 
 #include <opencv2/opencv.hpp>
 #include "ball.h"
@@ -10,4 +10,4 @@
 void segmentTable(const cv::Mat &frame, const std::vector<cv::Point> &tableCorners, cv::Mat &segmented);
 void segmentBalls(const cv::Mat &frame, const std::vector<Ball> &balls, cv::Mat &segmented);
 
-#endif // SEGMENT_H
+#endif // SEGMENTATION_H

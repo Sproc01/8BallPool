@@ -2,10 +2,11 @@
 
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
-#include "ObjectDetection.h"
+#include "detection.h"
 #include <iostream>
 #include "ball.h"
 #include "table.h"
+#include "segment.h"
 #include "tracking.h"
 
 using namespace std;
@@ -16,6 +17,10 @@ using namespace cv;
 int main()
 {
 	Table table;
+    vector<Ball> balls;
+    vector<Point> tableCorners;
+    Mat segmented;
+    Mat segmentedFrame;
     VideoCapture vid = VideoCapture("../Dataset/game1_clip1/game1_clip1.mp4");
     Mat frame;
 
@@ -25,18 +30,38 @@ int main()
 		return -1;
 	}
 	imshow("First frame", frame);
-	// TODO init table and balls (`new std::vector<Ball>`)
-	detectTable(frame);
-	detectBalls(frame, table.getBallsPtr());
+	detectTable(frame, tableCorners);
+    segmentTable(frame, tableCorners, segmented);
+    //imshow("segmentedTable", segmented);
+	detectBalls(frame, balls, tableCorners); // TODO change to table.getBalls()
+    segmentBalls(segmented, balls, segmented);
+    //imshow("segmentedBalls", segmented);
+    waitKey(0);
+    return 0;
 	BallTracker tracker = BallTracker(table.getBallsPtr());
 
+    // while (vid.isOpened())  // work on middle frames
+    // {
+    //     bool ret = vid.read(frame);
 
-	waitKey();
-	return 0;
+    //     // if frame is read correctly ret is True
+    //     if (!ret)
+    //     {
+    //         printf("Can't receive frame (stream end?). Exiting ... maybe end of file\n");
+    //         break;
+    //     }
+    //     imshow("frame", frame);
+    //     //detectTable(frame, tableCorners);
+    //     //detectBalls(frame, balls, tableCorners);
+    //     segmentedFrame = frame.clone();
+    //     // segmentTable(segmentedFrame, tableCorners);
+    //     // segmentBalls(segmentedFrame, balls);
+    //     // imshow("segmentedFrame", segmentedFrame);
+    //     //if (waitKey(0) == 'q')
+    //     //waitKey(0);
+    //     break;
 
-    while (vid.isOpened())  // work on middle frames
-    {
-        bool ret = vid.read(frame);
+    // }
 
         // if frame is read correctly ret is True
         if (!ret)
@@ -46,11 +71,10 @@ int main()
         }
         imshow("frame", frame);
         detectTable(frame);
-        detectBalls(frame, table.getBallsPtr());
+        detectBalls(frame, balls);
     }
 
 	// TODO work on last frame
 
-	waitKey();
     return 0;
 }

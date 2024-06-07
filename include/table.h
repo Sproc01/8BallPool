@@ -11,7 +11,7 @@
 
 
 class Table {
-	cv::Vec<cv::Point, 4> boundaries_;
+	cv::Vec<cv::Point, 4> boundaries_;  // TODO define order of points
 	cv::Vec3b color_;
 	cv::Mat transform_;
 	cv::Ptr<std::vector<Ball>> balls_;
@@ -36,6 +36,8 @@ public:
 	void addBall(Ball ball);
 	void removeBall(int index);
 	void clearBalls();
+
+	cv::Rect getBbox() const;
 };
 
 

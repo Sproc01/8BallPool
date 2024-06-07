@@ -63,3 +63,9 @@ void Table::removeBall(int index) {
 void Table::clearBalls() {
 	balls_->clear();
 }
+
+
+cv::Rect Table::getBbox() const {   // FIXME implement this based on the boundaries order
+	throw std::runtime_error("Not implemented yet");
+	return cv::Rect();
+}

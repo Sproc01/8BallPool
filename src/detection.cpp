@@ -1,7 +1,7 @@
 // Author: Michele Sprocatti
 
 #include <opencv2/opencv.hpp>
-#include "objectDetection.h"
+#include "detection.h"
 #include <iostream>
 #include <opencv2/features2d.hpp>
 #include "table.h"

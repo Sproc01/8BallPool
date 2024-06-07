@@ -2,7 +2,7 @@
 
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
-#include "objectDetection.h"
+#include "detection.h"
 #include <iostream>
 #include "ball.h"
 #include "table.h"
@@ -30,10 +30,10 @@ int main()
 	imshow("First frame", frame);
 	detectTable(frame, tableCorners);
     segmentTable(frame, tableCorners, segmented);
-    imshow("segmentedTable", segmented);
+    //imshow("segmentedTable", segmented);
 	detectBalls(frame, balls, tableCorners); // TODO change to table.getBalls()
     segmentBalls(segmented, balls, segmented);
-    imshow("segmentedBalls", segmented);
+    //imshow("segmentedBalls", segmented);
     waitKey(0);
     return 0;
 

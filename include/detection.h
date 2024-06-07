@@ -1,7 +1,7 @@
 // Author: Michele Sprocatti
 
-#ifndef OBJECTDETECTION_H
-#define OBJECTDETECTION_H
+#ifndef DETECTION_H
+#define DETECTION_H
 
 #include <opencv2/opencv.hpp>
 #include "ball.h"
@@ -13,4 +13,4 @@ cv::Vec2b histogram(const cv::Mat &img);
 void intersection(const cv::Vec3f &line1, const cv::Vec3f &line2, cv::Point &intersection);
 void equationFormula(float x1, float y1, float x2, float y2, float &m, float &q);
 
-#endif // OBJECTDETECTION_H
+#endif // DETECTION_H

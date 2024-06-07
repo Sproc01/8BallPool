@@ -1,8 +1,11 @@
 // Author: Michele Sprocatti
 
 #include <opencv2/opencv.hpp>
-#include "ObjectDetection.h"
+#include "objectDetection.h"
 #include <iostream>
+#include <opencv2/features2d.hpp>
+#include "table.h"
+#include "ball.h"
 
 using namespace cv;
 using namespace std;
@@ -11,30 +14,72 @@ using namespace std;
 const int S_CHANNEL_COLOR_THRESHOLD = 50;
 const int V_CHANNEL_COLOR_THRESHOLD = 90;
 
-// Gives the equation of the line passing through two points in the form y = mx + q
-void equationFormula(double x1, double y1, double x2, double y2, double &m, double &q){
-	m = (y2-y1)/(x2-x1);
-	q = -x1*m + y1;
+// Gives the equation of the line passing through two points in the form  ax + by + c = 0
+void equationFormula(float x1, float y1, float x2, float y2, float &a, float &b, float &c)
+{
+    //cout << "x1: " << x1 << " y1: " << y1 << " x2: " << x2 << " y2: " << y2 << endl;
+    if(x2==x1)
+    {
+        b = 0;
+        a = -1;
+        c = x1;
+        // cout << "a: " << a << " b: " << b << " c:" << c << endl;
+        // cout << endl;
+    }
+    else
+    {
+        b = -1;
+        a = (y2-y1)/(x2-x1);
+        c = -a*x1 - b*y1;
+        // cout << "a: " << a << " b: " << b << " c:" << c << endl;
+        // cout << endl;
+    }
 }
 
-std::vector<Scalar> rgbColors = {Scalar(255, 0, 0), Scalar(0, 255, 0), Scalar(0, 0, 255)};
-Vec2b histogram(const Mat &img){
-	imshow("Cropped image (hist)", img);
+
+void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point &intersection)
+{
+    float a1 = line1[0], b1 = line1[1], c1 = line1[2];
+    float a2 = line2[0], b2 = line2[1], c2 = line2[2];
+    float det = a1*b2 - a2*b1;
+    if(det != 0)
+    {
+        intersection.x = (b1*c2 - b2*c1) / det;
+        intersection.y = (a2*c1 - a1*c2) / det;
+    }
+    else
+    {
+        intersection.x = -1;
+        intersection.y = -1;
+    }
+    // cout << "Method" << endl;
+    // cout << a1 << " " << b1 << " " << c1 << endl;
+    // cout << a2 << " " << b2 << " " << c2 << endl;
+    // cout << "Intersection: " << intersection << endl;
+
+}
+
+
+Vec2b histogram(const Mat &img)
+{
+    std::vector<Scalar> rgbColors = {Scalar(255, 0, 0), Scalar(0, 255, 0), Scalar(0, 0, 255)};
+	//imshow("Cropped image (hist)", img);
 	Mat thisImg;
 	cvtColor(img, thisImg, COLOR_BGR2HSV);
 	Mat hist;
 	int histSize = 8; // number of bins
 	float range[] = {0, 179+1}; // range (upper bound is exclusive)
 	const float* histRange[] = { range };
-//	const int channels[] = {0, 1, 2};
-	const int channels[] = {0}; // only H channel
-	int hist_w = 512, hist_h = 400;
-	Mat histImg(hist_h, hist_w, CV_8UC3, Scalar(0, 0, 0));
 
 	// Evaluate only H channel
 	int hCh_idx = 0;
+    //const int channels[] = {0, 1, 2};
 	const int c[] = {hCh_idx};
 	calcHist(&thisImg, 1, c, Mat(), hist, 1, &histSize, histRange);
+
+    // draw histogram
+    int hist_w = 512, hist_h = 400;
+	Mat histImg(hist_h, hist_w, CV_8UC3, Scalar(0, 0, 0));
 	int bin_w = cvRound((double) hist_w/histSize);
 	normalize(hist, hist, 0, histImg.rows, NORM_MINMAX, -1, Mat());
 	for(int i = 1; i < histSize; i++){
@@ -43,155 +88,208 @@ Vec2b histogram(const Mat &img){
 			 rgbColors[hCh_idx], 2, 8, 0);
 	}
 
-	cv::Mat argmax;
-	cv::reduceArgMax(hist, argmax, 0);
-	cout<<hist<<endl;
-	cout << argmax << endl;
+    // find the argmax
+	Mat argmax;
+	reduceArgMax(hist, argmax, 0);
+	//cout<<hist<<endl;
+	//cout << argmax << endl;
 	int start = range[1] / histSize * argmax.at<int>(0);
 	int diameter = (range[1] / histSize);
-	imshow("Histogram", histImg);
-
+	//imshow("Histogram", histImg);
 	return Vec2b(start, start + diameter);
 }
 
 
-void detectTable(cv::Mat &frame)
+void detectTable(const Mat &frame, vector<Point> &corners)
 {
-    Mat imgGray, imgLine, imgBorder;
+    // const used during the function
+    const int DIM_STRUCTURING_ELEMENT = 27;
+    const int DIM_GAUSSIAN_KERNEL = 17;
+    const int CANNY_THRESHOLD1 = 95;
+    const int CANNY_THRESHOLD2 = 110;
+    const int THRESHOLD_HOUGH = 130;
+    const int MAX_LINE_GAP = 15;
+    const int MIN_LINE_LENGTH = 120;
+    const int CLOSE_POINT_THRESHOLD = 30;
+
+    // variables
+    Mat imgGray, imgLine, imgBorder, thisImg, mask, kernel;
+    vector<Vec4i> lines;
 	int rowsover4 = frame.rows/4, colsover4 = frame.cols/4;
+    Scalar line_color = Scalar(0, 0, 255);
+    vector<Point> intersections;
+    vector<Vec3f> coefficients;
+
+    // get the color range
 	Vec2b colorRange = histogram(frame.rowRange(rowsover4, 3*rowsover4).colRange(colsover4, 3*colsover4));
-	cout<<"Color range: "<<colorRange<<endl;
-	Mat thisImg;
+
+    // mask the image
 	cvtColor(frame, thisImg, COLOR_BGR2HSV);
-	Mat mask;
-	inRange(thisImg, Scalar(colorRange[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD), Scalar(colorRange[1], 255, 255), mask);
-	imshow("Mask", mask);
-//	thisImg.copyTo(frame);
-//	bitwise_and(frame, frame, frame, mask);
-//	frame.copyTo(frame, mask);
-//	imshow("Masked", frame);
+	inRange(thisImg, Scalar(colorRange[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD), 
+                Scalar(colorRange[1], 255, 255), mask);
+	//imshow("Mask", mask);
 
-//	mask.copyTo(frame);
-
-//	frame.convertTo(frame,CV_32F);
-//    frame = frame + 1;
-//    cv::log(frame,frame);
-//    cv::convertScaleAbs(frame,frame);
-//    cv::normalize(frame,frame,0,255,cv::NORM_MINMAX);
-
-	Mat kernel = getStructuringElement(MORPH_ELLIPSE, Size(23,23));
+    // morphological operations
+	kernel = getStructuringElement(MORPH_ELLIPSE, Size(DIM_STRUCTURING_ELEMENT, DIM_STRUCTURING_ELEMENT));
 	morphologyEx(mask, mask, MORPH_CLOSE, kernel);
-	imshow("Morphology", mask);
+	//imshow("Morphology", mask);
 
+    // edge detection
+	GaussianBlur(mask, mask, Size(DIM_GAUSSIAN_KERNEL, DIM_GAUSSIAN_KERNEL), 0);
+    //imshow("Gaussian Blur", mask);
+    Canny(mask, imgBorder, CANNY_THRESHOLD1, CANNY_THRESHOLD2);
+    //imshow("Canny Result", imgBorder);
 
-	GaussianBlur(mask, mask, Size(3,  3), 0);
-    imshow("Gaussian Blur", mask);
-//    cvtColor(frame, imgGray, COLOR_BGR2GRAY);
-    Canny(mask, imgBorder, 30, 60);
-    imshow("Canny Result", imgBorder);
-    vector<Vec2f> lines;
-    vector<Vec2f> linesFiltered;
+    // Hough transform
     imgLine = frame.clone();
-    HoughLines(imgBorder, lines, 1, CV_PI/180, 120);
-    // for(size_t i = 0; i < 8; i++)
-    // {
-    //     linesFiltered.push_back(lines[i]);
-    // }
+    HoughLinesP(imgBorder, lines, 1, CV_PI/180, THRESHOLD_HOUGH, MIN_LINE_LENGTH, MAX_LINE_GAP);
+
+    // lines drawing
+    Point pt1, pt2;
+    float aLine, bLine, cLine;
     for(size_t i = 0; i < lines.size(); i++)
     {
-        float rho = lines[i][0], theta = lines[i][1];
-        Point pt1, pt2;
-        double a = cos(theta), b = sin(theta);
-        double x0 = a*rho, y0 = b*rho;
-        pt1.x = cvRound(x0 + 1300*(-b));
-        pt1.y = cvRound(y0 + 1300*(a));
-        pt2.x = cvRound(x0 - 1300*(-b));
-        pt2.y = cvRound(y0 - 1300*(a));
-        line(imgLine, pt1, pt2, Scalar(0, 0, 255), 1, LINE_AA);
+        pt1.x = lines[i][0]; 
+        pt1.y = lines[i][1];
+        pt2.x = lines[i][2];
+        pt2.y = lines[i][3];
+        line(imgLine, pt1, pt2, line_color, 2, LINE_AA);
+        equationFormula(pt1.x, pt1.y, pt2.x, pt2.y, aLine, bLine, cLine);
+        coefficients.push_back(Vec3f(aLine, bLine, cLine));
     }
-     imshow("Line", imgLine);
-    // waitKey(0);
+    
+    // find intersections
+    for(size_t i = 0; i < coefficients.size(); i++)
+    {
+        for(size_t j = i+1; j < coefficients.size(); j++)
+        {
+            Point intersection;
+            computeIntersection(coefficients[i], coefficients[j], intersection);
+            if (intersection.x >= 0 && intersection.x < frame.cols && intersection.y >= 0 && intersection.y < frame.rows)
+                intersections.push_back(intersection);
+        }
+    }
+
+    // remove intersections that are too close
+    vector<Point> intersectionsGood;
+    sort(intersections.begin(), intersections.end(), [frame](Point a, Point b) -> bool
+    {
+        Point center = Point(frame.cols/2, frame.rows/2);
+        return norm(a) < norm(b);
+    });
+    auto end2 = unique(intersections.begin(), intersections.end(), [](Point a, Point b) -> bool
+    {
+        return abs(a.x - b.x) < CLOSE_POINT_THRESHOLD && abs(a.y - b.y) < CLOSE_POINT_THRESHOLD;
+    });
+    for(auto it = intersections.begin(); it != end2; it++)
+    {
+        intersectionsGood.push_back(*it);
+    }
+
+    sort(intersectionsGood.begin(), intersectionsGood.end(), [frame](Point a, Point b) -> bool
+    {
+        Point center = Point(frame.cols/2, frame.rows/2);
+        return norm(a - center) < norm(b - center);
+    });
+    // clockwise order
+    sort(intersectionsGood.begin(), intersectionsGood.end(), [frame](Point a, Point b) -> bool
+    {
+        Point center = Point(frame.cols/2, frame.rows/2);
+        if (a.x < center.x && b.x < center.x)
+            return a.y > b.y;
+        else if (a.x < center.x && b.x > center.x)
+            return true;
+        else if (a.x > center.x && b.x > center.x)
+            return a.y < b.y;
+        else
+            return false;
+    });
+    vector<Scalar> colors = {Scalar(255, 0, 0), Scalar(0, 255, 0), Scalar(0, 0, 255), Scalar(255, 255, 0)};
+    for(size_t i = 0; i < 4; i++)
+    {
+        circle(imgLine, intersectionsGood[i], 10, colors[i], -1);
+    }
+
+    //cout << intersectionsGood << endl;
+    for(size_t i = 0; i < 4; i++)
+    {
+        corners.push_back(intersectionsGood[i]);
+    }
+    imshow("Line", imgLine);
+    //waitKey(0);
 }
 
-void detectBalls(cv::Mat &frame, std::vector<Ball> &balls)
+
+void detectBalls(const Mat &frame, vector<Ball> &balls, const vector<Point> &tableCorners)
 {
-    Mat gray, gradX, gradY, abs_grad_x, abs_grad_y, grad, imgBorder;
+    // const used during the function
+    const int MIN_RADIUS = 5;
+    const int MAX_RADIUS = 15;
+    const int HOUGH_PARAM1 = 110;
+    const int HOUGH_PARAM2 = 5;
+    const int ACCUMULATOR_RESOLUTION = 1;
+    const int MIN_DISTANCE = 35;
+
+    // variables
+    Mat gray, gradX, gradY, abs_grad_x, abs_grad_y, grad, imgBorder, HSVImg;
     cvtColor(frame, gray, COLOR_BGR2GRAY);
-//    Canny(gray, imgBorder, 40, 130);
-    // Sobel(gray, gradX, CV_8U, 2, 0);
-    // Sobel(gray, gradY, CV_8U, 0, 2);
-    // convertScaleAbs(gradX, abs_grad_x);
-    // convertScaleAbs(gradY, abs_grad_y);
-    // addWeighted(abs_grad_x, 0.5, abs_grad_y, 0.5, 0, grad);
-    // add(gray, grad, imgBorder);
-    //imshow("Canny", imgBorder);
     vector<Vec3f> circles;
     vector<Rect> boundRect;
     Mat frameRect = frame.clone();
-//    add(imgBorder, gray, gray);
-    HoughCircles(gray, circles, HOUGH_GRADIENT, 1, 25, 130, 10, 5, 15);
+    Mat frameCircle = frame.clone();
+    cvtColor(frame, HSVImg, COLOR_BGR2HSV);
+    int maxY = max(tableCorners[0].y, tableCorners[3].y);
+    int minY = min(tableCorners[1].y, tableCorners[2].y);
+    int maxX = max(tableCorners[2].x, tableCorners[3].x);
+    int minX = min(tableCorners[0].x, tableCorners[1].x);
+    gray = gray.rowRange(minY, maxY).colRange(minX, maxX);
+    imshow("Cropped image", gray);
+    HoughCircles(gray, circles, HOUGH_GRADIENT, 
+                    ACCUMULATOR_RESOLUTION, MIN_DISTANCE, HOUGH_PARAM1, HOUGH_PARAM2, MIN_RADIUS, MAX_RADIUS);
     vector<Vec3f> circlesFiltered;
-    // for(size_t i = 0; i < circles.size(); i++)
-    // {
-    //     if(circles[i][2] > 10)
-    //     {
-    //         circlesFiltered.push_back(circles[i]);
-    //     }
-    // }
     Mat subImg;
     vector<double> mean, stddev;
+    Category category;
     for( size_t i = 0; i < circles.size(); i++ )
     {
         Vec3i c = circles[i];
-        Point center = Point(c[0], c[1]);
+        Point center = Point(c[0] + minX, c[1] + minY);
         int radius = c[2];
-        boundRect.push_back(Rect(c[0]-c[2], c[1]-c[2], 2*c[2], 2*c[2]));
-        //printf("Ball %d: center = (%d, %d), radius = %d\n", (int)i, c[0], c[1], c[2]);
-        //printf("Cols: %d, Rows: %d\n", frame.cols, frame.rows);
-        if(c[0]-c[2]<0 || c[1]-c[2]<0 || c[0]+c[2]>frame.cols || c[1]+c[2]>frame.rows)
+        boundRect.push_back(Rect(center.x-c[2], center.y-c[2], 2*c[2], 2*c[2]));
+        if(c[0]-c[2] > 0 && c[1]-c[2] > 0 && c[0]+c[2] < frame.cols && c[1]+c[2] < frame.rows)
         {
-            //printf("Ball %d is out of bounds\n", (int)i);
-            continue;
-        }
-        else
-        {
-            Category category = Category::BACKGROUND;
-            int halfRad = (int)(c[2]/2);
-            // printf("%d: %d\n", i, c[2]);
-            // printf("%d: %d\n", i, halfRad);
-            subImg = frameRect.colRange(c[0]-halfRad, c[0]+halfRad).rowRange(c[1]-halfRad, c[1]+halfRad);
+            int halfRad = static_cast<int>(5*c[2]/8);
+            subImg = HSVImg.colRange(c[0]-halfRad, c[0]+halfRad).rowRange(c[1]-halfRad, c[1]+halfRad);
             meanStdDev(subImg, mean, stddev);
-            //printf("Mean len: %d, StdDev len: %d\n", (int)mean.size(), (int)stddev.size());
-            //printf("Mean: %f, StdDev: %f\n", mean[0], stddev[0]);
-            if(mean[0] > 150 && mean[1] > 150 && mean[2] > 150 && stddev[0] < 25 && stddev[0] < 25 && stddev[0] < 25)
-            { // white
+            if(mean[1] < 90 && mean[2] > 240)
+            { // white ball
                 category = Category::WHITE_BALL;
-                circle(frame, center, radius, Scalar(255, 255, 255), 1, LINE_AA);
+                circle(frameCircle, center, radius, Scalar(255, 255, 255), 1, LINE_AA);
                 rectangle(frameRect, boundRect[i], Scalar(255, 255, 255), 1, LINE_AA);
             }
-            else if(mean[0] < 100 && mean[1] < 100 && mean[2] < 100 && stddev[0] < 30 &&  stddev[1] < 30 &&  stddev[2] < 30)
-            { // black
+            else if(mean[2] < 80)
+            { // black ball
                 category = Category::BLACK_BALL;
-                circle(frame, center, radius, Scalar(0, 0, 0), 1, LINE_AA);
+                circle(frameCircle, center, radius, Scalar(0, 0, 0), 1, LINE_AA);
                 rectangle(frameRect, boundRect[i], Scalar(0, 0, 0), 1, LINE_AA);
             }
-            else if(stddev[0] < 50 && stddev[1] < 50 && stddev[2] < 50)
-            { // full red
+            else if(stddev[0] < 10)
+            { // solid blue
                 category = Category::SOLID_BALL;
-                circle(frame, center, radius, Scalar(0, 0, 255), 1, LINE_AA);
-                rectangle(frameRect, boundRect[i], Scalar(0, 0, 255), 1, LINE_AA);
+                circle(frameCircle, center, radius, Scalar(255, 0, 0), 1, LINE_AA);
+                rectangle(frameRect, boundRect[i], Scalar(255, 0, 0), 1, LINE_AA);
             }
-            else
-            { // half green
+            else if(stddev[0] > 40)
+            { // striped red
                 category = Category::STRIPED_BALL;
-                circle(frame, center, radius, Scalar(0, 255, 0), 1, LINE_AA);
-                rectangle(frameRect, boundRect[i], Scalar(0, 255, 0), 1, LINE_AA);
+                circle(frameCircle, center, radius, Scalar(0, 0, 255), 1, LINE_AA);
+                rectangle(frameRect, boundRect[i], Scalar(0, 0, 255), 1, LINE_AA);
             }
             Ball ball(boundRect[i], category);
             balls.push_back(ball);
         }
     }
-    imshow("detected circles", frame);
+    imshow("detected circles", frameCircle);
     imshow("detected rectangles", frameRect);
 
     waitKey(0);

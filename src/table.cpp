@@ -6,11 +6,11 @@
 #include <utility>
 
 
-cv::Rect Table::getBbox() const {
-	if(bbox_.empty())
+cv::Vec<cv::Point, 4> Table::getBoundaries() const {
+	if(boundaries_ == cv::Vec<cv::Point, 4>{cv::Point{0, 0}, cv::Point{0, 0}, cv::Point{0, 0}, cv::Point{0, 0}})
 		throw std::runtime_error("bbox is uninitialized");
 
-	return bbox_;
+	return boundaries_;
 }
 
 cv::Vec3b Table::getColor() const {
@@ -35,15 +35,15 @@ cv::Ptr<std::vector<Ball>> Table::getBalls() const {
 }
 
 
-void Table::setBbox(cv::Rect bbox) {
-	bbox_ = bbox;
+void Table::setBoundaries(const cv::Vec<cv::Point, 4> &boundaries) {
+	boundaries_ = boundaries;
 }
 
 void Table::setColor(cv::Vec3b color) { // NOLINT(*-unnecessary-value-param)
 	color_ = color;
 }
 
-void Table::setTransform(cv::Mat transform) {
+void Table::setTransform(const cv::Mat &transform) {
 	transform_ = std::move(transform);
 }
 
@@ -62,4 +62,10 @@ void Table::removeBall(int index) {
 
 void Table::clearBalls() {
 	balls_->clear();
+}
+
+
+cv::Rect Table::getBbox() const {   // FIXME implement this based on the boundaries order
+	throw std::runtime_error("Not implemented yet");
+	return cv::Rect();
 }

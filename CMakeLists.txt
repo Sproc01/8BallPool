@@ -13,6 +13,7 @@ add_library(Ball include/ball.h src/ball.cpp)
 add_library(Table include/table.h src/table.cpp)
 add_library(ObjectDetection include/ObjectDetection.h src/ObjectDetection.cpp)
 #add_library(Tracking include/tracking.h src/tracking.cpp)
+add_library(Transformation include/transformation.h src/transformation.cpp)
 
 add_executable(${PROJECT_NAME} src/main.cpp)
 
@@ -20,14 +21,16 @@ target_link_libraries(${PROJECT_NAME}
         ${OpenCV_LIBS}
         Table
         Ball
-        ObjectDetection)
+        ObjectDetection
+        Transformation)
         #Tracking
         
 
 target_link_libraries(ObjectDetection
         ${OpenCV_LIBS}
         Table
-        Ball)
+        Ball
+        Transformation)
 
 #target_link_libraries(Tracking
  #       ${OpenCV_LIBS})

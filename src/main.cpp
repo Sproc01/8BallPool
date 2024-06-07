@@ -28,6 +28,7 @@ int main()
 	detectBalls(frame, balls);  // TODO change to table.getBalls()
 
 
+	waitKey();
 	return 0;
 
     while (vid.isOpened())  // work on middle frames

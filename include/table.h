@@ -11,31 +11,33 @@
 
 
 class Table {
-	cv::Rect bbox_;
+	cv::Vec<cv::Point, 4> boundaries_;  // TODO define order of points
 	cv::Vec3b color_;
 	cv::Mat transform_;
-	std::vector<Ball> balls_;
+	cv::Ptr<std::vector<Ball>> balls_;
 
 public:
-	Table(cv::Rect bbox, cv::Vec3b color, cv::Mat transform, std::vector<Ball> balls): bbox_(bbox), color_(color), transform_(transform), balls_(balls) {}
-	Table(cv::Rect bbox, cv::Vec3b color, cv::Mat transform): bbox_(bbox), color_(color), transform_(transform), balls_(std::vector<Ball>()) {}
-	Table(cv::Rect bbox, cv::Vec3b color): bbox_(bbox), color_(color), transform_(cv::Mat::eye(3, 3, CV_64F)), balls_(std::vector<Ball>()) {}
-	Table(cv::Rect bbox): bbox_(bbox), color_(cv::Vec3b(0, 0, 0)), transform_(cv::Mat::eye(3, 3, CV_64F)), balls_(std::vector<Ball>()) {}
-	Table(): bbox_(cv::Rect(0, 0, 0, 0)), color_(cv::Vec3b(0, 0, 0)), transform_(cv::Mat::eye(3, 3, CV_64F)), balls_(std::vector<Ball>()) {}
+	Table(cv::Vec<cv::Point, 4> boundaries, cv::Vec3b color, cv::Mat transform, cv::Ptr<std::vector<Ball>> balls): boundaries_(boundaries), color_(color), transform_(transform), balls_(balls) {}
+	Table(cv::Vec<cv::Point, 4> boundaries, cv::Vec3b color, cv::Mat transform): boundaries_(boundaries), color_(color), transform_(transform), balls_(cv::Ptr<std::vector<Ball>>()) {}
+	Table(cv::Vec<cv::Point, 4> boundaries, cv::Vec3b color): boundaries_(boundaries), color_(color), transform_(cv::Mat::eye(3, 3, CV_64F)), balls_(cv::Ptr<std::vector<Ball>>()) {}
+	Table(cv::Vec<cv::Point, 4> boundaries): boundaries_(boundaries), color_(cv::Vec3b(0, 0, 0)), transform_(cv::Mat::eye(3, 3, CV_64F)), balls_(cv::Ptr<std::vector<Ball>>()) {}
+	Table(): boundaries_(cv::Vec<cv::Point, 4>{cv::Point{0, 0}, cv::Point{0, 0}, cv::Point{0, 0}, cv::Point{0, 0}}), color_(cv::Vec3b(0, 0, 0)), transform_(cv::Mat::eye(3, 3, CV_64F)), balls_(cv::Ptr<std::vector<Ball>>()) {}
 
-	cv::Rect getBbox() const;
+	cv::Vec<cv::Point, 4> getBoundaries() const;
 	cv::Vec3b getColor() const;
 	cv::Mat getTransform() const;
-	std::vector<Ball> getBalls() const;
+	cv::Ptr<std::vector<Ball>> getBalls() const;
 
-	void setBbox(cv::Rect bbox);
+	void setBoundaries(const cv::Vec<cv::Point, 4> &boundaries);
 	void setColor(cv::Vec3b color);
-	void setTransform(cv::Mat transform);
-	void setBalls(std::vector<Ball> balls);
+	void setTransform(const cv::Mat &transform);
+	void setBalls(cv::Ptr<std::vector<Ball>> balls);
 
 	void addBall(Ball ball);
 	void removeBall(int index);
 	void clearBalls();
+
+	cv::Rect getBbox() const;
 };
 
 

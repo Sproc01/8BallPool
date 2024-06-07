@@ -30,15 +30,24 @@ int main()
 		return -1;
 	}
 	imshow("First frame", frame);
+	table = Table();
 	detectTable(frame, tableCorners);
     segmentTable(frame, tableCorners, segmented);
     //imshow("segmentedTable", segmented);
-	detectBalls(frame, balls, tableCorners); // TODO change to table.getBalls()
+	detectBalls(frame, balls, tableCorners);
     segmentBalls(segmented, balls, segmented);
     //imshow("segmentedBalls", segmented);
-    waitKey(0);
-    return 0;
+
+	for(auto ball : balls){ // TODO remove this
+		table.addBall(ball);
+	}
+
 	BallTracker tracker = BallTracker(table.getBallsPtr());
+	tracker.trackAll(frame);
+
+    waitKey(0);
+
+    return 0;
 
     // while (vid.isOpened())  // work on middle frames
     // {
@@ -62,17 +71,6 @@ int main()
     //     break;
 
     // }
-
-        // if frame is read correctly ret is True
-        if (!ret)
-        {
-            printf("Can't receive frame (stream end?). Exiting ... maybe end of file\n");
-            break;
-        }
-        imshow("frame", frame);
-        detectTable(frame);
-        detectBalls(frame, balls);
-    }
 
 	// TODO work on last frame
 

@@ -20,10 +20,10 @@ class Table {
 
 public:
 	Table(cv::Vec<cv::Point, 4> boundaries, cv::Vec3b color, cv::Mat transform, std::vector<Ball> &balls): boundaries_(boundaries), color_(color), transform_(transform), balls_(new std::vector<Ball>(balls)) {}
-	Table(cv::Vec<cv::Point, 4> boundaries, cv::Vec3b color, cv::Mat transform): boundaries_(boundaries), color_(color), transform_(transform), balls_(cv::Ptr<std::vector<Ball>>()) {}
-	Table(cv::Vec<cv::Point, 4> boundaries, cv::Vec3b color): boundaries_(boundaries), color_(color), transform_(cv::Mat::eye(3, 3, CV_64F)), balls_(cv::Ptr<std::vector<Ball>>()) {}
-	Table(cv::Vec<cv::Point, 4> boundaries): boundaries_(boundaries), color_(cv::Vec3b(0, 0, 0)), transform_(cv::Mat::eye(3, 3, CV_64F)), balls_(cv::Ptr<std::vector<Ball>>()) {}
-	Table(): boundaries_(cv::Vec<cv::Point, 4>{cv::Point{0, 0}, cv::Point{0, 0}, cv::Point{0, 0}, cv::Point{0, 0}}), color_(cv::Vec3b(0, 0, 0)), transform_(cv::Mat::eye(3, 3, CV_64F)), balls_(cv::Ptr<std::vector<Ball>>()) {}
+	Table(cv::Vec<cv::Point, 4> boundaries, cv::Vec3b color, cv::Mat transform): boundaries_(boundaries), color_(color), transform_(transform), balls_(new std::vector<Ball>{}) {}  // TODO verify if it is correct to initialize balls_ like this
+	Table(cv::Vec<cv::Point, 4> boundaries, cv::Vec3b color): boundaries_(boundaries), color_(color), transform_(cv::Mat::eye(3, 3, CV_64F)), balls_(new std::vector<Ball>{}) {}
+	Table(cv::Vec<cv::Point, 4> boundaries): boundaries_(boundaries), color_(cv::Vec3b(0, 0, 0)), transform_(cv::Mat::eye(3, 3, CV_64F)), balls_(new std::vector<Ball>{}) {}
+	Table(): boundaries_(cv::Vec<cv::Point, 4>{cv::Point{0, 0}, cv::Point{0, 0}, cv::Point{0, 0}, cv::Point{0, 0}}), color_(cv::Vec3b(0, 0, 0)), transform_(cv::Mat::eye(3, 3, CV_64F)), balls_(new std::vector<Ball>{}) {}
 
 	cv::Vec<cv::Point, 4> getBoundaries() const;
 	cv::Vec3b getColor() const;

@@ -25,6 +25,7 @@ int main()
 		return -1;
 	}
 	imshow("First frame", frame);
+	// TODO init table and balls (`new std::vector<Ball>`)
 	detectTable(frame);
 	detectBalls(frame, table.getBallsPtr());
 	BallTracker tracker = BallTracker(table.getBallsPtr());

@@ -1,4 +1,4 @@
-#include "segment.h"
+#include "segmentation.h"
 #include "ball.h"
 #include "table.h"
 #include <opencv2/opencv.hpp>
@@ -34,6 +34,6 @@ void segmentBalls(const Mat &frame, const vector<Ball> &balls, Mat& segmented)
         radius = b.width / 2;
         center = Point(b.tl().x + radius, b.tl().y + radius);
         circle(frame, center, radius, c, -1);
-        
+
     }
 }

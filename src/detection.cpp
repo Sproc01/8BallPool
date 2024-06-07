@@ -125,7 +125,7 @@ void detectTable(const Mat &frame, vector<Point> &corners)
 
     // mask the image
 	cvtColor(frame, thisImg, COLOR_BGR2HSV);
-	inRange(thisImg, Scalar(colorRange[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD), 
+	inRange(thisImg, Scalar(colorRange[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
                 Scalar(colorRange[1], 255, 255), mask);
 	//imshow("Mask", mask);
 
@@ -149,7 +149,7 @@ void detectTable(const Mat &frame, vector<Point> &corners)
     float aLine, bLine, cLine;
     for(size_t i = 0; i < lines.size(); i++)
     {
-        pt1.x = lines[i][0]; 
+        pt1.x = lines[i][0];
         pt1.y = lines[i][1];
         pt2.x = lines[i][2];
         pt2.y = lines[i][3];
@@ -157,7 +157,7 @@ void detectTable(const Mat &frame, vector<Point> &corners)
         equationFormula(pt1.x, pt1.y, pt2.x, pt2.y, aLine, bLine, cLine);
         coefficients.push_back(Vec3f(aLine, bLine, cLine));
     }
-    
+
     // find intersections
     for(size_t i = 0; i < coefficients.size(); i++)
     {
@@ -177,7 +177,7 @@ void detectTable(const Mat &frame, vector<Point> &corners)
         Point center = Point(frame.cols/2, frame.rows/2);
         return norm(a) < norm(b);
     });
-    auto end2 = unique(intersections.begin(), intersections.end(), [](Point a, Point b) -> bool
+    auto end2 = unique(intersections.begin(), intersections.end(), [&CLOSE_POINT_THRESHOLD](Point a, Point b) -> bool
     {
         return abs(a.x - b.x) < CLOSE_POINT_THRESHOLD && abs(a.y - b.y) < CLOSE_POINT_THRESHOLD;
     });
@@ -244,7 +244,7 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const vector<Point> &tab
     int minX = min(tableCorners[0].x, tableCorners[1].x);
     gray = gray.rowRange(minY, maxY).colRange(minX, maxX);
     imshow("Cropped image", gray);
-    HoughCircles(gray, circles, HOUGH_GRADIENT, 
+    HoughCircles(gray, circles, HOUGH_GRADIENT,
                     ACCUMULATOR_RESOLUTION, MIN_DISTANCE, HOUGH_PARAM1, HOUGH_PARAM2, MIN_RADIUS, MAX_RADIUS);
     vector<Vec3f> circlesFiltered;
     Mat subImg;

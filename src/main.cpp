@@ -6,13 +6,17 @@
 #include <iostream>
 #include "ball.h"
 #include "table.h"
+#include "tracking.h"
 
 using namespace std;
 using namespace cv;
 
+
+
 int main()
 {
-    vector<Ball> balls;
+    Ptr<vector<Ball>> balls = new vector<Ball>;
+	BallTracker tracker = BallTracker(balls); // TODO think if it is ok to already init here
     VideoCapture vid = VideoCapture("../Dataset/game1_clip1/game1_clip1.mp4");
     Mat frame;
     while (vid.isOpened())
@@ -28,10 +32,12 @@ int main()
         imshow("frame", frame);
         detectTable(frame);
         detectBalls(frame, balls);
+		tracker.trackAll(frame);
         //if (waitKey(0) == 'q')
         break;
 
     }
     //Pipeline etc
+	waitKey();
     return 0;
 }

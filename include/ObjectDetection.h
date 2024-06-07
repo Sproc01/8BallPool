@@ -8,6 +8,6 @@
 #include "table.h"
 
 void detectTable(cv::Mat &frame);
-void detectBalls(cv::Mat &frame, std::vector<Ball> &balls);
+void detectBalls(cv::Mat &frame, cv::Ptr<std::vector<Ball>> balls);
 
 #endif // OBJECTDETECTION_H

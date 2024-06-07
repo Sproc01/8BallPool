@@ -113,7 +113,7 @@ void detectTable(cv::Mat &frame)
     // waitKey(0);
 }
 
-void detectBalls(cv::Mat &frame, std::vector<Ball> &balls)
+void detectBalls(cv::Mat &frame, cv::Ptr<std::vector<Ball>> balls)
 {
     Mat gray, gradX, gradY, abs_grad_x, abs_grad_y, grad, imgBorder;
     cvtColor(frame, gray, COLOR_BGR2GRAY);
@@ -188,7 +188,7 @@ void detectBalls(cv::Mat &frame, std::vector<Ball> &balls)
                 rectangle(frameRect, boundRect[i], Scalar(0, 255, 0), 1, LINE_AA);
             }
             Ball ball(boundRect[i], category);
-            balls.push_back(ball);
+            balls->push_back(ball);
         }
     }
     imshow("detected circles", frame);

@@ -3,7 +3,18 @@
 #include "tracking.h"
 #include "ball.h"
 #include <opencv2/tracking.hpp>
+#include <iostream>
 
+
+BallTracker::BallTracker(cv::Ptr<std::vector<Ball>> balls) { // NOLINT(*-unnecessary-value-param)
+	std::cout<<"constructor balltracker"<<std::endl;
+	isInitialized_ = false;
+
+	ballsVec_ = balls;
+
+//	ballsVec_.shrink_to_fit();
+	ballTrackers_.reserve(ballsVec_->size());   // TODO at the moment this is useless
+}
 
 
 void BallTracker::createTrackers() {
@@ -13,16 +24,7 @@ void BallTracker::createTrackers() {
 	}
 
 	ballTrackers_.shrink_to_fit();
-}
-
-
-BallTracker::BallTracker(cv::Ptr<std::vector<Ball>> balls) { // NOLINT(*-unnecessary-value-param)
-	isInitialized_ = false;
-
-	ballsVec_ = balls;
-
-//	ballsVec_.shrink_to_fit();
-	ballTrackers_.reserve(ballsVec_->size());
+	std::cout<<"trackers created"<<std::endl;
 }
 
 
@@ -30,21 +32,25 @@ cv::Rect BallTracker::trackOne(unsigned short ballIndex, const cv::Mat &frame, b
 	cv::Rect bbox = ballsVec_->at(ballIndex).getBbox();
 	ballsVec_->at(ballIndex).setBbox_prec(bbox);
 
+	bool isBboxUpdated = false;
+
 	if (callInit) {
 		ballTrackers_[ballIndex]->init(frame, bbox);
+	} else {
+		isBboxUpdated = ballTrackers_[ballIndex]->update(frame, bbox);
+		ballsVec_->at(ballIndex).setBbox(bbox);
 	}
+	std::cout<< "Ball " << ballIndex << " updated? " << isBboxUpdated << " current bbox: " << bbox << std::endl;
 
-	bool isBboxUpdated = ballTrackers_[ballIndex]->update(frame, bbox);
-	ballsVec_->at(ballIndex).setBbox(bbox);
 	return bbox;
 
-//		std::cout<< "Ball " << ballIndex << " updated? " << isBboxUpdated << " current bbox: " << bbox << std::endl;
 
 //		return cv::Point(bbox.x + bbox.width / 2, bbox.y + bbox.height / 2);
 }
 
 
 cv::Ptr<std::vector<Ball>> BallTracker::trackAll(const cv::Mat &frame) {
+	std::cout<<"trackAll, initialized: "<<isInitialized_<<std::endl;
 	if (!isInitialized_) {
 		createTrackers();
 	}

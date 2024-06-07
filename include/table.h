@@ -28,12 +28,11 @@ public:
 	cv::Vec<cv::Point, 4> getBoundaries() const;
 	cv::Vec3b getColor() const;
 	cv::Mat getTransform() const;
-	cv::Ptr<std::vector<Ball>> getBalls() const;
+	cv::Ptr<std::vector<Ball>> getBallsPtr();
 
 	void setBoundaries(const cv::Vec<cv::Point, 4> &boundaries);
 	void setColor(cv::Vec3b color);
 	void setTransform(const cv::Mat &transform);
-	void setBalls(cv::Ptr<std::vector<Ball>> balls);
 
 	void addBall(Ball ball);
 	void removeBall(int index);

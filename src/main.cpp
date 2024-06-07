@@ -26,8 +26,8 @@ int main()
 	}
 	imshow("First frame", frame);
 	detectTable(frame);
-	detectBalls(frame, table.getBalls());
-	BallTracker tracker = BallTracker(table.getBalls());
+	detectBalls(frame, table.getBallsPtr());
+	BallTracker tracker = BallTracker(table.getBallsPtr());
 
 
 	waitKey();
@@ -45,7 +45,7 @@ int main()
         }
         imshow("frame", frame);
         detectTable(frame);
-        detectBalls(frame, table.getBalls());
+        detectBalls(frame, table.getBallsPtr());
     }
 
 	// TODO work on last frame

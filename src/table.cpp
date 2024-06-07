@@ -4,7 +4,7 @@
 
 #include <stdexcept>
 #include <utility>
-
+#include <iostream>
 
 cv::Vec<cv::Point, 4> Table::getBoundaries() const {
 	if(boundaries_ == cv::Vec<cv::Point, 4>{cv::Point{0, 0}, cv::Point{0, 0}, cv::Point{0, 0}, cv::Point{0, 0}})
@@ -27,9 +27,12 @@ cv::Mat Table::getTransform() const {
 	return transform_;
 }
 
-cv::Ptr<std::vector<Ball>> Table::getBalls() const {
-	if (balls_.empty())
-		throw std::runtime_error("balls is uninitialized");
+/*
+ * Returns a cv::Ptr (shared pointer) to the vector of balls.
+ */
+cv::Ptr<std::vector<Ball>> Table::getBallsPtr() { // TODO is it ok to let the pointer be managed outside?
+	if (balls_->empty())
+		std::cout<<"There are no balls! (pointer returned anyway)"<<std::endl;
 
 	return balls_;
 }
@@ -45,10 +48,6 @@ void Table::setColor(cv::Vec3b color) { // NOLINT(*-unnecessary-value-param)
 
 void Table::setTransform(const cv::Mat &transform) {
 	transform_ = std::move(transform);
-}
-
-void Table::setBalls(cv::Ptr<std::vector<Ball>> balls) { // NOLINT(*-unnecessary-value-param)
-	balls_ = balls; // TODO check if it's a copy or a reference (copy constructor? use std::move?)
 }
 
 

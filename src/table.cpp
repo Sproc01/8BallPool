@@ -46,7 +46,7 @@ void Table::setColor(cv::Vec3b color) { // NOLINT(*-unnecessary-value-param)
 	color_ = color;
 }
 
-void Table::setTransform(const cv::Mat &transform) {
+void Table::setTransform(cv::Mat transform) {
 	transform_ = std::move(transform);
 }
 

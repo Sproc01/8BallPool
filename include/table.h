@@ -32,7 +32,7 @@ public:
 
 	void setBoundaries(const cv::Vec<cv::Point, 4> &boundaries);
 	void setColor(cv::Vec3b color);
-	void setTransform(const cv::Mat &transform);
+	void setTransform(cv::Mat transform);
 
 	void addBall(Ball ball);
 	void removeBall(int index);

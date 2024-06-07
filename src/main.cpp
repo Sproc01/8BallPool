@@ -15,11 +15,24 @@ using namespace cv;
 
 int main()
 {
-    Ptr<vector<Ball>> balls = new vector<Ball>;
-	BallTracker tracker = BallTracker(balls); // TODO think if it is ok to already init here
+	Table table;
     VideoCapture vid = VideoCapture("../Dataset/game1_clip1/game1_clip1.mp4");
     Mat frame;
-    while (vid.isOpened())
+
+	// TODO work on first frame
+	if (!vid.isOpened() || !vid.read(frame)){
+		cout << "Error opening video file" << endl;
+		return -1;
+	}
+	imshow("First frame", frame);
+	detectTable(frame);
+	detectBalls(frame, table.getBalls());
+	BallTracker tracker = BallTracker(table.getBalls());
+
+
+	return 0;
+
+    while (vid.isOpened())  // work on middle frames
     {
         bool ret = vid.read(frame);
 
@@ -31,13 +44,11 @@ int main()
         }
         imshow("frame", frame);
         detectTable(frame);
-        detectBalls(frame, balls);
-		tracker.trackAll(frame);
-        //if (waitKey(0) == 'q')
-        break;
-
+        detectBalls(frame, table.getBalls());
     }
-    //Pipeline etc
+
+	// TODO work on last frame
+
 	waitKey();
     return 0;
 }

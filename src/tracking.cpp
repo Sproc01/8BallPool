@@ -13,7 +13,7 @@ BallTracker::BallTracker(cv::Ptr<std::vector<Ball>> balls) { // NOLINT(*-unneces
 	ballsVec_ = balls;
 
 //	ballsVec_.shrink_to_fit();
-	ballTrackers_.reserve(ballsVec_->size());   // TODO at the moment this is useless
+	ballTrackers_.reserve(ballsVec_->size());
 }
 
 

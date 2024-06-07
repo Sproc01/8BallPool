@@ -12,10 +12,25 @@ using namespace cv;
 
 int main()
 {
+	Table table;
     vector<Ball> balls;
     VideoCapture vid = VideoCapture("../Dataset/game1_clip1/game1_clip1.mp4");
     Mat frame;
-    while (vid.isOpened())
+
+	// TODO work on first frame
+	if (!vid.isOpened() || !vid.read(frame)){
+		cout << "Error opening video file" << endl;
+		return -1;
+	}
+
+	imshow("First frame", frame);
+	detectTable(frame);
+	detectBalls(frame, balls);  // TODO change to table.getBalls()
+
+
+	return 0;
+
+    while (vid.isOpened())  // work on middle frames
     {
         bool ret = vid.read(frame);
 
@@ -28,10 +43,9 @@ int main()
         imshow("frame", frame);
         detectTable(frame);
         detectBalls(frame, balls);
-        //if (waitKey(0) == 'q')
-        break;
-
     }
-    //Pipeline etc
+
+	// TODO work on last frame
+
     return 0;
 }

@@ -3,10 +3,13 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
 #include <iostream>
+
 #include "ball.h"
 #include "table.h"
 #include "detection.h"
 #include "segmentation.h"
+#include "transformation.h"
+//#include "minimapConstants.h"
 
 using namespace std;
 using namespace cv;
@@ -28,12 +31,22 @@ int main()
 	}
 
 	imshow("First frame", frame);
-	detectTable(frame, tableCorners);
+	table = detectTable(frame, tableCorners);
     segmentTable(frame, tableCorners, segmented);
     //imshow("segmentedTable", segmented);
 	detectBalls(frame, balls, tableCorners); // TODO change to table.getBalls()
+	table.setBalls(&balls);
     segmentBalls(segmented, balls, segmented);
     //imshow("segmentedBalls", segmented);
+
+	//TODO: use minimapConstants
+	Mat minimap = imread("../img/minimap.png");
+	//imshow("minimap", minimap);
+
+	//create minimap with balls
+	Mat minimap_with_balls = minimapWithBalls(minimap, table, frame);
+	imshow("Minimap with balls", minimap_with_balls);
+
     waitKey(0);
     return 0;
 

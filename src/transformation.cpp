@@ -1,8 +1,7 @@
 // Author: Michela Schibuola
 
-#include <opencv2/opencv.hpp>
 #include "transformation.h"
-#include "ObjectDetection.h"
+#include "detection.h"
 #include "minimapConstants.h"
 
 using namespace cv;
@@ -10,7 +9,7 @@ using namespace std;
 
 //TODO: it is duplicated, also in tableOrientation
 // Return the center point between two points
-Point getCenter(Point p1, Point p2) {
+Point getCenter2(Point p1, Point p2) {
     Point center;
     int dx_half = abs(p1.x - p2.x)/2;
     int dy_half = abs(p1.y - p2.y)/2;
@@ -23,32 +22,63 @@ Point getCenter(Point p1, Point p2) {
 }
 
 //compute the transformation matrix as product of rotation and perspective
-Mat computeTransformation(Table table) {
-    Vec<Point, 4> img_vertices =  table.getBoundaries();
-
-    //compute rotation transform
-    double slope = (img_vertices[1].y - img_vertices[0].y) / (double)(img_vertices[1].x - img_vertices[0].x);
-    Point center = getCenter(img_vertices[0], img_vertices[2]);
-    Mat rotationTransform = getRotationMatrix2D(center, slope, 1);
-
+//TODO: use table or the set of edges as parameter?
+Mat computeTransformation(Table table, Mat &frame) {
+    //TODO: set all Point to Point2f??
+    //convert vertices vector to vector of Point2f (needed for getPerspectiveTransform)
+    vector<Point2f> map_vertices = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
+    vector<Point2f> img_vertices (4);
+    Vec<Point, 4> img_vertices_temp = table.getBoundaries();
+    for(int i = 0; i < 4; i++) {
+        img_vertices[i].x = (float)img_vertices_temp[i].x;
+        img_vertices[i].y = (float)img_vertices_temp[i].y;
+    }
     //compute perspective transform
-    Vec<Point, 4> map_vertices = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
-    Mat perspectiveTransform = getPerspectiveTransform	(img_vertices, map_vertices);
+    Mat perspectiveTransformMat = getPerspectiveTransform	(img_vertices, map_vertices);
 
-    return rotationTransform * perspectiveTransform;
+    return perspectiveTransformMat;
+}
+
+void showImgWithTransform(Mat frame, Mat transform, Table table) {
+    //TODO: remove this, should be already in table (float points)
+    vector<Point2f> img_vertices (4);
+    Vec<Point, 4> img_vertices_temp = table.getBoundaries();
+    for(int i = 0; i < 4; i++) {
+        img_vertices[i].x = (float)img_vertices_temp[i].x;
+        img_vertices[i].y = (float)img_vertices_temp[i].y;
+    }
+
+    //show frame perspective
+    Mat frame_perspective;
+    warpPerspective(frame, frame_perspective, transform,
+        Size(frame.cols, frame.rows));
+    imshow("Frame perspective", frame_perspective);
+    //waitKey(0);
+
+    //show frame perspective cropped
+    vector<Point2f> img_vertices_perspective (4);
+    perspectiveTransform(img_vertices, img_vertices_perspective, transform);
+    frame_perspective = frame_perspective.rowRange(img_vertices_perspective[0].y, img_vertices_perspective[3].y)
+                                            .colRange(img_vertices_perspective[0].x, img_vertices_perspective[1].x);
+    imshow("Frame perspective cropped", frame_perspective);
+    //waitKey(0);
 }
 
 //compute the positions of the balls in the minimap
-vector<Point> computeBallsPositions(vector<Ball> &balls, Mat &transform) {
-    vector<Point> map_balls;
+vector<Point2f> computeBallsPositions(vector<Ball> &balls, Mat &transform) {
+    vector<Point2f> map_balls;
+    vector<Point2f> balls_positions (balls.size());
+    for(int i = 0; i < balls.size(); i++) {
+        balls_positions[i] = balls[i].getBBoxCenter();
+    }
 
-    cv::transform(balls, map_balls, transform);
+    perspectiveTransform(balls_positions, map_balls, transform);
 
     return map_balls;
 }
 
 //given the ball positions and the minimap draw the balls with their category color
-void drawBallsOnMap(Mat &map_img, vector<Point> balls_map, vector<Ball> balls) {
+void drawBallsOnMap(Mat &map_img, vector<Point2f> balls_map, vector<Ball> balls) {
 
     //TODO: see if the position is correct (or if it starts from the top left of the image without considering the border
     Point position;
@@ -79,4 +109,14 @@ void drawBallsOnMap(Mat &map_img, vector<Point> balls_map, vector<Ball> balls) {
         circle(map_img, position, MAP_BALL_RADIUS, color, -1);
     }
 }
+
+Mat minimapWithBalls(Mat minimap, Table table, Mat frame) {
+    table.setTransform(computeTransformation(table, frame));
+    //showImgWithTransform(frame, table.getTransform(), table);
+    vector<Point2f> ball_in_map = computeBallsPositions(*(table.getBalls()), table.getTransform());
+    drawBallsOnMap(minimap, ball_in_map, *(table.getBalls()));
+
+    return minimap;
+}
+
 

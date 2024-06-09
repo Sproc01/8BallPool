@@ -7,7 +7,8 @@ using namespace cv;
 using namespace std;
 
 struct Edge{
-    Point corners[2];
+    Point corner1;
+    Point corner2;
     Point center;
     Rect center_rect;
     double backgroud_percentile;
@@ -34,77 +35,90 @@ Point getCenter(Point p1, Point p2) {
 }
 
 //Return the percentile of pixels in the color_range within the rectangle in the image
-double computePercentile(Mat &frame, Rect rect, Vec3b color_range) {
-    int count = 0;
+double computeTablePercentile(Mat &mask_img, Rect rect) {
+    double count = 0;
     for(int x = rect.x; x < rect.x + rect.width; x++) {
         for(int y = rect.y; y < rect.y + rect.height; y++) {
-            //TODO: fix backgroud color range and how to compute it
-            /*
-            if(frame.at<Vec3d>(x, y) >= Scalar(color_range[0], 50, 90)
-                && frame.at<Vec3d>(x, y) <= Scalar(color_range[1], 255, 255)) {
+            if(mask_img.at<uchar>(y, x) == 255) {
                 count++;
                 }
-            */
         }
     }
     return count/rect.area();
 }
 
-
-void orderTableCornersByOrientation(Mat &frame, Vec<Point, 4> &corners, Vec3d background_color){
+//TODO: must be called after transformation otherwise the centers are not correct
+void orderTableCornersByOrientation(Mat frame, Vec<Point, 4> &corners, Vec2b background_color){
 
     //compute the centers of each table edge
-    vector<Edge> edges;
+    vector<Edge> edges(4);
 
     int next_corner;
     for(int i = 0; i < 4; i++) {
         next_corner = i+1;
         if(i == 3)
             next_corner = 0;
-        edges[i].corners[0] = corners[i];
-        edges[i].corners[1] = corners[next_corner];
+        edges[i].corner1 = corners[i];
+        edges[i].corner2 = corners[next_corner];
     }
 
-    for(Edge edge : edges) {
-        edge.center = getCenter(edge.corners[0], edge.corners[1]);
+    for(int i = 0; i < 4; i++) {
+        edges[i].center = getCenter(edges[i].corner1, edges[i].corner2);
     }
 
     //compute the rects around the centers shifted more to the center of the table
-    const int rect_width = 10;
-    const int rect_height = 10;
+    //TODO: rect width and height fixed?
+    const int rect_width = 40;
+    const int rect_height = 40;
 
-    for(Edge edge : edges) {
-        edge.center_rect = Rect(edge.center.x, edge.center.y - rect_height/2, rect_width, rect_height);
+    for(int i = 0; i < 4; i++) {
+        edges[i].center_rect = Rect(edges[i].center.x - rect_width/2, edges[i].center.y - rect_height/2, rect_width, rect_height);
     }
+
+    //print the rectangles on the pools
+    Mat img_pools_rectangles = frame.clone();
+    for(int i = 0; i < 4; i++) {
+        rectangle(img_pools_rectangles, edges[i].center_rect, Scalar(0, 0, 255), 1, LINE_AA);
+    }
+    //imshow("Rectangles on pools", img_pools_rectangles);
+
+    //TODO: apply perspective transformation to apply centers
+
+    // mask the image
+    Mat mask_img;
+    Mat frameHSV;
+    cvtColor(frame, frameHSV, COLOR_BGR2HSV);
+    inRange(frameHSV, Scalar(background_color[0], 50, 90),
+                Scalar(background_color[1], 255, 255), mask_img);
+    //imshow("Mask img", mask_img);
 
     //compute the rects with and without the pools
     //compute the percentile of rectangle with color close to the table background
-    //TODO: fix backgroud_color to use directly its range
-    for(Edge edge : edges) {
-        edge.backgroud_percentile = computePercentile(frame, edge.center_rect, background_color);
+    for(int i = 0; i < 4; i++) {
+        edges[i].backgroud_percentile = computeTablePercentile(mask_img, edges[i].center_rect);
     }
 
     //order the edges by the percentile of background in the rectangle around the center of the edge
     vector<Edge> ordered_edges = edges;
-    sort(edges.begin(), edges.end(), compareByPercentile);
+    sort(ordered_edges.begin(), ordered_edges.end(), compareByPercentile);
 
     //edges[0] and edges[1] are the longest edges
-    //edges[2] and edges[3] are the shortes edges
+    //edges[2] and edges[3] are the shortest edges
 
     //pick the corner more on the left of the image
-    if(edges[0].corners[0].x < edges[1].corners[0].x) {
+    if(edges[0].corner1.x < edges[1].corner1.x) {
         //edges[0].corners[0] is the corner to be put first
-        corners[0] = edges[0].corners[0];
-        corners[1] = edges[0].corners[1];
+        corners[0] = edges[0].corner1;
+        corners[1] = edges[0].corner2;
         for(int i = 0; i < edges.size(); i++) {
-            if(edges[i].corners[0] == corners[1]) {
-                corners[2] = edges[i].corners[1];
+            if(edges[i].corner1 == corners[1]) {
+                corners[2] = edges[i].corner2;
                 break;
             }
         }
         for(int i = 0; i < edges.size(); i++) {
-            if(edges[i].corners[0] == corners[2]) {
-                corners[3] = edges[i].corners[1];
+            if(edges[i].corner1 == corners[2]) {
+                corners[3] = edges[i].corner2;
                 break;
             }
         }
@@ -112,21 +126,29 @@ void orderTableCornersByOrientation(Mat &frame, Vec<Point, 4> &corners, Vec3d ba
     }
     else {
         //edges[1].corners[0] is the corner to be put first
-        corners[0] = edges[1].corners[0];
-        corners[1] = edges[1].corners[1];
+        corners[0] = edges[1].corner1;
+        corners[1] = edges[1].corner2;
         for(int i = 0; i < edges.size(); i++) {
-            if(edges[i].corners[0] == corners[1]) {
-                corners[2] = edges[i].corners[1];
+            if(edges[i].corner1 == corners[1]) {
+                corners[2] = edges[i].corner2;
                 break;
             }
         }
         for(int i = 0; i < edges.size(); i++) {
-            if(edges[i].corners[0] == corners[2]) {
-                corners[3] = edges[i].corners[1];
+            if(edges[i].corner1 == corners[2]) {
+                corners[3] = edges[i].corner2;
                 break;
             }
         }
     }
 
-    //TODO: check if the results are correct (not sure on the tecnique used)
+    Mat img_ordered_corners = frame.clone();
+    //blue, green, red, other
+    vector<Scalar> colors = {Scalar(255, 0, 0), Scalar(0, 255, 0), Scalar(0, 0, 255), Scalar(255, 255, 0)};
+    for(size_t i = 0; i < 4; i++)
+    {
+        circle(img_ordered_corners, corners[i], 10, colors[i], -1);
+    }
+    imshow("Ordered corners", img_ordered_corners);
+    //waitKey(0);
 }

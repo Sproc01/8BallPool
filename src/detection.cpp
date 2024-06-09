@@ -6,6 +6,7 @@
 #include <opencv2/features2d.hpp>
 #include "table.h"
 #include "ball.h"
+#include "tableOrientation.h"
 
 using namespace cv;
 using namespace std;
@@ -100,7 +101,7 @@ Vec2b histogram(const Mat &img)
 }
 
 
-void detectTable(const Mat &frame, vector<Point> &corners)
+Table detectTable(const Mat &frame, vector<Point> &corners)
 {
     // const used during the function
     const int DIM_STRUCTURING_ELEMENT = 27;
@@ -217,6 +218,16 @@ void detectTable(const Mat &frame, vector<Point> &corners)
     }
     imshow("Line", imgLine);
     //waitKey(0);
+
+    Vec<Point, 4> corners_table;
+    for(int i = 0; i < 4; i++) {
+        corners_table[i] = corners[i];
+    }
+
+    //put as first point the top left which is followed by a longer edge clockwise
+    orderTableCornersByOrientation(frame, corners_table, colorRange);
+
+    return Table(corners_table, colorRange);
 }
 
 
@@ -292,5 +303,5 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const vector<Point> &tab
     imshow("detected circles", frameCircle);
     imshow("detected rectangles", frameRect);
 
-    waitKey(0);
+    //waitKey(0);
 }

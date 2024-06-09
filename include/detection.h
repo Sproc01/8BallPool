@@ -7,7 +7,7 @@
 #include "ball.h"
 #include "table.h"
 
-void detectTable(const cv::Mat &frame, std::vector<cv::Point> &tableCorners);
+Table detectTable(const cv::Mat &frame, std::vector<cv::Point> &tableCorners);
 void detectBalls(const cv::Mat &frame, std::vector<Ball> &balls, const std::vector<cv::Point> &tableCorners);
 cv::Vec2b histogram(const cv::Mat &img);
 void intersection(const cv::Vec3f &line1, const cv::Vec3f &line2, cv::Point &intersection);

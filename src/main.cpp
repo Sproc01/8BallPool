@@ -32,7 +32,7 @@ int main()
     segmentTable(frame, tableCorners, segmented);
     //imshow("segmentedTable", segmented);
 	detectBalls(frame, balls, tableCorners); // TODO change to table.getBalls()
-    segmentBalls(segmented, balls, segmented);
+    //segmentBalls(segmented, balls, segmented);
     //imshow("segmentedBalls", segmented);
     waitKey(0);
     return 0;

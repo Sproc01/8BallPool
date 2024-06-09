@@ -224,7 +224,7 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const vector<Point> &tab
 {
     // const used during the function
     const int MIN_RADIUS = 5;
-    const int MAX_RADIUS = 15;
+    const int MAX_RADIUS = 20;
     const int HOUGH_PARAM1 = 110;
     const int HOUGH_PARAM2 = 5;
     const int ACCUMULATOR_RESOLUTION = 1;
@@ -250,47 +250,61 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const vector<Point> &tab
     Mat subImg;
     vector<double> mean, stddev;
     Category category;
-    for( size_t i = 0; i < circles.size(); i++ )
+    // mean of radius
+    double meanRadius = 0;
+    for(size_t i = 0; i < circles.size(); i++)
+    {
+        cout << circles[i][2] << endl;
+        meanRadius += circles[i][2];
+    }
+    meanRadius /= circles.size();
+    cout << "Mean radius: " << meanRadius << endl;
+    Rect rect;
+    for(size_t i = 0; i < circles.size(); i++ )
     {
         Vec3i c = circles[i];
         Point center = Point(c[0] + minX, c[1] + minY);
         int radius = c[2];
-        boundRect.push_back(Rect(center.x-c[2], center.y-c[2], 2*c[2], 2*c[2]));
-        if(c[0]-c[2] > 0 && c[1]-c[2] > 0 && c[0]+c[2] < frame.cols && c[1]+c[2] < frame.rows)
+        if(radius < 1.5 * meanRadius)
         {
-            int halfRad = static_cast<int>(5*c[2]/8);
-            subImg = HSVImg.colRange(c[0]-halfRad, c[0]+halfRad).rowRange(c[1]-halfRad, c[1]+halfRad);
-            meanStdDev(subImg, mean, stddev);
-            if(mean[1] < 90 && mean[2] > 240)
-            { // white ball
-                category = Category::WHITE_BALL;
-                circle(frameCircle, center, radius, Scalar(255, 255, 255), 1, LINE_AA);
-                rectangle(frameRect, boundRect[i], Scalar(255, 255, 255), 1, LINE_AA);
+            rect = Rect(center.x-c[2], center.y-c[2], 2*c[2], 2*c[2]);
+            boundRect.push_back(rect);
+            if(c[0]-c[2] > 0 && c[1]-c[2] > 0 && c[0]+c[2] < frame.cols && c[1]+c[2] < frame.rows)
+            {
+                int halfRad = static_cast<int>(c[2]);
+                subImg = HSVImg.colRange(c[0]-halfRad, c[0]+halfRad).rowRange(c[1]-halfRad, c[1]+halfRad);
+                meanStdDev(subImg, mean, stddev);
+                if(mean[1] < 100 && mean[2] > 190)
+                { // white ball
+                    category = Category::WHITE_BALL;
+                    circle(frameCircle, center, radius, Scalar(255, 255, 255), 1, LINE_AA);
+                    rectangle(frameRect, rect, Scalar(255, 255, 255), 1, LINE_AA);
+                }
+                else if(mean[2] < 80)
+                { // black ball
+                    category = Category::BLACK_BALL;
+                    circle(frameCircle, center, radius, Scalar(0, 0, 0), 1, LINE_AA);
+                    rectangle(frameRect, rect, Scalar(0, 0, 0), 1, LINE_AA);
+                }
+                else if(stddev[0] < 10)
+                { // solid blue
+                    category = Category::SOLID_BALL;
+                    circle(frameCircle, center, radius, Scalar(255, 0, 0), 1, LINE_AA);
+                    rectangle(frameRect, rect, Scalar(255, 0, 0), 1, LINE_AA);
+                }
+                else if(stddev[0] > 40)
+                { // striped red
+                    category = Category::STRIPED_BALL;
+                    circle(frameCircle, center, radius, Scalar(0, 0, 255), 1, LINE_AA);
+                    rectangle(frameRect, rect, Scalar(0, 0, 255), 1, LINE_AA);
+                }
+                Ball ball(rect, category);
+                balls.push_back(ball);
             }
-            else if(mean[2] < 80)
-            { // black ball
-                category = Category::BLACK_BALL;
-                circle(frameCircle, center, radius, Scalar(0, 0, 0), 1, LINE_AA);
-                rectangle(frameRect, boundRect[i], Scalar(0, 0, 0), 1, LINE_AA);
-            }
-            else if(stddev[0] < 10)
-            { // solid blue
-                category = Category::SOLID_BALL;
-                circle(frameCircle, center, radius, Scalar(255, 0, 0), 1, LINE_AA);
-                rectangle(frameRect, boundRect[i], Scalar(255, 0, 0), 1, LINE_AA);
-            }
-            else if(stddev[0] > 40)
-            { // striped red
-                category = Category::STRIPED_BALL;
-                circle(frameCircle, center, radius, Scalar(0, 0, 255), 1, LINE_AA);
-                rectangle(frameRect, boundRect[i], Scalar(0, 0, 255), 1, LINE_AA);
-            }
-            Ball ball(boundRect[i], category);
-            balls.push_back(ball);
-        }
+        }  
     }
     imshow("detected circles", frameCircle);
     imshow("detected rectangles", frameRect);
 
-    waitKey(0);
+    //waitKey(0);
 }

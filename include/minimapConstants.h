@@ -10,10 +10,10 @@
 std::string MINIMAP_PATH = "../img/minimap.png";
 
 //corners of the table in the minimap
-cv::Point TOP_LEFT_MAP_CORNER = cv::Point(80, 78);
-cv::Point TOP_RIGHT_MAP_CORNER = cv::Point(886, 78);
-cv::Point BOTTOM_RIGHT_MAP_CORNER = cv::Point(886, 481);
-cv::Point BOTTOM_LEFT_MAP_CORNER = cv::Point(80, 481);
+cv::Point2f TOP_LEFT_MAP_CORNER = cv::Point2f(80, 78);
+cv::Point2f TOP_RIGHT_MAP_CORNER = cv::Point2f(886, 78);
+cv::Point2f BOTTOM_RIGHT_MAP_CORNER = cv::Point2f(886, 481);
+cv::Point2f BOTTOM_LEFT_MAP_CORNER = cv::Point2f(80, 481);
 
 //radius of the balls on the minimap
 int MAP_BALL_RADIUS = 12;

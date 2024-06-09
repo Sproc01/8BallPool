@@ -225,7 +225,7 @@ Table detectTable(const Mat &frame, vector<Point> &corners)
     }
 
     //put as first point the top left which is followed by a longer edge clockwise
-    orderTableCornersByOrientation(frame, corners_table, colorRange);
+    //orderTableCornersByOrientation(frame, corners_table, colorRange);
 
     return Table(corners_table, colorRange);
 }
@@ -254,7 +254,7 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const vector<Point> &tab
     int maxX = max(tableCorners[2].x, tableCorners[3].x);
     int minX = min(tableCorners[0].x, tableCorners[1].x);
     gray = gray.rowRange(minY, maxY).colRange(minX, maxX);
-    imshow("Cropped image", gray);
+    //imshow("Cropped image", gray);
     HoughCircles(gray, circles, HOUGH_GRADIENT,
                     ACCUMULATOR_RESOLUTION, MIN_DISTANCE, HOUGH_PARAM1, HOUGH_PARAM2, MIN_RADIUS, MAX_RADIUS);
     vector<Vec3f> circlesFiltered;

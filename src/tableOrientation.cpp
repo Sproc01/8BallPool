@@ -48,6 +48,7 @@ double computeTablePercentile(Mat &mask_img, Rect rect) {
 }
 
 //TODO: must be called after transformation otherwise the centers are not correct
+//TODO: see if it is needed for table oriented horizontal in the frame
 void orderTableCornersByOrientation(Mat frame, Vec<Point, 4> &corners, Vec2b background_color){
 
     //compute the centers of each table edge

@@ -5,6 +5,6 @@
 
 #include <opencv2/opencv.hpp>
 
-void orderTableCornersByOrientation(cv::Mat frame, cv::Vec<cv::Point, 4> &corners, cv::Vec2b background_color);
+bool checkHorizontalTable(cv::Mat table_img, cv::Vec<cv::Point2f, 4> &corners);
 
 #endif //TABLEORIENTATION_H

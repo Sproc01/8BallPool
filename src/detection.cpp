@@ -6,7 +6,6 @@
 #include <opencv2/features2d.hpp>
 #include "table.h"
 #include "ball.h"
-#include "tableOrientation.h"
 
 using namespace cv;
 using namespace std;
@@ -223,9 +222,6 @@ Table detectTable(const Mat &frame, vector<Point> &corners)
     for(int i = 0; i < 4; i++) {
         corners_table[i] = corners[i];
     }
-
-    //put as first point the top left which is followed by a longer edge clockwise
-    //orderTableCornersByOrientation(frame, corners_table, colorRange);
 
     return Table(corners_table, colorRange);
 }

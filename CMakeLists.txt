@@ -21,7 +21,7 @@ add_executable(${PROJECT_NAME} src/main.cpp)
 
 target_link_libraries(${PROJECT_NAME}
         ${OpenCV_LIBS}
-		Ball
+        Ball
         Table
        	Detection
        	Segmentation
@@ -30,10 +30,12 @@ target_link_libraries(${PROJECT_NAME}
         Tracking)
 
 
-# target_link_libraries(ObjectDetection
-#         ${OpenCV_LIBS}
-#         Table
-#         Ball)
+add_executable(InteractiveTracking src/testTrackingInteractive.cpp)
+target_link_libraries(InteractiveTracking
+        ${OpenCV_LIBS}
+)
 
-#target_link_libraries(Tracking
- #       ${OpenCV_LIBS})
+add_executable(ShowSegmentationColored src/showSegmentationColored.cpp)
+target_link_libraries(ShowSegmentationColored
+        ${OpenCV_LIBS}
+)

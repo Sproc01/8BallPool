@@ -56,7 +56,7 @@ int main()
 	BallTracker tracker = BallTracker(table.ballsPtr());
 	tracker.trackAll(frame);
 
-
+	waitKey();
 //    return 0;
 
 	while (vid.isOpened()){  // work on middle frames

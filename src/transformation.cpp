@@ -100,7 +100,7 @@ Mat computeTransformation(Table &table, Mat &frame) {
 }
 
 //compute the positions of the balls in the minimap
-vector<Point2f> computeBallsPositions(vector<Ball> &balls, Mat &transform) {
+vector<Point2f> computeBallsPositions(vector<Ball> &balls, const Mat &transform) {
     vector<Point2f> map_balls;
     vector<Point2f> balls_positions (balls.size());
     for(int i = 0; i < balls.size(); i++) {
@@ -146,12 +146,17 @@ void drawBallsOnMap(Mat &map_img, vector<Point2f> balls_map, vector<Ball> balls)
 }
 
 Mat minimapWithBalls(Mat minimap, Table table, Mat frame) {
-    table.setTransform(computeTransformation(table, frame));
-    imgWithTransform(frame, table.getTransform(), table);
-    vector<Point2f> ball_in_map = computeBallsPositions(*(table.getBalls()), table.getTransform());
-    drawBallsOnMap(minimap, ball_in_map, *(table.getBalls()));
+	cv::Mat transform;
+	if (!table.getTransform(transform)) {
+		table.setTransform(computeTransformation(table, frame));
+		table.getTransform(transform);
+	}
+	imgWithTransform(frame, transform, table);
 
-    return minimap;
+	vector<Point2f> ball_in_map = computeBallsPositions(*(table.ballsPtr()), transform);
+	drawBallsOnMap(minimap, ball_in_map, *(table.ballsPtr()));
+
+	return minimap;
 }
 
 

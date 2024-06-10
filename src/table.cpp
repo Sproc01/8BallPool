@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <utility>
 #include <iostream>
+#include <opencv2/core.hpp>
 
 cv::Vec<cv::Point, 4> Table::getBoundaries() const {
 	if(boundaries_ == cv::Vec<cv::Point, 4>{cv::Point{0, 0}, cv::Point{0, 0}, cv::Point{0, 0}, cv::Point{0, 0}})
@@ -14,23 +15,26 @@ cv::Vec<cv::Point, 4> Table::getBoundaries() const {
 }
 
 cv::Vec2b Table::getColor() const {
-	if (color_ == cv::Vec2b(0, 0))   // black(0,0,0) = uninitialized
+	if (colorRange_ == cv::Vec2b(0, 0))   // black(0,0,0) = uninitialized
 		throw std::runtime_error("color is uninitialized");
 
-	return color_;
+	return colorRange_;
 }
 
-cv::Mat Table::getTransform() const {
-	if (transform_.empty())
-		throw std::runtime_error("transform is uninitialized");
+bool Table::getTransform(cv::Mat &transformMatrix) const {
+	if (!cv::norm(transform_, cv::Mat::eye(3, 3, CV_64F), cv::NORM_L1))
+		return false;
+//		throw std::runtime_error("transform is uninitialized");
 
-	return transform_;
+	transformMatrix = transform_;
+
+	return true;
 }
 
 /*
  * Returns a cv::Ptr (shared pointer) to the vector of balls.
  */
-cv::Ptr<std::vector<Ball>> Table::getBallsPtr() { // TODO is it ok to let the pointer be managed outside?
+cv::Ptr<std::vector<Ball>> Table::ballsPtr() { // TODO is it ok to let the pointer be managed outside?
 	if (balls_->empty())
 		std::cout<<"There are no balls! (pointer returned anyway)"<<std::endl;
 
@@ -43,10 +47,10 @@ void Table::setBoundaries(const cv::Vec<cv::Point, 4> &boundaries) {
 }
 
 void Table::setColor(cv::Vec2b color) { // NOLINT(*-unnecessary-value-param)
-	color_ = color;
+	colorRange_ = color;
 }
 
-void Table::setTransform(cv::Mat transform) {
+void Table::setTransform(const cv::Mat &transform) {
 	transform_ = std::move(transform);
 }
 
@@ -57,6 +61,12 @@ void Table::addBall(Ball ball) {
 
 void Table::removeBall(int index) {
 	balls_->erase(balls_->begin() + index);
+}
+
+void Table::addBalls(const std::vector<Ball> &balls) {
+	for (auto &ball : balls){
+		addBall(ball);
+	}
 }
 
 void Table::clearBalls() {

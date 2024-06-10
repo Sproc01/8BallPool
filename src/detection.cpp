@@ -293,6 +293,7 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const vector<Point> &tab
                 rectangle(frameRect, boundRect[i], Scalar(0, 0, 255), 1, LINE_AA);
             }
             Ball ball(boundRect[i], category);
+	        putText(frameCircle, to_string(balls.size()), center, FONT_HERSHEY_SIMPLEX, 0.5, Scalar(255, 255, 255), 1);
             balls.push_back(ball);
         }
     }

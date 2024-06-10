@@ -27,6 +27,13 @@ void BallTracker::createTrackers() {
 	std::cout<<"trackers created"<<std::endl;
 }
 
+void enlargeRect(cv::Rect &rect, int factor) {
+	rect.x -= factor;
+	rect.y -= factor;
+	rect.width += 2 * factor;
+	rect.height += 2 * factor;
+}
+
 
 cv::Rect BallTracker::trackOne(unsigned short ballIndex, const cv::Mat &frame, bool callInit) {
 	cv::Rect bbox = ballsVec_->at(ballIndex).getBbox();
@@ -35,6 +42,7 @@ cv::Rect BallTracker::trackOne(unsigned short ballIndex, const cv::Mat &frame, b
 	bool isBboxUpdated = false;
 
 	if (callInit) {
+		enlargeRect(bbox, 10);  // enlarge bbox to enhance tracking performance
 		ballTrackers_[ballIndex]->init(frame, bbox);
 	} else {
 		isBboxUpdated = ballTrackers_[ballIndex]->update(frame, bbox);
@@ -53,13 +61,12 @@ cv::Ptr<std::vector<Ball>> BallTracker::trackAll(const cv::Mat &frame) {
 	std::cout<<"trackAll, initialized: "<<isInitialized_<<std::endl;
 	if (!isInitialized_) {
 		createTrackers();
-	}
-
-	for (unsigned short i = 0; i < ballsVec_->size(); i++) {
-		if (!isInitialized_){
+		for (unsigned short i = 0; i < ballsVec_->size(); i++) {
 			trackOne(i, frame, true);
 		}
-		else {
+		isInitialized_ = true;
+	} else {
+		for (unsigned short i = 0; i < ballsVec_->size(); i++) {
 			trackOne(i, frame, false);
 		}
 	}

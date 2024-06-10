@@ -13,8 +13,8 @@ cv::Vec<cv::Point, 4> Table::getBoundaries() const {
 	return boundaries_;
 }
 
-cv::Vec3b Table::getColor() const {
-	if (color_ == cv::Vec3b(0, 0, 0))   // black(0,0,0) = uninitialized
+cv::Vec2b Table::getColor() const {
+	if (color_ == cv::Vec2b(0, 0))   // black(0,0,0) = uninitialized
 		throw std::runtime_error("color is uninitialized");
 
 	return color_;
@@ -42,7 +42,7 @@ void Table::setBoundaries(const cv::Vec<cv::Point, 4> &boundaries) {
 	boundaries_ = boundaries;
 }
 
-void Table::setColor(cv::Vec3b color) { // NOLINT(*-unnecessary-value-param)
+void Table::setColor(cv::Vec2b color) { // NOLINT(*-unnecessary-value-param)
 	color_ = color;
 }
 

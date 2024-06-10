@@ -4,6 +4,9 @@
 
 #include <stdexcept>
 #include <utility>
+#include <opencv2/opencv.hpp>
+
+using namespace cv;
 
 cv::Rect Ball::getBbox() const 
 {
@@ -42,4 +45,16 @@ void Ball::setCategory(Category category)
 void Ball::setBbox_prec(cv::Rect bbox_prec)
 {
     bbox_prec_ = bbox_prec;
+}
+
+Point2f Ball::getBBoxCenter() {
+    Point2f center;
+    float dx_half = abs(bbox_.x - bbox_.br().x)/2;
+    float dy_half = abs(bbox_.y - bbox_.br().y)/2;
+    if(bbox_.x > bbox_.br().x)
+        dx_half *= -1;
+    if(bbox_.y > bbox_.br().y)
+        dy_half *= -1;
+    center = Point(bbox_.x + dx_half, bbox_.br().y + dy_half);
+    return center;
 }

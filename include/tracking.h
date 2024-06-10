@@ -24,5 +24,6 @@ public:
 	cv::Ptr<std::vector<Ball>> trackAll(const cv::Mat &frame);
 };
 
+void enlargeRect(cv::Rect &rect, int factor);
 
 #endif // TRACKING_H

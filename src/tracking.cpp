@@ -27,13 +27,6 @@ void BallTracker::createTrackers() {
 	std::cout<<"trackers created"<<std::endl;
 }
 
-void enlargeRect(cv::Rect &rect, int factor) {
-	rect.x -= factor;
-	rect.y -= factor;
-	rect.width += 2 * factor;
-	rect.height += 2 * factor;
-}
-
 
 cv::Rect BallTracker::trackOne(unsigned short ballIndex, const cv::Mat &frame, bool callInit) {
 	cv::Rect bbox = ballsVec_->at(ballIndex).getBbox();
@@ -74,3 +67,10 @@ cv::Ptr<std::vector<Ball>> BallTracker::trackAll(const cv::Mat &frame) {
 	return ballsVec_;
 }
 
+
+void enlargeRect(cv::Rect &rect, int factor) {
+	rect.x -= factor;
+	rect.y -= factor;
+	rect.width += 2 * factor;
+	rect.height += 2 * factor;
+}

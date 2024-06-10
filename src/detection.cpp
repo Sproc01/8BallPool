@@ -100,7 +100,7 @@ Vec2b histogram(const Mat &img)
 }
 
 
-void detectTable(const Mat &frame, vector<Point> &corners)
+Table detectTable(const Mat &frame, vector<Point> &corners)
 {
     // const used during the function
     const int DIM_STRUCTURING_ELEMENT = 27;
@@ -217,6 +217,13 @@ void detectTable(const Mat &frame, vector<Point> &corners)
     }
     imshow("Line", imgLine);
     //waitKey(0);
+
+    Vec<Point, 4> corners_table;
+    for(int i = 0; i < 4; i++) {
+        corners_table[i] = corners[i];
+    }
+
+    return Table(corners_table, colorRange);
 }
 
 
@@ -243,7 +250,7 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const vector<Point> &tab
     int maxX = max(tableCorners[2].x, tableCorners[3].x);
     int minX = min(tableCorners[0].x, tableCorners[1].x);
     gray = gray.rowRange(minY, maxY).colRange(minX, maxX);
-    imshow("Cropped image", gray);
+    //imshow("Cropped image", gray);
     HoughCircles(gray, circles, HOUGH_GRADIENT,
                     ACCUMULATOR_RESOLUTION, MIN_DISTANCE, HOUGH_PARAM1, HOUGH_PARAM2, MIN_RADIUS, MAX_RADIUS);
     vector<Vec3f> circlesFiltered;

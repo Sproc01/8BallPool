@@ -21,6 +21,7 @@ public:
     cv::Rect getBbox() const;
     Category getCategory() const;
     cv::Rect getBbox_prec() const;
+    cv::Point2f getBBoxCenter();
 
     void setBbox(cv::Rect bbox);
     void setCategory(Category category);

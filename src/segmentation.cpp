@@ -9,7 +9,7 @@ using namespace std;
 
 // TODO segment with mask
 
-void segmentTable(const Mat &frame, const vector<Point> &tableCorners, Mat& segmented)
+void segmentTable(const Mat &frame, const Vec<Point2f, 4> &tableCorners, Mat& segmented)
 {
 	segmented = frame.clone();
 	fillConvexPoly(segmented, tableCorners, Scalar(0, 255, 0));

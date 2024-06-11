@@ -1,17 +1,18 @@
 // Author: Michele Sprocatti
 
 #include <opencv2/opencv.hpp>
-#include "detection.h"
 #include <iostream>
 #include <opencv2/features2d.hpp>
+
 #include "table.h"
 #include "ball.h"
-#include "minimapConstants.h"
+#include "detection.h"
+
+#include "minimapConstants.h" //check why errors TODO
 
 using namespace cv;
 using namespace std;
 
-// TODO point2f instead of point
 // TODO point inside the table and not inside the rect
 // TODO ball with number of white pixels
 
@@ -42,7 +43,7 @@ void equationFormula(float x1, float y1, float x2, float y2, float &a, float &b,
 }
 
 
-void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point &intersection)
+void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point2f &intersection)
 {
 	float a1 = line1[0], b1 = line1[1], c1 = line1[2];
 	float a2 = line2[0], b2 = line2[1], c2 = line2[2];
@@ -105,7 +106,7 @@ Vec2b histogram(const Mat &img)
 }
 
 
-Table detectTable(const Mat &frame, vector<Point> &corners)
+void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 {
 	// const used during the function
 	const int DIM_STRUCTURING_ELEMENT = 27;
@@ -122,11 +123,11 @@ Table detectTable(const Mat &frame, vector<Point> &corners)
 	vector<Vec4i> lines;
 	int rowsover4 = frame.rows/4, colsover4 = frame.cols/4;
 	Scalar line_color = Scalar(0, 0, 255);
-	vector<Point> intersections;
+	vector<Point2f> intersections;
 	vector<Vec3f> coefficients;
 
 	// get the color range
-	Vec2b colorRange = histogram(frame.rowRange(rowsover4, 3*rowsover4).colRange(colsover4, 3*colsover4));
+	colorRange = histogram(frame.rowRange(rowsover4, 3*rowsover4).colRange(colsover4, 3*colsover4));
 
 	// mask the image
 	cvtColor(frame, thisImg, COLOR_BGR2HSV);
@@ -164,11 +165,11 @@ Table detectTable(const Mat &frame, vector<Point> &corners)
 	}
 
 	// find intersections
+	Point2f intersection;
 	for(size_t i = 0; i < coefficients.size(); i++)
 	{
 		for(size_t j = i+1; j < coefficients.size(); j++)
 		{
-			Point intersection;
 			computeIntersection(coefficients[i], coefficients[j], intersection);
 			if (intersection.x >= 0 && intersection.x < frame.cols && intersection.y >= 0 && intersection.y < frame.rows)
 				intersections.push_back(intersection);
@@ -176,7 +177,7 @@ Table detectTable(const Mat &frame, vector<Point> &corners)
 	}
 
 	// remove intersections that are too close
-	vector<Point> intersectionsGood;
+	vector<Point2f> intersectionsGood;
 	sort(intersections.begin(), intersections.end(), [frame](Point a, Point b) -> bool
 	{
 		Point center = Point(frame.cols/2, frame.rows/2);
@@ -218,21 +219,14 @@ Table detectTable(const Mat &frame, vector<Point> &corners)
 	//cout << intersectionsGood << endl;
 	for(size_t i = 0; i < 4; i++)
 	{
-		corners.push_back(intersectionsGood[i]);
+		corners[i] = intersectionsGood[i];
 	}
 	imshow("Line", imgLine);
 	//waitKey(0);
-
-	Vec<Point, 4> corners_table;
-	for(int i = 0; i < 4; i++) {
-		corners_table[i] = corners[i];
-	}
-
-	return Table(corners_table, colorRange);
 }
 
 
-void detectBalls(const Mat &frame, vector<Ball> &balls, const vector<Point> &tableCorners)
+void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &tableCorners)
 {
 	// const used during the function
 	const int MIN_RADIUS = 5;
@@ -241,6 +235,14 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const vector<Point> &tab
 	const int HOUGH_PARAM2 = 5;
 	const int ACCUMULATOR_RESOLUTION = 1;
 	const int MIN_DISTANCE = 35;
+
+	// const for the ball
+	const int MEAN_WHITE_CHANNEL2 = 120;
+	const int MEAN_WHITE_CHANNEL3 = 10;
+	const int MEAN_BLACK_CHANNEL3 = 80;
+	const int STD_DEV_SOLID = 10;
+	const int STD_DEV_STRIPED = 40;
+
 
 	// variables
 	Mat gray, gradX, gradY, abs_grad_x, abs_grad_y, grad, imgBorder, HSVImg;
@@ -286,29 +288,29 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const vector<Point> &tab
 				int halfRad = static_cast<int>(c[2]);
 				subImg = HSVImg.colRange(c[0]-halfRad, c[0]+halfRad).rowRange(c[1]-halfRad, c[1]+halfRad);
 				meanStdDev(subImg, mean, stddev);
-				if(mean[1] < 120 && mean[2] > 180)
+				if(mean[1] < MEAN_WHITE_CHANNEL2 && mean[2] > MEAN_WHITE_CHANNEL3)
 				{ // white ball
 					category = Category::WHITE_BALL;
-					circle(frameCircle, center, radius, Scalar(255, 255, 255), 1, LINE_AA);
-					rectangle(frameRect, rect, Scalar(255, 255, 255), 1, LINE_AA);
+					circle(frameCircle, center, radius, WHITE_BGR_COLOR, 1, LINE_AA);
+					rectangle(frameRect, rect, WHITE_BGR_COLOR, 1, LINE_AA);
 				}
-				else if(mean[2] < 80)
+				else if(mean[2] < MEAN_BLACK_CHANNEL3)
 				{ // black ball
 					category = Category::BLACK_BALL;
-					circle(frameCircle, center, radius, Scalar(0, 0, 0), 1, LINE_AA);
-					rectangle(frameRect, rect, Scalar(0, 0, 0), 1, LINE_AA);
+					circle(frameCircle, center, radius, BLACK_BGR_COLOR, 1, LINE_AA);
+					rectangle(frameRect, rect, BLACK_BGR_COLOR, 1, LINE_AA);
 				}
-				else if(stddev[0] < 10)
+				else if(stddev[0] < STD_DEV_SOLID)
 				{ // solid blue
 					category = Category::SOLID_BALL;
-					circle(frameCircle, center, radius, Scalar(255, 0, 0), 1, LINE_AA);
-					rectangle(frameRect, rect, Scalar(255, 0, 0), 1, LINE_AA);
+					circle(frameCircle, center, radius, SOLID_BGR_COLOR, 1, LINE_AA);
+					rectangle(frameRect, rect, SOLID_BGR_COLOR, 1, LINE_AA);
 				}
-				else if(stddev[0] > 40)
+				else if(stddev[0] > STD_DEV_STRIPED)
 				{ // striped red
 					category = Category::STRIPED_BALL;
-					circle(frameCircle, center, radius, Scalar(0, 0, 255), 1, LINE_AA);
-					rectangle(frameRect, rect, Scalar(0, 0, 255), 1, LINE_AA);
+					circle(frameCircle, center, radius, STRIPED_BGR_COLOR, 1, LINE_AA);
+					rectangle(frameRect, rect, STRIPED_BGR_COLOR, 1, LINE_AA);
 				}
 				Ball ball(rect, category);
 				balls.push_back(ball);

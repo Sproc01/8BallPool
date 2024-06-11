@@ -7,22 +7,24 @@
 #include <iostream>
 #include <opencv2/core.hpp>
 
-cv::Vec<cv::Point, 4> Table::getBoundaries() const {
-	if(boundaries_ == cv::Vec<cv::Point, 4>{cv::Point{0, 0}, cv::Point{0, 0}, cv::Point{0, 0}, cv::Point{0, 0}})
+using namespace cv;
+
+Vec<Point2f, 4> Table::getBoundaries() const {
+	if(boundaries_ == Vec<Point2f, 4>{Point2f{0, 0}, Point2f{0, 0}, Point2f{0, 0}, Point2f{0, 0}})
 		throw std::runtime_error("bbox is uninitialized");
 
 	return boundaries_;
 }
 
-cv::Vec2b Table::getColor() const {
-	if (colorRange_ == cv::Vec2b(0, 0))   // black(0,0,0) = uninitialized
+Vec2b Table::getColor() const {
+	if (colorRange_ == Vec2b(0, 0))   // black(0,0,0) = uninitialized
 		throw std::runtime_error("color is uninitialized");
 
 	return colorRange_;
 }
 
-bool Table::getTransform(cv::Mat &transformMatrix) const {
-	if (!cv::norm(transform_, cv::Mat::eye(3, 3, CV_64F), cv::NORM_L1))
+bool Table::getTransform(Mat &transformMatrix) const {
+	if (!norm(transform_, Mat::eye(3, 3, CV_64F), NORM_L1))
 		return false;
 //		throw std::runtime_error("transform is uninitialized");
 
@@ -34,7 +36,7 @@ bool Table::getTransform(cv::Mat &transformMatrix) const {
 /*
  * Returns a cv::Ptr (shared pointer) to the vector of balls.
  */
-cv::Ptr<std::vector<Ball>> Table::ballsPtr() { // TODO is it ok to let the pointer be managed outside?
+Ptr<std::vector<Ball>> Table::ballsPtr() { // TODO is it ok to let the pointer be managed outside?
 	if (balls_->empty())
 		std::cout<<"There are no balls! (pointer returned anyway)"<<std::endl;
 
@@ -42,15 +44,15 @@ cv::Ptr<std::vector<Ball>> Table::ballsPtr() { // TODO is it ok to let the point
 }
 
 
-void Table::setBoundaries(const cv::Vec<cv::Point, 4> &boundaries) {
+void Table::setBoundaries(const Vec<Point2f, 4> &boundaries) {
 	boundaries_ = boundaries;
 }
 
-void Table::setColor(cv::Vec2b color) { // NOLINT(*-unnecessary-value-param)
+void Table::setColor(Vec2b color) { // NOLINT(*-unnecessary-value-param)
 	colorRange_ = color;
 }
 
-void Table::setTransform(const cv::Mat &transform) {
+void Table::setTransform(const Mat &transform) {
 	transform_ = std::move(transform);
 }
 
@@ -74,7 +76,7 @@ void Table::clearBalls() {
 }
 
 
-cv::Rect Table::getBbox() const {   // FIXME implement this based on the boundaries order
+Rect Table::getBbox() const {   // FIXME implement this based on the boundaries order
 	throw std::runtime_error("Not implemented yet");
-	return cv::Rect();
+	return Rect();
 }

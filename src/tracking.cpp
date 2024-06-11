@@ -5,8 +5,9 @@
 #include <opencv2/tracking.hpp>
 #include <iostream>
 
+using namespace cv;
 
-BallTracker::BallTracker(cv::Ptr<std::vector<Ball>> balls) { // NOLINT(*-unnecessary-value-param)
+BallTracker::BallTracker(Ptr<std::vector<Ball>> balls) { // NOLINT(*-unnecessary-value-param)
 	std::cout<<"constructor balltracker"<<std::endl;
 	isInitialized_ = false;
 
@@ -19,7 +20,7 @@ BallTracker::BallTracker(cv::Ptr<std::vector<Ball>> balls) { // NOLINT(*-unneces
 
 void BallTracker::createTrackers() {
 	for (unsigned short i = 0; i < ballsVec_->size(); i++) {
-		cv::Ptr<cv::Tracker> tracker = cv::TrackerCSRT::create();    //parameters go here if necessary
+		Ptr<Tracker> tracker = TrackerCSRT::create();    //parameters go here if necessary
 		ballTrackers_.push_back(tracker);
 	}
 
@@ -28,8 +29,8 @@ void BallTracker::createTrackers() {
 }
 
 
-cv::Rect BallTracker::trackOne(unsigned short ballIndex, const cv::Mat &frame, bool callInit) {
-	cv::Rect bbox = ballsVec_->at(ballIndex).getBbox();
+Rect BallTracker::trackOne(unsigned short ballIndex, const Mat &frame, bool callInit) {
+	Rect bbox = ballsVec_->at(ballIndex).getBbox();
 	ballsVec_->at(ballIndex).setBbox_prec(bbox);
 
 	bool isBboxUpdated = false;
@@ -50,7 +51,7 @@ cv::Rect BallTracker::trackOne(unsigned short ballIndex, const cv::Mat &frame, b
 }
 
 
-cv::Ptr<std::vector<Ball>> BallTracker::trackAll(const cv::Mat &frame) {
+Ptr<std::vector<Ball>> BallTracker::trackAll(const Mat &frame) {
 	std::cout<<"trackAll, initialized: "<<isInitialized_<<std::endl;
 	if (!isInitialized_) {
 		createTrackers();
@@ -68,7 +69,7 @@ cv::Ptr<std::vector<Ball>> BallTracker::trackAll(const cv::Mat &frame) {
 }
 
 
-void enlargeRect(cv::Rect &rect, int factor) {
+void enlargeRect(Rect &rect, int factor) {
 	rect.x -= factor;
 	rect.y -= factor;
 	rect.width += 2 * factor;

@@ -25,7 +25,7 @@ Point2f getCenter2(Point2f p1, Point2f p2) {
 Mat imgWithTransform(Mat frame, Mat transform, Table table) {
     //TODO: remove this, should be already in table (float points)
     vector<Point2f> img_vertices (4);
-    Vec<Point, 4> img_vertices_temp = table.getBoundaries();
+    Vec<Point2f, 4> img_vertices_temp = table.getBoundaries();
     for(int i = 0; i < 4; i++) {
         img_vertices[i].x = (float)img_vertices_temp[i].x;
         img_vertices[i].y = (float)img_vertices_temp[i].y;
@@ -57,7 +57,7 @@ Mat computeTransformation(Table &table, Mat &frame) {
     //convert vertices vector to vector of Point2f (needed for getPerspectiveTransform)
     vector<Point2f> map_vertices = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
     vector<Point2f> img_vertices (4);
-    Vec<Point, 4> img_vertices_temp = table.getBoundaries();
+    Vec<Point2f, 4> img_vertices_temp = table.getBoundaries();
     for(int i = 0; i < 4; i++) {
         img_vertices[i].x = (float)img_vertices_temp[i].x;
         img_vertices[i].y = (float)img_vertices_temp[i].y;
@@ -74,7 +74,8 @@ Mat computeTransformation(Table &table, Mat &frame) {
     if(!checkHorizontalTable(imgWithTransform(frame, perspectiveTransformMat, table), corners_img_cropped)) {
         //compute transform with the corners rotated
         //TODO: remove this with Point2f
-        Vec<Point, 4> img_vertices_temp = table.getBoundaries();
+		//TODO: remove casts
+        Vec<Point2f, 4> img_vertices_temp = table.getBoundaries();
         for(int i = 0; i < 4; i++) {
             if(i+1 < 4) {
                 img_vertices[i].x = (float)img_vertices_temp[i+1].x;
@@ -86,7 +87,7 @@ Mat computeTransformation(Table &table, Mat &frame) {
             }
         }
         //TODO: remove this (Point2f)
-        Vec<Point, 4> img_vertices_rotated;
+        Vec<Point2f, 4> img_vertices_rotated;
         for(int i = 0; i < 4; i++) {
             img_vertices_rotated[i].x =  (int)(img_vertices[i].x);
             img_vertices_rotated[i].y = (int)(img_vertices[i].y);

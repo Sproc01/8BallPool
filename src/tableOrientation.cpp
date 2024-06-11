@@ -13,13 +13,13 @@ struct Edge{
     Point2f corner2;
     Point2f center;
     Rect center_rect;
-    double backgroud_percentile;
+    double background_percentile;
 };
 
 //compare two edges by their percentile of background color
 bool compareByPercentile(const Edge &e1, const Edge &e2)
 {
-    return e1.backgroud_percentile < e2.backgroud_percentile;
+    return e1.background_percentile < e2.background_percentile;
 }
 
 //TODO: it is duplicated, also in transformation
@@ -105,10 +105,10 @@ bool checkHorizontalTable(Mat table_img, Vec<Point2f, 4> &corners){
     //compute the rects with and without the pools
     //compute the percentile of rectangle with color close to the table background
     for(int i = 0; i < 4; i++) {
-        edges[i].backgroud_percentile = computeTablePercentile(mask_img, edges[i].center_rect);
+        edges[i].background_percentile = computeTablePercentile(mask_img, edges[i].center_rect);
     }
 
-    if(edges[0].backgroud_percentile + edges[2].backgroud_percentile <  edges[1].backgroud_percentile + edges[3].backgroud_percentile) {
+    if(edges[0].background_percentile + edges[2].background_percentile <  edges[1].background_percentile + edges[3].background_percentile) {
         //edges[0] and edges[2] contain pools
         return true;
     }

@@ -84,8 +84,8 @@ int main()
 		if (!(frameCount % 10)){
 			tempMinimap = minimap.clone();
 			minimap_with_balls = minimapWithBalls(tempMinimap, table, frame);
-			imshow("frame " + std::to_string(frameCount), frame);
-			imshow("Minimap with balls " + std::to_string(frameCount), minimap_with_balls);
+			imshow("frame " + to_string(frameCount), frame);
+			imshow("Minimap with balls " + to_string(frameCount), minimap_with_balls);
 
 			if (!(frameCount % 30))
 				waitKey();

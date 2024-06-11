@@ -36,21 +36,21 @@ int main()
 	imshow("First frame", frame);
 	detectTable(frame, tableCorners, colorTable);
 	table = Table(tableCorners, colorTable);
-	segmentTable(frame, tableCorners, segmented);
+	//segmentTable(frame, tableCorners, segmented);
 	//imshow("segmentedTable", segmented);
 	detectBalls(frame, balls, tableCorners);
 	// TODO better manage using table.ballsPtr()
 	table.addBalls(balls);
-	segmentBalls(segmented, balls, segmented);
+	//segmentBalls(segmented, balls, segmented);
 	//imshow("segmentedBalls", segmented);
 
 	//TODO: use minimapConstants
- 	Mat minimap = imread("../img/minimap.png");
- 	Mat tempMinimap = minimap.clone();  // TODO minimap always draws over the same image
+// 	Mat minimap = imread("../img/minimap.png");
+// 	Mat tempMinimap = minimap.clone();  // TODO minimap always draws over the same image
 // 	//imshow("minimap", minimap);
 
 // 	//create minimap with balls
- 	Mat minimap_with_balls = minimapWithBalls(tempMinimap, table, frame);
+//	Mat minimap_with_balls = minimapWithBalls(tempMinimap, table, frame);
 // 	imshow("Minimap with balls", minimap_with_balls);
 
 // 	BallTracker tracker = BallTracker(table.ballsPtr());

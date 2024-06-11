@@ -237,9 +237,9 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	const int MIN_DISTANCE = 35;
 
 	// const for the ball
-	const int MEAN_WHITE_CHANNEL2 = 120;
-	const int MEAN_WHITE_CHANNEL3 = 10;
-	const int MEAN_BLACK_CHANNEL3 = 80;
+	const int MEAN_WHITE_CHANNEL2 = 35;
+	const int MEAN_WHITE_CHANNEL3 = 60;
+	const int MEAN_BLACK_CHANNEL3 = 60;
 	const int STD_DEV_SOLID = 10;
 	const int STD_DEV_STRIPED = 40;
 
@@ -320,5 +320,5 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	imshow("detected circles", frameCircle);
 	imshow("detected rectangles", frameRect);
 
-	//waitKey(0);
+	waitKey(0);
 }

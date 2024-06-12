@@ -9,7 +9,7 @@
 #include "detection.h"
 #include "segmentation.h"
 #include "transformation.h"
-//#include "minimapConstants.h"
+#include "minimapConstants.h"
 #include "tracking.h"
 
 using namespace std;

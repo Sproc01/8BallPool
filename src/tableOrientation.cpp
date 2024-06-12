@@ -2,6 +2,7 @@
 
 #include <opencv2/opencv.hpp>
 #include "tableOrientation.h"
+#include "util.h"
 
 #include "detection.h"
 
@@ -20,20 +21,6 @@ struct Edge{
 bool compareByPercentile(const Edge &e1, const Edge &e2)
 {
     return e1.background_percentile < e2.background_percentile;
-}
-
-//TODO: it is duplicated, also in transformation
-// Return the center point between two points
-Point2f getCenter(Point2f p1, Point2f p2) {
-    Point2f center;
-    int dx_half = abs(p1.x - p2.x)/2;
-    int dy_half = abs(p1.y - p2.y)/2;
-    if(p1.x > p2.x)
-        dx_half *= -1;
-    if(p1.y > p2.y)
-        dy_half *= -1;
-    center = Point2f(p1.x + dx_half, p1.y + dy_half);
-    return center;
 }
 
 //Return the percentile of pixels in the color_range within the rectangle in the image

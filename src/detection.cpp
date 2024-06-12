@@ -95,10 +95,12 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 		Point center = Point(frame.cols/2, frame.rows/2);
 		return norm(a) < norm(b);
 	});
+	// TODO remove auto
 	auto end2 = unique(intersections.begin(), intersections.end(), [&CLOSE_POINT_THRESHOLD](Point a, Point b) -> bool
 	{
 		return abs(a.x - b.x) < CLOSE_POINT_THRESHOLD && abs(a.y - b.y) < CLOSE_POINT_THRESHOLD;
 	});
+	// TODO remove auto
 	for(auto it = intersections.begin(); it != end2; it++)
 	{
 		intersectionsGood.push_back(*it);
@@ -166,7 +168,6 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	vector<Rect> boundRect;
 	Mat frameRect = frame.clone();
 	Mat frameCircle = frame.clone();
-	//equalizeHist(gray, gray);
 
 	int maxY = max(tableCorners[0].y, tableCorners[3].y);
 	int minY = min(tableCorners[1].y, tableCorners[2].y);
@@ -183,7 +184,7 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	}
 	fillConvexPoly(cropped, tableCornersInt, 255);
 
-
+	// mask the image
 	for(int i = 0; i < cropped.rows; i++)
 	{
 		for(int j = 0; j < cropped.cols; j++)
@@ -195,13 +196,14 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 		}
 	}
 	imshow("Cropped image", gray);
+
+	// Hough transform
 	HoughCircles(gray, circles, HOUGH_GRADIENT,
 					ACCUMULATOR_RESOLUTION, MIN_DISTANCE, HOUGH_PARAM1, HOUGH_PARAM2, MIN_RADIUS, MAX_RADIUS);
 	Mat subImg;
 	vector<double> mean, stddev;
 	Category category;
-	// mean of radius
-	double meanRadius = 0;
+	double meanRadius = 0; 	// mean of radius of the balls
 	for(size_t i = 0; i < circles.size(); i++)
 	{
 		//cout << circles[i][2] << endl;
@@ -223,12 +225,15 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 			&& cropped.at<uchar>(center.y, center.x+radius) == 255
 			&& cropped.at<uchar>(center.y, center.x-radius) == 255)
 		{
-			// TODO ball with number of white pixels
+			// rect and circle
 			rect = Rect(center.x-c[2], center.y-c[2], 2*c[2], 2*c[2]);
 			boundRect.push_back(rect);
 			int halfRad = static_cast<int>(c[2]/2);
 			subImg = HSVImg.colRange(c[0]-halfRad, c[0]+halfRad).rowRange(c[1]-halfRad, c[1]+halfRad);
 			meanStdDev(subImg, mean, stddev);
+
+			// check the color of the ball
+			// TODO ball with number of white pixels
 			if(mean[1] < MEAN_WHITE_CHANNEL2 && mean[2] > MEAN_WHITE_CHANNEL3)
 			{ // white ball
 				category = Category::WHITE_BALL;

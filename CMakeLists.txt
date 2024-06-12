@@ -16,6 +16,7 @@ add_library(Segmentation include/segmentation.h src/segmentation.cpp)
 add_library(TableOrientation include/tableOrientation.h src/tableOrientation.cpp)
 add_library(Transformation include/transformation.h src/transformation.cpp)
 add_library(Tracking include/tracking.h src/tracking.cpp)
+add_library(Util include/util.h src/util.cpp)
 
 add_executable(${PROJECT_NAME} src/main.cpp)
 
@@ -27,7 +28,8 @@ target_link_libraries(${PROJECT_NAME}
        	Segmentation
         TableOrientation
         Transformation
-        Tracking)
+        Tracking
+        Util)
 
 
 add_executable(InteractiveTracking src/testTrackingInteractive.cpp)

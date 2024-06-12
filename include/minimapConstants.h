@@ -6,6 +6,7 @@
 #include <string>
 #include <opencv2/opencv.hpp>
 
+// TODO add color table, check the colors of the balls
 //path of the minimap
 const std::string MINIMAP_PATH = "../img/minimap.png";
 

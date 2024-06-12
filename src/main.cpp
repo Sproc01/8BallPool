@@ -36,9 +36,9 @@ int main()
 	imshow("First frame", frame);
 	detectTable(frame, tableCorners, colorTable);
 	table = Table(tableCorners, colorTable);
-	//segmentTable(frame, tableCorners, segmented);
+	//segmentTable(frame, tableCorners, colorTable, segmented);
 	//imshow("segmentedTable", segmented);
-	detectBalls(frame, balls, tableCorners);
+	detectBalls(frame, balls, tableCorners, colorTable);
 	// TODO better manage using table.ballsPtr()
 	table.addBalls(balls);
 	//segmentBalls(segmented, balls, segmented);

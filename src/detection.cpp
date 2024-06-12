@@ -13,9 +13,6 @@
 using namespace cv;
 using namespace std;
 
-// TODO point inside the table and not inside the rect
-// TODO ball with number of white pixels
-
 // S>50, V>90 to be a color and not black or white
 const int S_CHANNEL_COLOR_THRESHOLD = 50;
 const int V_CHANNEL_COLOR_THRESHOLD = 90;
@@ -226,41 +223,65 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 }
 
 
-void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &tableCorners)
+void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &tableCorners, const Scalar &colorTable)
 {
 	// const used during the function
 	const int MIN_RADIUS = 5;
-	const int MAX_RADIUS = 20;
-	const int HOUGH_PARAM1 = 110;
+	const int MAX_RADIUS = 15;
+	const int HOUGH_PARAM1 = 120;
 	const int HOUGH_PARAM2 = 5;
 	const int ACCUMULATOR_RESOLUTION = 1;
-	const int MIN_DISTANCE = 35;
+	const int MIN_DISTANCE = 30;
 
 	// const for the ball
-	const int MEAN_WHITE_CHANNEL2 = 35;
-	const int MEAN_WHITE_CHANNEL3 = 60;
+	const int MEAN_WHITE_CHANNEL2 = 60;
+	const int MEAN_WHITE_CHANNEL3 = 40;
 	const int MEAN_BLACK_CHANNEL3 = 60;
 	const int STD_DEV_SOLID = 10;
-	const int STD_DEV_STRIPED = 40;
+	const int STD_DEV_STRIPED = 10;
 
 
 	// variables
 	Mat gray, gradX, gradY, abs_grad_x, abs_grad_y, grad, imgBorder, HSVImg;
-	cvtColor(frame, gray, COLOR_BGR2GRAY);
+	Mat mask;
+	cvtColor(frame, HSVImg, COLOR_BGR2HSV);
+	inRange(HSVImg, Scalar(colorTable[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
+			Scalar(colorTable[1], 255, 255), gray);
 	vector<Vec3f> circles;
 	vector<Rect> boundRect;
 	Mat frameRect = frame.clone();
 	Mat frameCircle = frame.clone();
-	cvtColor(frame, HSVImg, COLOR_BGR2HSV);
+	//equalizeHist(gray, gray);
+
 	int maxY = max(tableCorners[0].y, tableCorners[3].y);
 	int minY = min(tableCorners[1].y, tableCorners[2].y);
 	int maxX = max(tableCorners[2].x, tableCorners[3].x);
 	int minX = min(tableCorners[0].x, tableCorners[1].x);
-	gray = gray.rowRange(minY, maxY).colRange(minX, maxX);
-	//imshow("Cropped image", gray);
+	Mat cropped;
+	cropped = Mat::zeros(gray.size(), CV_8UC1);
+
+	// needed otherwise exception
+	vector<Point> tableCornersInt;
+	for(int i = 0; i < 4; i++)
+	{
+		tableCornersInt.push_back(Point(static_cast<int>(tableCorners[i].x), static_cast<int>(tableCorners[i].y)));
+	}
+	fillConvexPoly(cropped, tableCornersInt, 255);
+
+
+	for(int i = 0; i < cropped.rows; i++)
+	{
+		for(int j = 0; j < cropped.cols; j++)
+		{
+			if(cropped.at<uchar>(i, j) != 255)
+			{
+				gray.at<uchar>(i, j) = 0;
+			}
+		}
+	}
+	imshow("Cropped image", gray);
 	HoughCircles(gray, circles, HOUGH_GRADIENT,
 					ACCUMULATOR_RESOLUTION, MIN_DISTANCE, HOUGH_PARAM1, HOUGH_PARAM2, MIN_RADIUS, MAX_RADIUS);
-	vector<Vec3f> circlesFiltered;
 	Mat subImg;
 	vector<double> mean, stddev;
 	Category category;
@@ -268,53 +289,57 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	double meanRadius = 0;
 	for(size_t i = 0; i < circles.size(); i++)
 	{
-		cout << circles[i][2] << endl;
+		//cout << circles[i][2] << endl;
 		meanRadius += circles[i][2];
 	}
 	meanRadius /= circles.size();
-	cout << "Mean radius: " << meanRadius << endl;
+	//cout << "Mean radius: " << meanRadius << endl;
 	Rect rect;
 	for(size_t i = 0; i < circles.size(); i++ )
 	{
 		Vec3i c = circles[i];
-		Point center = Point(c[0] + minX, c[1] + minY);
+		Point center = Point(c[0], c[1]);
 		int radius = c[2];
-		if(radius < 1.5 * meanRadius)
+		// Inside the cropped image, not too small, not too big, not on the border
+		if(radius < 1.5 * meanRadius && radius > 0.5 * meanRadius
+			&& cropped.at<uchar>(center.y, center.x) == 255
+			&& cropped.at<uchar>(center.y+radius, center.x) == 255
+			&& cropped.at<uchar>(center.y-radius, center.x) == 255
+			&& cropped.at<uchar>(center.y, center.x+radius) == 255
+			&& cropped.at<uchar>(center.y, center.x-radius) == 255)
 		{
+			// TODO ball with number of white pixels
 			rect = Rect(center.x-c[2], center.y-c[2], 2*c[2], 2*c[2]);
 			boundRect.push_back(rect);
-			if(c[0]-c[2] > 0 && c[1]-c[2] > 0 && c[0]+c[2] < frame.cols && c[1]+c[2] < frame.rows)
-			{
-				int halfRad = static_cast<int>(c[2]);
-				subImg = HSVImg.colRange(c[0]-halfRad, c[0]+halfRad).rowRange(c[1]-halfRad, c[1]+halfRad);
-				meanStdDev(subImg, mean, stddev);
-				if(mean[1] < MEAN_WHITE_CHANNEL2 && mean[2] > MEAN_WHITE_CHANNEL3)
-				{ // white ball
-					category = Category::WHITE_BALL;
-					circle(frameCircle, center, radius, WHITE_BGR_COLOR, 1, LINE_AA);
-					rectangle(frameRect, rect, WHITE_BGR_COLOR, 1, LINE_AA);
-				}
-				else if(mean[2] < MEAN_BLACK_CHANNEL3)
-				{ // black ball
-					category = Category::BLACK_BALL;
-					circle(frameCircle, center, radius, BLACK_BGR_COLOR, 1, LINE_AA);
-					rectangle(frameRect, rect, BLACK_BGR_COLOR, 1, LINE_AA);
-				}
-				else if(stddev[0] < STD_DEV_SOLID)
-				{ // solid blue
-					category = Category::SOLID_BALL;
-					circle(frameCircle, center, radius, SOLID_BGR_COLOR, 1, LINE_AA);
-					rectangle(frameRect, rect, SOLID_BGR_COLOR, 1, LINE_AA);
-				}
-				else if(stddev[0] > STD_DEV_STRIPED)
-				{ // striped red
-					category = Category::STRIPED_BALL;
-					circle(frameCircle, center, radius, STRIPED_BGR_COLOR, 1, LINE_AA);
-					rectangle(frameRect, rect, STRIPED_BGR_COLOR, 1, LINE_AA);
-				}
-				Ball ball(rect, category);
-				balls.push_back(ball);
+			int halfRad = static_cast<int>(c[2]/2);
+			subImg = HSVImg.colRange(c[0]-halfRad, c[0]+halfRad).rowRange(c[1]-halfRad, c[1]+halfRad);
+			meanStdDev(subImg, mean, stddev);
+			if(mean[1] < MEAN_WHITE_CHANNEL2 && mean[2] > MEAN_WHITE_CHANNEL3)
+			{ // white ball
+				category = Category::WHITE_BALL;
+				circle(frameCircle, center, radius, WHITE_BGR_COLOR, 1, LINE_AA);
+				rectangle(frameRect, rect, WHITE_BGR_COLOR, 1, LINE_AA);
 			}
+			else if(mean[2] < MEAN_BLACK_CHANNEL3 && stddev[0] < STD_DEV_SOLID)
+			{ // black ball
+				category = Category::BLACK_BALL;
+				circle(frameCircle, center, radius, BLACK_BGR_COLOR, 1, LINE_AA);
+				rectangle(frameRect, rect, BLACK_BGR_COLOR, 1, LINE_AA);
+			}
+			else if(stddev[0] < STD_DEV_SOLID)
+			{ // solid blue
+				category = Category::SOLID_BALL;
+				circle(frameCircle, center, radius, SOLID_BGR_COLOR, 1, LINE_AA);
+				rectangle(frameRect, rect, SOLID_BGR_COLOR, 1, LINE_AA);
+			}
+			else if(stddev[0] > STD_DEV_STRIPED)
+			{ // striped red
+				category = Category::STRIPED_BALL;
+				circle(frameCircle, center, radius, STRIPED_BGR_COLOR, 1, LINE_AA);
+				rectangle(frameRect, rect, STRIPED_BGR_COLOR, 1, LINE_AA);
+			}
+			Ball ball(rect, category);
+			balls.push_back(ball);
 		}
 	}
 	imshow("detected circles", frameCircle);

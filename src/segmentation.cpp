@@ -1,18 +1,39 @@
+#include <opencv2/opencv.hpp>
+#include <iostream>
+
 #include "segmentation.h"
 #include "ball.h"
 #include "table.h"
-#include <opencv2/opencv.hpp>
-#include <iostream>
+#include "detection.h"
 
 using namespace cv;
 using namespace std;
 
-// TODO segment with mask
-
-void segmentTable(const Mat &frame, const Vec<Point2f, 4> &tableCorners, Mat& segmented)
+void segmentTable(const Mat &frame, const Vec<Point2f, 4> &tableCorners, const Scalar &colorTable, Mat& segmented)
 {
 	segmented = frame.clone();
-	fillConvexPoly(segmented, tableCorners, Scalar(0, 255, 0));
+	Mat HSVimage;
+	Mat mask;
+	Mat polyImage = Mat::zeros(frame.size(), CV_8UC1);
+	cvtColor(frame, HSVimage, COLOR_BGR2HSV);
+	inRange(HSVimage,  Scalar(colorTable[0], 50, 90),
+			Scalar(colorTable[1], 255, 255), mask);
+	vector<Point> tableCornersInt;
+	for(int i = 0; i < 4; i++)
+	{
+		tableCornersInt.push_back(Point(static_cast<int>(tableCorners[i].x), static_cast<int>(tableCorners[i].y)));
+	}
+	fillConvexPoly(polyImage, tableCornersInt, 255);
+	for(int i = 0; i < segmented.rows; i++)
+	{
+		for(int j = 0; j < segmented.cols; j++)
+		{
+			if(polyImage.at<uchar>(i, j) == 255 && mask.at<uchar>(i, j) == 255)
+			{
+				segmented.at<Vec3b>(i, j) = Vec3b(0, 255, 0);
+			}
+		}
+	}
 	//imshow("segmented", frame);
 }
 

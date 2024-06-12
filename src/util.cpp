@@ -1,4 +1,4 @@
-//Author:
+//Author: TODO
 #include <opencv2/opencv.hpp>
 using namespace cv;
 
@@ -18,22 +18,17 @@ Point2f getCenter(Point2f p1, Point2f p2) {
 // Gives the equation of the line passing through two points in the form  ax + by + c = 0
 void equationFormula(float x1, float y1, float x2, float y2, float &a, float &b, float &c)
 {
-	//cout << "x1: " << x1 << " y1: " << y1 << " x2: " << x2 << " y2: " << y2 << endl;
 	if(x2==x1)
 	{
 		b = 0;
 		a = -1;
 		c = x1;
-		// cout << "a: " << a << " b: " << b << " c:" << c << endl;
-		// cout << endl;
 	}
 	else
 	{
 		b = -1;
 		a = (y2-y1)/(x2-x1);
 		c = -a*x1 - b*y1;
-		// cout << "a: " << a << " b: " << b << " c:" << c << endl;
-		// cout << endl;
 	}
 }
 
@@ -53,11 +48,6 @@ void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point2f &inters
 		intersection.x = -1;
 		intersection.y = -1;
 	}
-	// cout << "Method" << endl;
-	// cout << a1 << " " << b1 << " " << c1 << endl;
-	// cout << a2 << " " << b2 << " " << c2 << endl;
-	// cout << "Intersection: " << intersection << endl;
-
 }
 
 

@@ -23,13 +23,7 @@ Point2f getCenter2(Point2f p1, Point2f p2) {
 }
 
 Mat imgWithTransform(Mat frame, Mat transform, Table table) {
-    //TODO: remove this, should be already in table (float points)
-    vector<Point2f> img_vertices (4);
-    Vec<Point2f, 4> img_vertices_temp = table.getBoundaries();
-    for(int i = 0; i < 4; i++) {
-        img_vertices[i].x = (float)img_vertices_temp[i].x;
-        img_vertices[i].y = (float)img_vertices_temp[i].y;
-    }
+    Vec<Point2f, 4> img_vertices = table.getBoundaries();
 
     //show frame perspective
     Mat frame_perspective;
@@ -53,15 +47,9 @@ Mat imgWithTransform(Mat frame, Mat transform, Table table) {
 //compute the transformation matrix as product of rotation and perspective
 //TODO: use table or the set of edges as parameter?
 Mat computeTransformation(Table &table, Mat &frame) {
-    //TODO: set all Point to Point2f??
     //convert vertices vector to vector of Point2f (needed for getPerspectiveTransform)
-    vector<Point2f> map_vertices = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
-    vector<Point2f> img_vertices (4);
-    Vec<Point2f, 4> img_vertices_temp = table.getBoundaries();
-    for(int i = 0; i < 4; i++) {
-        img_vertices[i].x = (float)img_vertices_temp[i].x;
-        img_vertices[i].y = (float)img_vertices_temp[i].y;
-    }
+    Vec<Point2f, 4> map_vertices = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
+    Vec<Point2f, 4> img_vertices = table.getBoundaries();
 
     //compute perspective transform
     Mat perspectiveTransformMat = getPerspectiveTransform	(img_vertices, map_vertices);
@@ -73,26 +61,18 @@ Mat computeTransformation(Table &table, Mat &frame) {
             Point2f(0, BOTTOM_RIGHT_MAP_CORNER.y - TOP_RIGHT_MAP_CORNER.y)};
     if(!checkHorizontalTable(imgWithTransform(frame, perspectiveTransformMat, table), corners_img_cropped)) {
         //compute transform with the corners rotated
-        //TODO: remove this with Point2f
-		//TODO: remove casts
         Vec<Point2f, 4> img_vertices_temp = table.getBoundaries();
         for(int i = 0; i < 4; i++) {
             if(i+1 < 4) {
-                img_vertices[i].x = (float)img_vertices_temp[i+1].x;
-                img_vertices[i].y = (float)img_vertices_temp[i+1].y;
+                img_vertices[i].x = img_vertices_temp[i+1].x;
+                img_vertices[i].y = img_vertices_temp[i+1].y;
             }
             else {
-                img_vertices[i].x = (float)img_vertices_temp[0].x;
-                img_vertices[i].y = (float)img_vertices_temp[0].y;
+                img_vertices[i].x = img_vertices_temp[0].x;
+                img_vertices[i].y = img_vertices_temp[0].y;
             }
         }
-        //TODO: remove this (Point2f)
-        Vec<Point2f, 4> img_vertices_rotated;
-        for(int i = 0; i < 4; i++) {
-            img_vertices_rotated[i].x =  (int)(img_vertices[i].x);
-            img_vertices_rotated[i].y = (int)(img_vertices[i].y);
-        }
-        table.setBoundaries(img_vertices_rotated);
+        table.setBoundaries(img_vertices);
         //compute perspective transform correct
         perspectiveTransformMat = getPerspectiveTransform	(img_vertices, map_vertices);
     }

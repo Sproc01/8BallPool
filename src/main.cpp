@@ -9,7 +9,7 @@
 #include "detection.h"
 #include "segmentation.h"
 #include "transformation.h"
-//#include "minimapConstants.h"
+#include "minimapConstants.h"
 #include "tracking.h"
 
 using namespace std;
@@ -44,8 +44,7 @@ int main()
 	segmentBalls(segmented, balls, segmented);
 	//imshow("segmentedBalls", segmented);
 
-	//TODO: use minimapConstants
-	Mat minimap = imread("../img/minimap.png");
+	Mat minimap = imread(MINIMAP_PATH);
 	Mat tempMinimap = minimap.clone();  // TODO minimap always draws over the same image
 	//imshow("minimap", minimap);
 

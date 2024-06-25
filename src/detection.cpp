@@ -223,7 +223,15 @@ Table detectTable(const Mat &frame, vector<Point> &corners)
         corners_table[i] = corners[i];
     }
 
-    return Table(corners_table, colorRange);
+    //Conversion added to have correct output values for the table corners (before 0,0,0,0)
+    Vec<Point2f, 4> temp;
+    for(int i = 0; i < 4; i++) {
+        temp[i].x = (float)corners_table[i].x;
+        temp[i].y = (float)corners_table[i].y;
+    }
+
+    return Table(temp, colorRange);
+    //return Table(corners_table, colorRange);
 }
 
 

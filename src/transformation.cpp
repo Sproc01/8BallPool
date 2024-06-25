@@ -19,7 +19,7 @@ Mat imgWithTransform(Mat frame, Mat transform, Table table) {
     //waitKey(0);
 
     //show frame perspective cropped
-    vector<Point2f> img_vertices_perspective (4);
+    Vec<Point2f, 4> img_vertices_perspective;
     perspectiveTransform(img_vertices, img_vertices_perspective, transform);
     Mat frame_perspective_cropped;
     frame_perspective_cropped = frame_perspective.rowRange(img_vertices_perspective[0].y, img_vertices_perspective[3].y)

@@ -51,6 +51,7 @@ int main()
 	//create minimap with balls
 	Mat minimap_with_balls = minimapWithBalls(tempMinimap, table, frame);
 	imshow("Minimap with balls", minimap_with_balls);
+	//waitKey(0);
 
 	BallTracker tracker = BallTracker(table.ballsPtr());
 	tracker.trackAll(frame);

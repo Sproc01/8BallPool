@@ -120,10 +120,19 @@ Mat minimapWithBalls(Mat minimap, Table table, Mat frame) {
 	}
 	imgWithTransform(frame, transform, table);
 
+    //TODO: change name of Compute ball positions to something that can be applied to other things (?)
 	vector<Point2f> ball_in_map = computeBallsPositions(*(table.ballsPtr()), transform);
+
+    //draw corners on map with transformation
+    /*
+    Vec<Point2f, 4> corner_in_map;
+    perspectiveTransform(table.getBoundaries(), corner_in_map, transform);
+    for(int i = 0; i < 4; i++) {
+        circle(minimap, corner_in_map[i], 8, Vec3d(100, 100, 100), -1);
+    }
+    */
+
 	drawBallsOnMap(minimap, ball_in_map, *(table.ballsPtr()));
 
 	return minimap;
 }
-
-

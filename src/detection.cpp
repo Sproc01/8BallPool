@@ -124,13 +124,20 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 		else
 			return false;
 	});
+
+	if(intersectionsGood.size() < 4){
+		throw runtime_error("Not enough unique intersections found");
+	}
+
+//	cout << "intersections: " << intersections.size() << endl;
+//	cout << "intersectionsGood: " << intersectionsGood.size() << endl;
+
 	vector<Scalar> colors = {Scalar(255, 0, 0), Scalar(0, 255, 0), Scalar(0, 0, 255), Scalar(255, 255, 0)};
 	for(size_t i = 0; i < 4; i++)
 	{
 		circle(imgLine, intersectionsGood[i], 10, colors[i], -1);
 	}
 
-	//cout << intersectionsGood << endl;
 	for(size_t i = 0; i < 4; i++)
 	{
 		corners[i] = intersectionsGood[i];
@@ -234,13 +241,13 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 			subImg = HSVImg.colRange(c[0]-halfRad, c[0]+halfRad).rowRange(c[1]-halfRad, c[1]+halfRad);
 
 			// only for debug
-			for(int j = 0; j < subImg.rows; j++)
-			{
-				for(int k = 0; k < subImg.cols; k++)
-				{
-					cout << subImg.at<Vec3b>(j,k) << endl;
-				}
-			}
+//			for(int j = 0; j < subImg.rows; j++)
+//			{
+//				for(int k = 0; k < subImg.cols; k++)
+//				{
+//					cout << subImg.at<Vec3b>(j,k) << endl;
+//				}
+//			}
 
 			// check the color of the ball
 			meanStdDev(subImg, mean, stddev);

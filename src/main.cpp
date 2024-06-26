@@ -23,7 +23,7 @@ int main()
 	Mat segmented;
 	Mat segmentedFrame;
 	int frameCount = 0;
-	VideoCapture vid = VideoCapture("../Dataset/game2_clip1/game2_clip1.mp4");
+	VideoCapture vid = VideoCapture("../Dataset/game1_clip1/game1_clip1.mp4");
 	Mat frame;
 	Vec2b colorTable;
 
@@ -88,6 +88,8 @@ int main()
 			if (!(frameCount % 30))
 				waitKey();
 		}
+
+		// TODO write frame on video
 	}
 
 // 	// TODO work on last frame

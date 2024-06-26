@@ -23,11 +23,11 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 	// const used during the function
 	const int DIM_STRUCTURING_ELEMENT = 27;
 	const int DIM_GAUSSIAN_KERNEL = 17;
-	const int CANNY_THRESHOLD1 = 95;
-	const int CANNY_THRESHOLD2 = 110;
-	const int THRESHOLD_HOUGH = 130;
-	const int MAX_LINE_GAP = 15;
-	const int MIN_LINE_LENGTH = 120;
+	const int CANNY_THRESHOLD1 = 95; //95
+	const int CANNY_THRESHOLD2 = 110; // 110
+	const int THRESHOLD_HOUGH = 109; //130
+	const int MAX_LINE_GAP = 15; //15
+	const int MIN_LINE_LENGTH = 120; //120
 	const int CLOSE_POINT_THRESHOLD = 30;
 
 	// variables
@@ -45,18 +45,18 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 	cvtColor(frame, thisImg, COLOR_BGR2HSV);
 	inRange(thisImg, Scalar(colorRange[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
 				Scalar(colorRange[1], 255, 255), mask);
-	//imshow("Mask", mask);
+	imshow("Mask", mask);
 
 	// morphological operations
 	kernel = getStructuringElement(MORPH_ELLIPSE, Size(DIM_STRUCTURING_ELEMENT, DIM_STRUCTURING_ELEMENT));
 	morphologyEx(mask, mask, MORPH_CLOSE, kernel);
-	//imshow("Morphology", mask);
+	imshow("Morphology", mask);
 
 	// edge detection
 	GaussianBlur(mask, mask, Size(DIM_GAUSSIAN_KERNEL, DIM_GAUSSIAN_KERNEL), 0);
 	//imshow("Gaussian Blur", mask);
 	Canny(mask, imgBorder, CANNY_THRESHOLD1, CANNY_THRESHOLD2);
-	//imshow("Canny Result", imgBorder);
+	imshow("Canny Result", imgBorder);
 
 	// Hough transform
 	imgLine = frame.clone();

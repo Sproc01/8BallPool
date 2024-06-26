@@ -31,7 +31,6 @@ target_link_libraries(${PROJECT_NAME}
         Tracking
         Util)
 
-
 add_executable(InteractiveTracking src/testTrackingInteractive.cpp)
 target_link_libraries(InteractiveTracking
         ${OpenCV_LIBS}

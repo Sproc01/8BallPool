@@ -1,39 +1,61 @@
+#include <opencv2/opencv.hpp>
+#include <iostream>
+
 #include "segmentation.h"
 #include "ball.h"
 #include "table.h"
-#include <opencv2/opencv.hpp>
-#include <iostream>
+#include "detection.h"
 
 using namespace cv;
 using namespace std;
 
-void segmentTable(const Mat &frame, const vector<Point> &tableCorners, Mat& segmented)
+void segmentTable(const Mat &frame, const Vec<Point2f, 4> &tableCorners, const Scalar &colorTable, Mat& segmented)
 {
-    segmented = frame.clone();
-    fillConvexPoly(segmented, tableCorners, Scalar(0, 255, 0));
-    //imshow("segmented", frame);
+	segmented = frame.clone();
+	Mat HSVimage;
+	Mat mask;
+	Mat polyImage = Mat::zeros(frame.size(), CV_8UC1);
+	cvtColor(frame, HSVimage, COLOR_BGR2HSV);
+	inRange(HSVimage,  Scalar(colorTable[0], 50, 90),
+			Scalar(colorTable[1], 255, 255), mask);
+	vector<Point> tableCornersInt;
+	for(int i = 0; i < 4; i++)
+	{
+		tableCornersInt.push_back(Point(static_cast<int>(tableCorners[i].x), static_cast<int>(tableCorners[i].y)));
+	}
+	fillConvexPoly(polyImage, tableCornersInt, 255);
+	for(int i = 0; i < segmented.rows; i++)
+	{
+		for(int j = 0; j < segmented.cols; j++)
+		{
+			if(polyImage.at<uchar>(i, j) == 255 && mask.at<uchar>(i, j) == 255)
+			{
+				segmented.at<Vec3b>(i, j) = Vec3b(0, 255, 0);
+			}
+		}
+	}
+	//imshow("segmented", frame);
 }
 
 void segmentBalls(const Mat &frame, const vector<Ball> &balls, Mat& segmented)
 {
-    float radius;
-    Point center;
-    segmented = frame.clone();
-    Scalar c = Scalar(0, 0, 0);
-    for (const Ball &ball : balls)
-    {
-        if(ball.getCategory() == Category::BLACK_BALL)
-            c = Scalar(0, 0, 0);
-        else if(ball.getCategory() == Category::WHITE_BALL)
-            c = Scalar(255, 255, 255);
-        else if(ball.getCategory() == Category::SOLID_BALL)
-            c = Scalar(0, 0, 255);
-        else if(ball.getCategory() == Category::STRIPED_BALL)
-            c = Scalar(255, 0, 0);
-        Rect b = ball.getBbox();
-        radius = b.width / 2;
-        center = Point(b.tl().x + radius, b.tl().y + radius);
-        circle(frame, center, radius, c, -1);
-
-    }
+	float radius;
+	Point center;
+	segmented = frame.clone();
+	Scalar c = Scalar(0, 0, 0);
+	for (const Ball &ball : balls)
+	{
+		if(ball.getCategory() == Category::BLACK_BALL)
+			c = Scalar(0, 0, 0);
+		else if(ball.getCategory() == Category::WHITE_BALL)
+			c = Scalar(255, 255, 255);
+		else if(ball.getCategory() == Category::SOLID_BALL)
+			c = Scalar(0, 0, 255);
+		else if(ball.getCategory() == Category::STRIPED_BALL)
+			c = Scalar(255, 0, 0);
+		Rect b = ball.getBbox();
+		radius = b.width / 2;
+		center = Point(b.tl().x + radius, b.tl().y + radius);
+		circle(segmented, center, radius, c, -1);
+	}
 }

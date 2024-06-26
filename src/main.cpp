@@ -45,31 +45,30 @@ int main()
 	imshow("segmentedBalls", segmented);
 	waitKey(0);
 
-	// Mat minimap = imread(MINIMAP_PATH);
-	// Mat tempMinimap = minimap.clone();  // TODO minimap always draws over the same image
-	// //imshow("minimap", minimap);
+	Mat minimap = imread(MINIMAP_PATH);
+	Mat tempMinimap = minimap.clone();  // TODO minimap always draws over the same image
+//	 imshow("minimap", minimap);
 
 	// //create minimap with balls
-	// Mat minimap_with_balls = minimapWithBalls(tempMinimap, table, frame);
-	// imshow("Minimap with balls", minimap_with_balls);
+	Mat minimap_with_balls = minimapWithBalls(tempMinimap, table, frame);
+	imshow("Minimap with balls", minimap_with_balls);
 
-// 	BallTracker tracker = BallTracker(table.ballsPtr());
-// 	tracker.trackAll(frame);
+	BallTracker tracker = BallTracker(table.ballsPtr());
+	tracker.trackAll(frame);
 
-// 	waitKey();
-// //    return 0;
+	waitKey();
 
-// 	while (vid.isOpened()){  // work on middle frames
-// 		bool ret = vid.read(frame);
+	while (vid.isOpened()){  // work on middle frames
+		bool ret = vid.read(frame);
 
-// 		// if frame is read correctly ret is True
-// 		if (!ret){
-// 			printf("Can't receive frame (stream end?). Exiting ... maybe end of file\n");
-// 			break;
-// 		}
-// 		++frameCount;
+		// if frame is read correctly ret is True
+		if (!ret){
+			printf("Can't receive frame (stream end?). Exiting ... maybe end of file\n");
+			break;
+		}
+		++frameCount;
 
-// 		cout << "Frame number: " << frameCount << endl;
+		cout << "Frame number: " << frameCount << endl;
 // //		imshow("frame " + std::to_string(frameCount), frame);
 // 		//detectTable(frame, tableCorners);
 // 		//detectBalls(frame, balls, tableCorners);
@@ -80,20 +79,16 @@ int main()
 // 		//if (waitKey(0) == 'q')
 // 		//waitKey(0);
 
-// 		tracker.trackAll(frame);
-// 		if (!(frameCount % 10)){
-// 			tempMinimap = minimap.clone();
-// 			minimap_with_balls = minimapWithBalls(tempMinimap, table, frame);
-// 			imshow("frame " + to_string(frameCount), frame);
-// 			imshow("Minimap with balls " + to_string(frameCount), minimap_with_balls);
-
-// 			if (!(frameCount % 30))
-// 				waitKey();
-// //			waitKey();
-// 		}
-
-// //		break;
-// 	}
+		tracker.trackAll(frame);
+		if (!(frameCount % 30)){
+			tempMinimap = minimap.clone();
+			minimap_with_balls = minimapWithBalls(tempMinimap, table, frame);
+			imshow("frame " + to_string(frameCount), frame);
+			imshow("Minimap with balls " + to_string(frameCount), minimap_with_balls);
+			if (!(frameCount % 30))
+				waitKey();
+		}
+	}
 
 // 	// TODO work on last frame
 

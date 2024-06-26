@@ -16,7 +16,7 @@ add_library(Segmentation include/segmentation.h src/segmentation.cpp)
 add_library(TableOrientation include/tableOrientation.h src/tableOrientation.cpp)
 add_library(Transformation include/transformation.h src/transformation.cpp)
 add_library(Tracking include/tracking.h src/tracking.cpp)
-add_library(Util include/util.h src/util.cpp)
+add_library(Utils include/category.h include/minimapConstants.h include/util.h src/util.cpp)
 
 add_executable(${PROJECT_NAME} src/main.cpp)
 
@@ -24,12 +24,12 @@ target_link_libraries(${PROJECT_NAME}
         ${OpenCV_LIBS}
         Ball
         Table
-       	Detection
-       	Segmentation
+        Detection
+        Segmentation
         TableOrientation
         Transformation
         Tracking
-        Util)
+        Utils)
 
 add_executable(InteractiveTracking src/testTrackingInteractive.cpp)
 target_link_libraries(InteractiveTracking
@@ -39,4 +39,5 @@ target_link_libraries(InteractiveTracking
 add_executable(ShowSegmentationColored src/showSegmentationColored.cpp)
 target_link_libraries(ShowSegmentationColored
         ${OpenCV_LIBS}
+        Utils
 )

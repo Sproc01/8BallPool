@@ -39,7 +39,7 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 	vector<Vec3f> coefficients;
 
 	// get the color range
-	colorRange = histogram(frame.rowRange(rowsover4, 3*rowsover4).colRange(colsover4, 3*colsover4));
+	colorRange = mostFrequentColor(frame.rowRange(rowsover4, 3*rowsover4).colRange(colsover4, 3*colsover4));
 
 	// mask the image
 	cvtColor(frame, thisImg, COLOR_BGR2HSV);
@@ -151,11 +151,12 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	const int MIN_DISTANCE = 30;
 
 	// const for the ball
-	const int MEAN_WHITE_CHANNEL2 = 60;
-	const int MEAN_WHITE_CHANNEL3 = 40;
-	const int MEAN_BLACK_CHANNEL3 = 60;
-	const int STD_DEV_SOLID = 10;
-	const int STD_DEV_STRIPED = 10;
+	const int MEAN_WHITE_CHANNEL2 = 90;
+	const int MEAN_WHITE_CHANNEL3 = 220;
+	const int MEAN_BLACK_CHANNEL3 = 100;
+	const int STD_DEV_BLACK = 70;
+	const int STD_DEV_SOLID = 20;
+	const int STD_DEV_STRIPED = 20;
 
 
 	// variables
@@ -223,37 +224,46 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 			&& cropped.at<uchar>(center.y+radius, center.x) == 255
 			&& cropped.at<uchar>(center.y-radius, center.x) == 255
 			&& cropped.at<uchar>(center.y, center.x+radius) == 255
-			&& cropped.at<uchar>(center.y, center.x-radius) == 255)
+			&& cropped.at<uchar>(center.y, center.x-radius) == 255
+			&& gray.at<uchar>(center.y, center.x) == 0)
 		{
 			// rect and circle
 			rect = Rect(center.x-c[2], center.y-c[2], 2*c[2], 2*c[2]);
 			boundRect.push_back(rect);
 			int halfRad = static_cast<int>(c[2]/2);
 			subImg = HSVImg.colRange(c[0]-halfRad, c[0]+halfRad).rowRange(c[1]-halfRad, c[1]+halfRad);
-			meanStdDev(subImg, mean, stddev);
+
+			// only for debug
+			for(int j = 0; j < subImg.rows; j++)
+			{
+				for(int k = 0; k < subImg.cols; k++)
+				{
+					cout << subImg.at<Vec3b>(j,k) << endl;
+				}
+			}
 
 			// check the color of the ball
-			// TODO ball with number of white pixels
+			meanStdDev(subImg, mean, stddev);
 			if(mean[1] < MEAN_WHITE_CHANNEL2 && mean[2] > MEAN_WHITE_CHANNEL3)
 			{ // white ball
 				category = Category::WHITE_BALL;
 				circle(frameCircle, center, radius, WHITE_BGR_COLOR, 1, LINE_AA);
 				rectangle(frameRect, rect, WHITE_BGR_COLOR, 1, LINE_AA);
 			}
-			else if(mean[2] < MEAN_BLACK_CHANNEL3 && stddev[0] < STD_DEV_SOLID)
+			else if(mean[2] < MEAN_BLACK_CHANNEL3 && stddev[2] < STD_DEV_BLACK)
 			{ // black ball
 				category = Category::BLACK_BALL;
 				circle(frameCircle, center, radius, BLACK_BGR_COLOR, 1, LINE_AA);
 				rectangle(frameRect, rect, BLACK_BGR_COLOR, 1, LINE_AA);
 			}
 			else if(stddev[0] < STD_DEV_SOLID)
-			{ // solid blue
+			{ // solid red
 				category = Category::SOLID_BALL;
 				circle(frameCircle, center, radius, SOLID_BGR_COLOR, 1, LINE_AA);
 				rectangle(frameRect, rect, SOLID_BGR_COLOR, 1, LINE_AA);
 			}
 			else if(stddev[0] > STD_DEV_STRIPED)
-			{ // striped red
+			{ // striped green
 				category = Category::STRIPED_BALL;
 				circle(frameCircle, center, radius, STRIPED_BGR_COLOR, 1, LINE_AA);
 				rectangle(frameRect, rect, STRIPED_BGR_COLOR, 1, LINE_AA);
@@ -265,5 +275,5 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	imshow("detected circles", frameCircle);
 	imshow("detected rectangles", frameRect);
 
-	waitKey(0);
+	//waitKey(0);
 }

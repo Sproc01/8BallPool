@@ -51,7 +51,7 @@ void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point2f &inters
 }
 
 
-Vec2b histogram(const Mat &img)
+Vec2b mostFrequentColor(const Mat &img)
 {
 	std::vector<Scalar> rgbColors = {Scalar(255, 0, 0), Scalar(0, 255, 0), Scalar(0, 0, 255)};
 	//imshow("Cropped image (hist)", img);

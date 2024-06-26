@@ -23,7 +23,7 @@ int main()
 	Mat segmented;
 	Mat segmentedFrame;
 	int frameCount = 0;
-	VideoCapture vid = VideoCapture("../Dataset/game1_clip1/game1_clip1.mp4");
+	VideoCapture vid = VideoCapture("../Dataset/game2_clip1/game2_clip1.mp4");
 	Mat frame;
 	Vec2b colorTable;
 
@@ -36,13 +36,14 @@ int main()
 	imshow("First frame", frame);
 	detectTable(frame, tableCorners, colorTable);
 	table = Table(tableCorners, colorTable);
-	//segmentTable(frame, tableCorners, colorTable, segmented);
-	//imshow("segmentedTable", segmented);
+	segmentTable(frame, tableCorners, colorTable, segmented);
+	imshow("segmentedTable", segmented);
 	detectBalls(frame, balls, tableCorners, colorTable);
 	// TODO better manage using table.ballsPtr()
 	table.addBalls(balls);
-	//segmentBalls(segmented, balls, segmented);
-	//imshow("segmentedBalls", segmented);
+	segmentBalls(segmented, balls, segmented);
+	imshow("segmentedBalls", segmented);
+	waitKey(0);
 
 	// Mat minimap = imread(MINIMAP_PATH);
 	// Mat tempMinimap = minimap.clone();  // TODO minimap always draws over the same image

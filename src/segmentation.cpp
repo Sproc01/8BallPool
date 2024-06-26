@@ -56,7 +56,6 @@ void segmentBalls(const Mat &frame, const vector<Ball> &balls, Mat& segmented)
 		Rect b = ball.getBbox();
 		radius = b.width / 2;
 		center = Point(b.tl().x + radius, b.tl().y + radius);
-		circle(frame, center, radius, c, -1);
-
+		circle(segmented, center, radius, c, -1);
 	}
 }

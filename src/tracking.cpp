@@ -40,7 +40,7 @@ Rect BallTracker::trackOne(unsigned short ballIndex, const Mat &frame, bool call
 		ballTrackers_[ballIndex]->init(frame, bbox);
 	} else {
 		isBboxUpdated = ballTrackers_[ballIndex]->update(frame, bbox);
-		ballsVec_->at(ballIndex).setBbox(bbox);
+		ballsVec_->at(ballIndex).setBbox(bbox); // do not update if shift is too little (use IoU)
 	}
 	std::cout<< "Ball " << ballIndex << " updated? " << isBboxUpdated << " current bbox: " << bbox << std::endl;
 

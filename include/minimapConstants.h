@@ -6,6 +6,7 @@
 #include <string>
 #include <opencv2/opencv.hpp>
 
+// TODO add color table, check the colors of the balls
 //path of the minimap
 const std::string MINIMAP_PATH = "../img/minimap.png";
 
@@ -20,7 +21,7 @@ const int MAP_BALL_RADIUS = 12;
 
 //colors for the balls in the minimap
 const cv::Vec3d BLACK_BGR_COLOR = cv::Vec3d(0, 0, 0);
-const cv::Vec3d WHITE_BGR_COLOR = cv::Vec3d(0, 0, 0);
+const cv::Vec3d WHITE_BGR_COLOR = cv::Vec3d(255, 255, 255);
 const cv::Vec3d STRIPED_BGR_COLOR = cv::Vec3d(0, 255, 0);
 const cv::Vec3d SOLID_BGR_COLOR = cv::Vec3d(0, 0, 255);
 

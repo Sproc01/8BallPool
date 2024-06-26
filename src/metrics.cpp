@@ -1,0 +1,78 @@
+// Author: Alberto Pasqualetto
+
+#include "metrics.h"
+#include "category.h"
+#include "table.h"
+#include <stdexcept>
+#include <filesystem>
+#include <utility>
+#include <opencv2/core.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <iostream>
+
+using namespace std;
+using namespace cv;
+
+
+void compareMetrics(Table &table, Mat &segmentedImage, string folderPath, FrameN frameN){
+	filesystem::path groundTruthBboxPath;
+	filesystem::path groundTruthMaskPath;
+	switch (frameN) {
+		case FIRST:
+			groundTruthBboxPath = filesystem::path(folderPath) / "bounding_boxes" / "frame_first_bbox.txt";
+			groundTruthMaskPath = filesystem::path(folderPath) / "masks" / "frame_first.png";
+			break;
+		case LAST:
+			groundTruthBboxPath = filesystem::path(folderPath) / "bounding_boxes" / "frame_last_bbox.txt";
+			groundTruthMaskPath = filesystem::path(folderPath) / "masks" / "frame_last.png";
+			break;
+		default:
+			throw invalid_argument("frameN must be FIRST or LAST");
+	}
+
+	// For ball localization, the mean Average Precision (mAP) calculated at IoU threshold 0.5
+//	mAPDetection(table.ballsPtr(), groundTruthBboxPath.string(), MAP_IOU_THRESHOLD);
+
+	float mIoU = mIoUSegmentation(segmentedImage, groundTruthMaskPath.string());
+	cout << "mIoU: " << mIoU << endl;
+}
+
+// For balls and playing field segmentation, the mean Intersection over Union (mIoU) metric, that is the average of the IoU computed for each class (background, white ball, black ball, solid color, striped and playing field)
+float mIoUSegmentation(Mat &segmentedImage, string groundTruthMaskPath){
+	Mat groundTruthMask = imread(groundTruthMaskPath, IMREAD_GRAYSCALE);
+
+	float mIoU = 0;
+
+	for (Category cat=Category::BACKGROUND; cat<=Category::PLAYING_FIELD; cat=static_cast<Category>(cat+1)){
+		Mat segmentedImageCat = (segmentedImage == static_cast<int>(cat));
+		Mat groundTruthMaskCat = (groundTruthMask == static_cast<int>(cat));
+		mIoU += IoU(segmentedImageCat, groundTruthMaskCat);
+	}
+
+	return mIoU / static_cast<float>(Category::PLAYING_FIELD - Category::BACKGROUND + 1);
+}
+
+//float mIoU(vector<Rect> &rects1, vector<Rect> &rects2){
+//	if(rects1.size() != rects2.size()){
+//		throw invalid_argument("rects1 and rects2 must have the same size");
+//	}
+//
+//	float sum = 0;
+//	for (int i = 0; i < rects1.size(); i++){
+//		sum += IoU(rects1[i], rects2[i]);
+//	}
+//	return sum / rects1.size();
+//}
+
+
+//float IoU(Rect &rect1, Rect &rect2){
+//	Rect i = rect1 & rect2;
+//	Rect u = rect1 | rect2;
+//	return static_cast<float>(i.area() / u.area());
+//}
+
+float IoU(Mat &mask1, Mat &mask2){
+	Mat i = mask1 & mask2;
+	Mat u = mask1 | mask2;
+	return static_cast<float>(countNonZero(i)) / static_cast<float>(countNonZero(u));
+}

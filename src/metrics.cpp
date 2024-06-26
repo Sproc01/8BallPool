@@ -14,7 +14,7 @@ using namespace std;
 using namespace cv;
 
 
-void compareMetrics(Table &table, Mat &segmentedImage, string folderPath, FrameN frameN){
+void compareMetrics(Table &table, Mat &segmentedImage, const string &folderPath, FrameN frameN){
 	filesystem::path groundTruthBboxPath;
 	filesystem::path groundTruthMaskPath;
 	switch (frameN) {
@@ -37,20 +37,25 @@ void compareMetrics(Table &table, Mat &segmentedImage, string folderPath, FrameN
 	cout << "mIoU: " << mIoU << endl;
 }
 
+float mIoUCategory(const Mat &segmentedImage, const Mat &groundTruthMask, Category cat){
+	Mat segmentedImageCat = (segmentedImage == static_cast<int>(cat));
+	Mat groundTruthMaskCat = (groundTruthMask == static_cast<int>(cat));
+	return IoU(segmentedImageCat, groundTruthMaskCat);
+}
+
 // For balls and playing field segmentation, the mean Intersection over Union (mIoU) metric, that is the average of the IoU computed for each class (background, white ball, black ball, solid color, striped and playing field)
-float mIoUSegmentation(Mat &segmentedImage, string groundTruthMaskPath){
+float mIoUSegmentation(const Mat &segmentedImage, const string& groundTruthMaskPath){
 	Mat groundTruthMask = imread(groundTruthMaskPath, IMREAD_GRAYSCALE);
 
 	float mIoU = 0;
 
 	for (Category cat=Category::BACKGROUND; cat<=Category::PLAYING_FIELD; cat=static_cast<Category>(cat+1)){
-		Mat segmentedImageCat = (segmentedImage == static_cast<int>(cat));
-		Mat groundTruthMaskCat = (groundTruthMask == static_cast<int>(cat));
-		mIoU += IoU(segmentedImageCat, groundTruthMaskCat);
+		mIoU += mIoUCategory(segmentedImage, groundTruthMask, cat);
 	}
 
 	return mIoU / static_cast<float>(Category::PLAYING_FIELD - Category::BACKGROUND + 1);
 }
+
 
 //float mIoU(vector<Rect> &rects1, vector<Rect> &rects2){
 //	if(rects1.size() != rects2.size()){
@@ -71,7 +76,7 @@ float mIoUSegmentation(Mat &segmentedImage, string groundTruthMaskPath){
 //	return static_cast<float>(i.area() / u.area());
 //}
 
-float IoU(Mat &mask1, Mat &mask2){
+float IoU(const Mat &mask1, const Mat &mask2){
 	Mat i = mask1 & mask2;
 	Mat u = mask1 | mask2;
 	return static_cast<float>(countNonZero(i)) / static_cast<float>(countNonZero(u));

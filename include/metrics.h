@@ -17,15 +17,15 @@ enum FrameN {
 
 const float MAP_IOU_THRESHOLD = 0.5;
 
-void compareMetrics(Table &table, cv::Mat &segmentedImage, std::string folderPath, FrameN frameN);
+void compareMetrics(Table &table, cv::Mat &segmentedImage, const std::string &folderPath, FrameN frameN);
 
 std::vector<std::pair<cv::Rect, short>> readGroundTruthFile(std::string filename);
 
 float mAP();
-float mIoUSegmentation(cv::Mat &segmentedImage, std::string groundTruthMaskPath);
+float mIoUSegmentation(const cv::Mat &segmentedImage, const std::string& groundTruthMaskPath);
 
 float AP();
 //float IoU(cv::Rect &rect1, cv::Rect &rect2);
-float IoU(cv::Mat &mask1, cv::Mat &mask2);
+float IoU(const cv::Mat &mask1, const cv::Mat &mask2);
 
 #endif //METRICS_H

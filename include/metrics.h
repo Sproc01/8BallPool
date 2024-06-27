@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <utility>
 #include "table.h"
+#include "category.h"
 
 enum FrameN {
   FIRST = 0,
@@ -19,7 +20,7 @@ const float MAP_IOU_THRESHOLD = 0.5;
 
 void compareMetrics(Table &table, cv::Mat &segmentedImage, const std::string &folderPath, FrameN frameN);
 
-std::vector<std::pair<cv::Rect, short>> readGroundTruthFile(std::string filename);
+std::vector<std::pair<cv::Rect, Category>> readGroundTruthBboxFile(const std::string &filename);
 
 float mAP();
 float mIoUSegmentation(const cv::Mat &segmentedImage, const std::string& groundTruthMaskPath);

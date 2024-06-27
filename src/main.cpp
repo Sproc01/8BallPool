@@ -3,6 +3,7 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
 #include <iostream>
+#include <filesystem>
 
 #include "ball.h"
 #include "table.h"
@@ -15,8 +16,15 @@
 using namespace std;
 using namespace cv;
 
-int main()
-{
+int main(int argc, char* argv[]){
+	if (argc != 2){
+		cout << "Usage: " << argv[0] << " <video_path>" << endl;
+//		return -1;  // TODO re add
+		argv[1] = "../Dataset/game1_clip1/game1_clip1.mp4"; // TODO remove
+	}
+	filesystem::path videoPath = filesystem::path(argv[1]);
+
+
 	Table table;
 	vector<Ball> balls;
 	Vec<Point2f, 4> tableCorners;
@@ -55,6 +63,8 @@ int main()
 
 	BallTracker tracker = BallTracker(table.ballsPtr());
 	tracker.trackAll(frame);
+
+	// TODO calculate metrics using videoPath.file_parent()
 
 	waitKey();
 

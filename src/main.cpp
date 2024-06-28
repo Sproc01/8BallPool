@@ -16,6 +16,7 @@
 using namespace std;
 using namespace cv;
 
+
 int main(int argc, char* argv[]){
 	if (argc != 2){
 		cout << "Usage: " << argv[0] << " <video_path>" << endl;
@@ -31,41 +32,41 @@ int main(int argc, char* argv[]){
 	Mat segmented;
 	Mat segmentedFrame;
 	int frameCount = 0;
-	vector<string> name ={"/game1_clip1/game1_clip1.mp4", "/game1_clip2/game1_clip2.mp4", "/game1_clip3/game1_clip3.mp4",
-							"/game1_clip4/game1_clip4.mp4", "/game2_clip1/game2_clip1.mp4", "/game2_clip2/game2_clip2.mp4",
-							"/game3_clip1/game3_clip1.mp4", "/game3_clip2/game3_clip2.mp4", "/game4_clip1/game4_clip1.mp4",
-							"/game4_clip2/game4_clip2.mp4"};
-	Mat frame;
-	Vec2b colorTable;
-	for(int i = 0; i < name.size(); i++)
-	{
-		VideoCapture vid = VideoCapture("../Dataset"+name[i]);
-		vid.read(frame);
-		detectTable(frame, tableCorners, colorTable);
-		//segmentTable(frame, tableCorners, colorTable, segmented);
-		waitKey(0);
-	}
-	// VideoCapture vid = VideoCapture("../Dataset");
+	// vector<string> name ={"/game1_clip1/game1_clip1.mp4", "/game1_clip2/game1_clip2.mp4", "/game1_clip3/game1_clip3.mp4",
+	// 						"/game1_clip4/game1_clip4.mp4", "/game2_clip1/game2_clip1.mp4", "/game2_clip2/game2_clip2.mp4",
+	// 						"/game3_clip1/game3_clip1.mp4", "/game3_clip2/game3_clip2.mp4", "/game4_clip1/game4_clip1.mp4",
+	// 						"/game4_clip2/game4_clip2.mp4"};
 	// Mat frame;
 	// Vec2b colorTable;
+	// for(int i = 0; i < name.size(); i++)
+	// {
+	// 	VideoCapture vid = VideoCapture("../Dataset"+name[i]);
+	// 	vid.read(frame);
+	// 	detectTable(frame, tableCorners, colorTable);
+	// 	segmentTable(frame, tableCorners, colorTable, segmented);
+	// 	waitKey(0);
+	// }
+	VideoCapture vid = VideoCapture("../Dataset/game1_clip1/game1_clip1.mp4");
+	Mat frame;
+	Vec2b colorTable;
 
 	// // TODO work on first frame
-	// if (!vid.isOpened() || !vid.read(frame)){
-	// 	cout << "Error opening video file" << endl;
-	// 	return -1;
-	// }
-	// ++frameCount;
-	// imshow("First frame", frame);
-	// detectTable(frame, tableCorners, colorTable);
-	// //table = Table(tableCorners, colorTable);
-	// // segmentTable(frame, tableCorners, colorTable, segmented);
-	// // imshow("segmentedTable", segmented);
-	// // detectBalls(frame, balls, tableCorners, colorTable);
-	// // // TODO better manage using table.ballsPtr()
-	// // table.addBalls(balls);
-	// // segmentBalls(segmented, balls, segmented);
-	// // imshow("segmentedBalls", segmented);
-	// waitKey(0);
+	if (!vid.isOpened() || !vid.read(frame)){
+		cout << "Error opening video file" << endl;
+		return -1;
+	}
+	++frameCount;
+	imshow("First frame", frame);
+	detectTable(frame, tableCorners, colorTable);
+	table = Table(tableCorners, colorTable);
+	segmentTable(frame, tableCorners, colorTable, segmented);
+	imshow("segmentedTable", segmented);
+	detectBalls(frame, balls, tableCorners, colorTable);
+	// TODO better manage using table.ballsPtr()
+	table.addBalls(balls);
+	segmentBalls(segmented, balls, segmented);
+	imshow("segmentedBalls", segmented);
+	waitKey(0);
 
 	// Mat minimap = imread(MINIMAP_PATH);
 	// Mat tempMinimap = minimap.clone();  // TODO minimap always draws over the same image

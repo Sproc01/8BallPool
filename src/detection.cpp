@@ -36,7 +36,7 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 
 	// mask the image
 	cvtColor(frame, thisImg, COLOR_BGR2HSV);
-	inRange(thisImg, Scalar(colorRange[0], S_CHANNEL_COLOR_THRESHOLD+20, V_CHANNEL_COLOR_THRESHOLD+20),
+	inRange(thisImg, Scalar(colorRange[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
 				Scalar(colorRange[1], 255, 255), mask);
 	imshow("Mask", mask);
 

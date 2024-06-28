@@ -5,6 +5,7 @@
 #include "ball.h"
 #include "table.h"
 #include "detection.h"
+#include "minimapConstants.h"
 
 using namespace cv;
 using namespace std;
@@ -16,7 +17,7 @@ void segmentTable(const Mat &frame, const Vec<Point2f, 4> &tableCorners, const S
 	Mat mask;
 	Mat polyImage = Mat::zeros(frame.size(), CV_8UC1);
 	cvtColor(frame, HSVimage, COLOR_BGR2HSV);
-	inRange(HSVimage,  Scalar(colorTable[0], 50, 90),
+	inRange(HSVimage,  Scalar(colorTable[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
 			Scalar(colorTable[1], 255, 255), mask);
 	vector<Point> tableCornersInt;
 	for(int i = 0; i < 4; i++)
@@ -34,7 +35,7 @@ void segmentTable(const Mat &frame, const Vec<Point2f, 4> &tableCorners, const S
 			}
 		}
 	}
-	//imshow("segmented", frame);
+	imshow("segmented", segmented);
 }
 
 void segmentBalls(const Mat &frame, const vector<Ball> &balls, Mat& segmented)
@@ -59,3 +60,40 @@ void segmentBalls(const Mat &frame, const vector<Ball> &balls, Mat& segmented)
 		circle(segmented, center, radius, c, -1);
 	}
 }
+
+
+// void kMeansClustering(Mat inputImage, int clusterCount)
+// {
+//     Mat blurred, samples, labels, clusteredImage, result;
+//     GaussianBlur(inputImage, blurred, Size(15,15), 0, 0);
+//     int attempts = 5;
+//     vector<Vec3b> colors;
+//     for(int i = 0; i < clusterCount; i++)
+//     {
+//         colors.push_back(Vec3b(rand()%256, rand()%256, rand()%256));
+//     }
+//     samples = Mat(inputImage.total(), 3, CV_32F);
+//     int index = 0;
+//     for(int i = 0; i < inputImage.rows; i++)
+//     {
+//         for(int j = 0; j < inputImage.cols; j++)
+//         {
+//             samples.at<float>(index, 0) = inputImage.at<Vec3b>(i, j)[0];
+//             samples.at<float>(index, 1) = inputImage.at<Vec3b>(i, j)[1];
+//             samples.at<float>(index, 2) = inputImage.at<Vec3b>(i, j)[2];
+//             index++;
+//         }
+//     }
+//     TermCriteria criteria = TermCriteria(TermCriteria::MAX_ITER|TermCriteria::EPS, 10, 0.01);
+//     kmeans(samples, clusterCount, labels, criteria, attempts, KMEANS_PP_CENTERS);
+//     clusteredImage = Mat(inputImage.size(), inputImage.type());
+//     for(int i = 0; i < inputImage.rows; i++)
+//     {
+//         for(int j = 0; j<inputImage.cols; j++)
+//         {
+//             int cluster_idx = labels.at<int>(i * inputImage.cols + j);
+//             clusteredImage.at<Vec3b>(i, j) = colors[cluster_idx];
+//         }
+//     }
+//     imshow("Cluster", clusteredImage);
+// }

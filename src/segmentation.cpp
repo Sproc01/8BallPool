@@ -34,7 +34,7 @@ void segmentTable(const Mat &frame, const Vec<Point2f, 4> &tableCorners, const S
 			}
 		}
 	}
-	//imshow("segmented", frame);
+	imshow("segmented", segmented);
 }
 
 void segmentBalls(const Mat &frame, const vector<Ball> &balls, Mat& segmented)

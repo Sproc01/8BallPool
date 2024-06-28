@@ -13,25 +13,18 @@
 using namespace cv;
 using namespace std;
 
-// S>50, V>90 to be a color and not black or white
-const int S_CHANNEL_COLOR_THRESHOLD = 50;
-const int V_CHANNEL_COLOR_THRESHOLD = 90;
-
-
 void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 {
 	// const used during the function
-	const int DIM_STRUCTURING_ELEMENT = 27;
-	const int DIM_GAUSSIAN_KERNEL = 17;
-	const int CANNY_THRESHOLD1 = 95; //95
-	const int CANNY_THRESHOLD2 = 110; // 110
-	const int THRESHOLD_HOUGH = 109; //130
-	const int MAX_LINE_GAP = 15; //15
-	const int MIN_LINE_LENGTH = 120; //120
+	const int DIM_STRUCTURING_ELEMENT = 11;
+	const int CANNY_THRESHOLD1 = 200;
+	const int CANNY_THRESHOLD2 = 250;
+	const int THRESHOLD_HOUGH = 90;
+	const int MAX_LINE_GAP = 40;
+	const int MIN_LINE_LENGTH = 150;
 	const int CLOSE_POINT_THRESHOLD = 30;
-
 	// variables
-	Mat imgGray, imgLine, imgBorder, thisImg, mask, kernel;
+	Mat imgGray, imgLine, imgBorder, thisImg, mask, kernel, blurred;
 	vector<Vec4i> lines;
 	int rowsover4 = frame.rows/4, colsover4 = frame.cols/4;
 	Scalar line_color = Scalar(0, 0, 255);
@@ -48,13 +41,11 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 	imshow("Mask", mask);
 
 	// morphological operations
-	kernel = getStructuringElement(MORPH_ELLIPSE, Size(DIM_STRUCTURING_ELEMENT, DIM_STRUCTURING_ELEMENT));
+	kernel = getStructuringElement(MORPH_CROSS, Size(DIM_STRUCTURING_ELEMENT, DIM_STRUCTURING_ELEMENT));
 	morphologyEx(mask, mask, MORPH_CLOSE, kernel);
 	imshow("Morphology", mask);
 
 	// edge detection
-	GaussianBlur(mask, mask, Size(DIM_GAUSSIAN_KERNEL, DIM_GAUSSIAN_KERNEL), 0);
-	//imshow("Gaussian Blur", mask);
 	Canny(mask, imgBorder, CANNY_THRESHOLD1, CANNY_THRESHOLD2);
 	imshow("Canny Result", imgBorder);
 
@@ -63,9 +54,14 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 	HoughLinesP(imgBorder, lines, 1, CV_PI/180, THRESHOLD_HOUGH, MIN_LINE_LENGTH, MAX_LINE_GAP);
 
 	// lines drawing
-	Point pt1, pt2;
+	Point pt1, pt2, pt3, pt4;
 	float aLine, bLine, cLine;
-	for(size_t i = 0; i < lines.size(); i++)
+	if(lines.size() < 4){
+		cout << lines.size()<<endl;
+		return;
+	} // TODO error
+
+	for(size_t i = 0; i < lines.size(); i++) // 4 strongest line
 	{
 		pt1.x = lines[i][0];
 		pt1.y = lines[i][1];
@@ -75,7 +71,6 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 		equationFormula(pt1.x, pt1.y, pt2.x, pt2.y, aLine, bLine, cLine);
 		coefficients.push_back(Vec3f(aLine, bLine, cLine));
 	}
-
 	// find intersections
 	Point2f intersection;
 	for(size_t i = 0; i < coefficients.size(); i++)
@@ -90,9 +85,8 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 
 	// remove intersections that are too close
 	vector<Point2f> intersectionsGood;
-	sort(intersections.begin(), intersections.end(), [frame](Point a, Point b) -> bool
+	sort(intersections.begin(), intersections.end(), [](Point a, Point b) -> bool
 	{
-		Point center = Point(frame.cols/2, frame.rows/2);
 		return norm(a) < norm(b);
 	});
 	// TODO remove auto
@@ -105,16 +99,11 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 	{
 		intersectionsGood.push_back(*it);
 	}
+	Point center = Point(frame.cols/2, frame.rows/2);
 
-	sort(intersectionsGood.begin(), intersectionsGood.end(), [frame](Point a, Point b) -> bool
-	{
-		Point center = Point(frame.cols/2, frame.rows/2);
-		return norm(a - center) < norm(b - center);
-	});
 	// clockwise order
-	sort(intersectionsGood.begin(), intersectionsGood.end(), [frame](Point a, Point b) -> bool
+	sort(intersectionsGood.begin(), intersectionsGood.end(), [&center](Point a, Point b) -> bool
 	{
-		Point center = Point(frame.cols/2, frame.rows/2);
 		if (a.x < center.x && b.x < center.x)
 			return a.y > b.y;
 		else if (a.x < center.x && b.x > center.x)
@@ -126,11 +115,10 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 	});
 
 	if(intersectionsGood.size() < 4){
-		throw runtime_error("Not enough unique intersections found");
+		imshow("Line", imgLine);
+		return;
+		//throw runtime_error("Not enough unique intersections found");
 	}
-
-//	cout << "intersections: " << intersections.size() << endl;
-//	cout << "intersectionsGood: " << intersectionsGood.size() << endl;
 
 	vector<Scalar> colors = {Scalar(255, 0, 0), Scalar(0, 255, 0), Scalar(0, 0, 255), Scalar(255, 255, 0)};
 	for(size_t i = 0; i < 4; i++)
@@ -143,7 +131,6 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 		corners[i] = intersectionsGood[i];
 	}
 	imshow("Line", imgLine);
-	//waitKey(0);
 }
 
 

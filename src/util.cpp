@@ -27,8 +27,8 @@ void equationFormula(float x1, float y1, float x2, float y2, float &a, float &b,
 	else
 	{
 		b = -1;
-		a = (y2-y1)/(x2-x1);
-		c = -a*x1 - b*y1;
+		a = (y2 - y1) / (x2 - x1);
+		c = -a * x1 - b * y1;
 	}
 }
 

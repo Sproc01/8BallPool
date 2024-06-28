@@ -16,15 +16,15 @@ using namespace std;
 void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 {
 	// const used during the function
-	const int DIM_STRUCTURING_ELEMENT = 11;
+	const int DIM_STRUCTURING_ELEMENT = 12;
 	const int CANNY_THRESHOLD1 = 200;
 	const int CANNY_THRESHOLD2 = 250;
 	const int THRESHOLD_HOUGH = 90;
-	const int MAX_LINE_GAP = 40;
+	const int MAX_LINE_GAP = 35;
 	const int MIN_LINE_LENGTH = 150;
-	const int CLOSE_POINT_THRESHOLD = 30;
+	const int CLOSE_POINT_THRESHOLD = 50;
 	// variables
-	Mat imgGray, imgLine, imgBorder, thisImg, mask, kernel, blurred;
+	Mat imgGray, imgLine, imgBorder, thisImg, mask, kernel;
 	vector<Vec4i> lines;
 	int rowsover4 = frame.rows/4, colsover4 = frame.cols/4;
 	Scalar line_color = Scalar(0, 0, 255);
@@ -36,7 +36,7 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 
 	// mask the image
 	cvtColor(frame, thisImg, COLOR_BGR2HSV);
-	inRange(thisImg, Scalar(colorRange[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
+	inRange(thisImg, Scalar(colorRange[0], S_CHANNEL_COLOR_THRESHOLD+20, V_CHANNEL_COLOR_THRESHOLD+20),
 				Scalar(colorRange[1], 255, 255), mask);
 	imshow("Mask", mask);
 
@@ -56,12 +56,9 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 	// lines drawing
 	Point pt1, pt2, pt3, pt4;
 	float aLine, bLine, cLine;
-	if(lines.size() < 4){
-		cout << lines.size()<<endl;
-		return;
-	} // TODO error
-
-	for(size_t i = 0; i < lines.size(); i++) // 4 strongest line
+	int maxI = 6;
+	if(maxI > lines.size()) maxI = lines.size();
+	for(size_t i = 0; i < maxI; i++)
 	{
 		pt1.x = lines[i][0];
 		pt1.y = lines[i][1];
@@ -70,6 +67,11 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 		line(imgLine, pt1, pt2, line_color, 2, LINE_AA);
 		equationFormula(pt1.x, pt1.y, pt2.x, pt2.y, aLine, bLine, cLine);
 		coefficients.push_back(Vec3f(aLine, bLine, cLine));
+	}
+	if(lines.size() < 4){
+		cout << lines.size()<<endl;
+		imshow("L",imgLine);
+		return; // TODO error
 	}
 	// find intersections
 	Point2f intersection;
@@ -82,12 +84,12 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 				intersections.push_back(intersection);
 		}
 	}
-
+	Point center = Point(frame.cols/2, frame.rows/2);
 	// remove intersections that are too close
 	vector<Point2f> intersectionsGood;
 	sort(intersections.begin(), intersections.end(), [](Point a, Point b) -> bool
 	{
-		return norm(a) < norm(b);
+		return norm(a) <= norm(b);
 	});
 	// TODO remove auto
 	auto end2 = unique(intersections.begin(), intersections.end(), [&CLOSE_POINT_THRESHOLD](Point a, Point b) -> bool
@@ -99,7 +101,6 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 	{
 		intersectionsGood.push_back(*it);
 	}
-	Point center = Point(frame.cols/2, frame.rows/2);
 
 	// clockwise order
 	sort(intersectionsGood.begin(), intersectionsGood.end(), [&center](Point a, Point b) -> bool

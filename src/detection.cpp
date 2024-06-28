@@ -70,8 +70,7 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 	}
 	if(lines.size() < 4){
 		cout << lines.size()<<endl;
-		imshow("L",imgLine);
-		return; // TODO error
+		throw runtime_error("Not enough lines found");
 	}
 	// find intersections
 	Point2f intersection;
@@ -117,8 +116,7 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 
 	if(intersectionsGood.size() < 4){
 		imshow("Line", imgLine);
-		return;
-		//throw runtime_error("Not enough unique intersections found");
+		throw runtime_error("Not enough unique intersections found");
 	}
 
 	vector<Scalar> colors = {Scalar(255, 0, 0), Scalar(0, 255, 0), Scalar(0, 0, 255), Scalar(255, 255, 0)};

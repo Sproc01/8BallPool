@@ -27,4 +27,8 @@ const cv::Vec3d SOLID_BGR_COLOR = cv::Vec3d(0, 0, 255);         // red
 const cv::Vec3d STRIPED_BGR_COLOR = cv::Vec3d(255, 0, 0);       // blue
 const cv::Vec3d PLAYING_FIELD_BGR_COLOR = cv::Vec3d(0, 255, 0); // green
 
+// S>70, V>100 to be a color and not black or white
+const int S_CHANNEL_COLOR_THRESHOLD = 70;
+const int V_CHANNEL_COLOR_THRESHOLD = 100;
+
 #endif //MINIMAPCONSTANTS_H

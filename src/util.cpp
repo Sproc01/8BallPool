@@ -59,7 +59,7 @@ Vec2b mostFrequentColor(const Mat &img)
 	cvtColor(img, thisImg, COLOR_BGR2HSV);
 	Mat hist;
 	int histSize = 8; // number of bins
-	float range[] = {0, 179+1}; // range (upper bound is exclusive)
+	float range[] = {0, 179+1}; // range (upper bound is exclusive) TODO check because 0-180 is the range
 	const float* histRange[] = { range };
 
 	// Evaluate only H channel

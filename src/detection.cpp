@@ -38,16 +38,16 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 	cvtColor(frame, thisImg, COLOR_BGR2HSV);
 	inRange(thisImg, Scalar(colorRange[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
 				Scalar(colorRange[1], 255, 255), mask);
-	imshow("Mask", mask);
+	//imshow("Mask", mask);
 
 	// morphological operations
 	kernel = getStructuringElement(MORPH_CROSS, Size(DIM_STRUCTURING_ELEMENT, DIM_STRUCTURING_ELEMENT));
 	morphologyEx(mask, mask, MORPH_CLOSE, kernel);
-	imshow("Morphology", mask);
+	//imshow("Morphology", mask);
 
 	// edge detection
 	Canny(mask, imgBorder, CANNY_THRESHOLD1, CANNY_THRESHOLD2);
-	imshow("Canny Result", imgBorder);
+	//imshow("Canny Result", imgBorder);
 
 	// Hough transform
 	imgLine = frame.clone();
@@ -138,35 +138,35 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	// const used during the function
 	const int MIN_RADIUS = 5;
 	const int MAX_RADIUS = 15;
-	const int HOUGH_PARAM1 = 120;
-	const int HOUGH_PARAM2 = 5;
-	const int ACCUMULATOR_RESOLUTION = 1;
-	const int MIN_DISTANCE = 30;
+	const int HOUGH_PARAM1 = 100; //120
+	const int HOUGH_PARAM2 = 11;
+	const float ACCUMULATOR_RESOLUTION = 1;
+	const int MIN_DISTANCE = 25;
 
 	// const for the ball
-	const int MEAN_WHITE_CHANNEL2 = 90;
-	const int MEAN_WHITE_CHANNEL3 = 220;
-	const int MEAN_BLACK_CHANNEL3 = 100;
+	const int MEAN_WHITE_CHANNEL2 = 110;
+	const int MEAN_WHITE_CHANNEL3 = 210;
+	const int MEAN_BLACK_CHANNEL3 = 90;
 	const int STD_DEV_BLACK = 70;
-	const int STD_DEV_SOLID = 20;
-	const int STD_DEV_STRIPED = 20;
-
+	const int STD_DEV_SOLID = 35;
+	const int STD_DEV_STRIPED = 40;
 
 	// variables
-	Mat gray, gradX, gradY, abs_grad_x, abs_grad_y, grad, imgBorder, HSVImg;
-	Mat mask;
+	Mat gray, imgBorder, HSVImg, mask;
 	cvtColor(frame, HSVImg, COLOR_BGR2HSV);
 	inRange(HSVImg, Scalar(colorTable[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
-			Scalar(colorTable[1], 255, 255), gray);
+			Scalar(colorTable[1], 255, 255), mask);
+	Mat kernel = getStructuringElement(MORPH_ELLIPSE, Size(15, 15));
+	morphologyEx(mask, mask, MORPH_ERODE, kernel);
+
+	Mat dst;
+	bilateralFilter(frame, dst, 5, 10, 50);
+	cvtColor(dst, gray, COLOR_BGR2GRAY);
 	vector<Vec3f> circles;
 	vector<Rect> boundRect;
 	Mat frameRect = frame.clone();
 	Mat frameCircle = frame.clone();
 
-	int maxY = max(tableCorners[0].y, tableCorners[3].y);
-	int minY = min(tableCorners[1].y, tableCorners[2].y);
-	int maxX = max(tableCorners[2].x, tableCorners[3].x);
-	int minX = min(tableCorners[0].x, tableCorners[1].x);
 	Mat cropped;
 	cropped = Mat::zeros(gray.size(), CV_8UC1);
 
@@ -184,12 +184,14 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 		for(int j = 0; j < cropped.cols; j++)
 		{
 			if(cropped.at<uchar>(i, j) != 255)
-			{
 				gray.at<uchar>(i, j) = 0;
-			}
+
+			if(mask.at<uchar>(i,j) == 255)
+				gray.at<uchar>(i,j) = 0;
 		}
 	}
 	imshow("Cropped image", gray);
+	//imshow("mask", mask);
 
 	// Hough transform
 	HoughCircles(gray, circles, HOUGH_GRADIENT,
@@ -198,32 +200,43 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	vector<double> mean, stddev;
 	Category category;
 	double meanRadius = 0; 	// mean of radius of the balls
+	Point center;
+	int radius;
+	Vec3i c;
 	for(size_t i = 0; i < circles.size(); i++)
 	{
-		//cout << circles[i][2] << endl;
-		meanRadius += circles[i][2];
+		c = circles[i];
+		radius = c[2];
+		center = Point(c[0], c[1]);
+		if(cropped.at<uchar>(center.y, center.x) == 255
+			&& cropped.at<uchar>(center.y+radius, center.x) == 255
+			&& cropped.at<uchar>(center.y-radius, center.x) == 255
+			&& cropped.at<uchar>(center.y, center.x+radius) == 255
+			&& cropped.at<uchar>(center.y, center.x-radius) == 255
+			&& mask.at<uchar>(center.y, center.x) == 0)
+			meanRadius += circles[i][2];
 	}
 	meanRadius /= circles.size();
 	//cout << "Mean radius: " << meanRadius << endl;
 	Rect rect;
 	for(size_t i = 0; i < circles.size(); i++ )
 	{
-		Vec3i c = circles[i];
-		Point center = Point(c[0], c[1]);
-		int radius = c[2];
+		c = circles[i];
+		center = Point(c[0], c[1]);
+		radius = c[2];
 		// Inside the cropped image, not too small, not too big, not on the border
-		if(radius < 1.5 * meanRadius && radius > 0.5 * meanRadius
-			&& cropped.at<uchar>(center.y, center.x) == 255
+		if(radius > 0.5 * meanRadius && radius < 1.8 * meanRadius
+		 	&& cropped.at<uchar>(center.y, center.x) == 255
 			&& cropped.at<uchar>(center.y+radius, center.x) == 255
 			&& cropped.at<uchar>(center.y-radius, center.x) == 255
 			&& cropped.at<uchar>(center.y, center.x+radius) == 255
 			&& cropped.at<uchar>(center.y, center.x-radius) == 255
-			&& gray.at<uchar>(center.y, center.x) == 0)
+			&& mask.at<uchar>(center.y, center.x) == 0)
 		{
 			// rect and circle
 			rect = Rect(center.x-c[2], center.y-c[2], 2*c[2], 2*c[2]);
 			boundRect.push_back(rect);
-			int halfRad = static_cast<int>(c[2]/2);
+			int halfRad = static_cast<int>(radius/2);
 			subImg = HSVImg.colRange(c[0]-halfRad, c[0]+halfRad).rowRange(c[1]-halfRad, c[1]+halfRad);
 
 			// only for debug
@@ -260,6 +273,11 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 				category = Category::STRIPED_BALL;
 				circle(frameCircle, center, radius, STRIPED_BGR_COLOR, 1, LINE_AA);
 				rectangle(frameRect, rect, STRIPED_BGR_COLOR, 1, LINE_AA);
+			}
+			else
+			{
+				circle(frameCircle, center, radius, Scalar(255,255,255), 1, LINE_AA);
+				rectangle(frameRect, rect, Scalar(255,255,255), 1, LINE_AA);
 			}
 			Ball ball(rect, category);
 			balls.push_back(ball);

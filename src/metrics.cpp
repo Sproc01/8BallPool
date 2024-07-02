@@ -176,13 +176,14 @@ double mAPDetection(const Ptr<vector<Ball>> &detectedBalls, const string &ground
 
 
 double mIoUCategory(const Mat &segmentedImage, const Mat &groundTruthMask, Category cat){
-	cout<< "cat: " << cat << endl;
 	Mat segmentedImageCat = (segmentedImage == static_cast<unsigned char>(cat));
 	Mat groundTruthMaskCat = (groundTruthMask == static_cast<unsigned char>(cat));
 	imshow("segmentedImageCat", segmentedImageCat);
 	imshow("groundTruthMaskCat", groundTruthMaskCat);
 	waitKey();
-	return IoU(segmentedImageCat, groundTruthMaskCat);
+	double iou = IoU(segmentedImageCat, groundTruthMaskCat);
+	cout<< "cat: " << cat << '\t' << "iou: " << iou << endl;
+	return iou;
 }
 
 // For balls and playing field segmentation, the mean Intersection over Union (mIoU) metric, that is the average of the IoU computed for each class (background, white ball, black ball, solid color, striped and playing field)

@@ -51,7 +51,7 @@ int main(int argc, char* argv[]){
 	Mat frame;
 	Vec2b colorTable;
 
-	// // TODO work on first frame
+	// TODO work on first frame
 	if (!vid.isOpened() || !vid.read(frame)){
 		cout << "Error opening video file" << endl;
 		return -1;
@@ -73,7 +73,7 @@ int main(int argc, char* argv[]){
 	imshow("segmentedBalls", segmented);
 	waitKey(0);
 
-	// Mat minimap = imread(MINIMAP_PATH);
+//	 Mat minimap = imread(MINIMAP_PATH);
 	// Mat tempMinimap = minimap.clone();  // TODO minimap always draws over the same image
 //	 imshow("minimap", minimap);
 
@@ -125,6 +125,6 @@ int main(int argc, char* argv[]){
 // 	// TODO work on last frame
 
 // 	waitKey();
-// 	return 0;
+ 	return 0;
 }
 

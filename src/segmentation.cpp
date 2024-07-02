@@ -10,51 +10,55 @@
 using namespace cv;
 using namespace std;
 
-// void kMeansClustering(Mat inputImage, int clusterCount)
-// {
-//     Mat blurred, samples, labels, clusteredImage, result;
-//     GaussianBlur(inputImage, blurred, Size(15,15), 0, 0);
-//     int attempts = 5;
-//     vector<Vec3b> colors;
-//     for(int i = 0; i < clusterCount; i++)
-//     {
-//         colors.push_back(Vec3b(rand()%256, rand()%256, rand()%256));
-//     }
-//     samples = Mat(inputImage.total(), 3, CV_32F);
-//     int index = 0;
-//     for(int i = 0; i < inputImage.rows; i++)
-//     {
-//         for(int j = 0; j < inputImage.cols; j++)
-//         {
-//             samples.at<float>(index, 0) = inputImage.at<Vec3b>(i, j)[0];
-//             samples.at<float>(index, 1) = inputImage.at<Vec3b>(i, j)[1];
-//             samples.at<float>(index, 2) = inputImage.at<Vec3b>(i, j)[2];
-//             index++;
-//         }
-//     }
-//     TermCriteria criteria = TermCriteria(TermCriteria::MAX_ITER|TermCriteria::EPS, 10, 0.01);
-//     kmeans(samples, clusterCount, labels, criteria, attempts, KMEANS_PP_CENTERS);
-//     clusteredImage = Mat(inputImage.size(), inputImage.type());
-//     for(int i = 0; i < inputImage.rows; i++)
-//     {
-//         for(int j = 0; j<inputImage.cols; j++)
-//         {
-//             int cluster_idx = labels.at<int>(i * inputImage.cols + j);
-//             clusteredImage.at<Vec3b>(i, j) = colors[cluster_idx];
-//         }
-//     }
-//     imshow("Cluster", clusteredImage);
-// }
+void kMeansClustering(const Mat inputImage, Mat& clusteredImage)
+{
+	int clusterCount = 2;
+    Mat blurred, samples, labels;
+    GaussianBlur(inputImage, blurred, Size(15,15), 0, 0);
+    int attempts = 5;
+    vector<uchar> colors = {0, 255};
+    // for(int i = 0; i < clusterCount; i++)
+    // {
+    //     colors.push_back(Vec3b(rand()%256, rand()%256, rand()%256));
+    // }
+    samples = Mat(inputImage.total(), 3, CV_32F);
+    int index = 0;
+    for(int i = 0; i < inputImage.rows; i++)
+    {
+        for(int j = 0; j < inputImage.cols; j++)
+        {
+            samples.at<float>(index, 0) = inputImage.at<Vec3b>(i, j)[0];
+            samples.at<float>(index, 1) = inputImage.at<Vec3b>(i, j)[1];
+            samples.at<float>(index, 2) = inputImage.at<Vec3b>(i, j)[2];
+            index++;
+        }
+    }
+    TermCriteria criteria = TermCriteria(TermCriteria::MAX_ITER|TermCriteria::EPS, 10, 0.01);
+    kmeans(samples, clusterCount, labels, criteria, attempts, KMEANS_PP_CENTERS);
+    clusteredImage = Mat(inputImage.size(), CV_8U);
+    for(int i = 0; i < inputImage.rows; i++)
+    {
+        for(int j = 0; j < inputImage.cols; j++)
+        {
+            int cluster_idx = labels.at<int>(i * inputImage.cols + j);
+            clusteredImage.at<uchar>(i, j) = colors[cluster_idx];
+        }
+    }
+}
 
 void segmentTable(const Mat &frame, const Vec<Point2f, 4> &tableCorners, const Scalar &colorTable, Mat& segmented)
 {
+	Mat clustered;
+	kMeansClustering(frame, clustered);
 	segmented = frame.clone();
-	Mat HSVimage;
-	Mat mask;
+	// Mat HSVimage;
+	// Mat mask;
+	// at the center color of table in the dataset
+	uchar color = clustered.at<uchar>(clustered.rows/2, clustered.cols/2);
 	Mat polyImage = Mat::zeros(frame.size(), CV_8UC1);
-	cvtColor(frame, HSVimage, COLOR_BGR2HSV);
-	inRange(HSVimage,  Scalar(colorTable[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
-			Scalar(colorTable[1], 255, 255), mask);
+	//cvtColor(frame, HSVimage, COLOR_BGR2HSV);
+	// inRange(HSVimage,  Scalar(colorTable[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
+	// 		Scalar(colorTable[1], 255, 255), mask);
 	vector<Point> tableCornersInt;
 	for(int i = 0; i < 4; i++)
 	{
@@ -65,7 +69,7 @@ void segmentTable(const Mat &frame, const Vec<Point2f, 4> &tableCorners, const S
 	{
 		for(int j = 0; j < segmented.cols; j++)
 		{
-			if(polyImage.at<uchar>(i, j) == 255 && mask.at<uchar>(i, j) == 255)
+			if(polyImage.at<uchar>(i, j) == 255 && clustered.at<uchar>(i, j) == color)
 			{
 				segmented.at<Vec3b>(i, j) = PLAYING_FIELD_BGR_COLOR;
 			}

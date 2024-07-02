@@ -67,7 +67,11 @@ void segmentTable(const Mat &frame, const Vec<Point2f, 4> &tableCorners, const S
 		{
 			if(polyImage.at<uchar>(i, j) == 255 && mask.at<uchar>(i, j) == 255)
 			{
-				segmented.at<Vec3b>(i, j) = Vec3b(255, 255, 0);
+				segmented.at<Vec3b>(i, j) = PLAYING_FIELD_BGR_COLOR;
+			}
+			else
+			{
+				segmented.at<Vec3b>(i, j) = BACKGROUND_BGR_COLOR;
 			}
 		}
 	}

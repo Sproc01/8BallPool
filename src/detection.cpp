@@ -138,7 +138,7 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	// const used during the function
 	const int MIN_RADIUS = 5;
 	const int MAX_RADIUS = 15;
-	const int HOUGH_PARAM1 = 100; //120
+	const int HOUGH_PARAM1 = 100;
 	const int HOUGH_PARAM2 = 11;
 	const float ACCUMULATOR_RESOLUTION = 1;
 	const int MIN_DISTANCE = 25;

@@ -31,7 +31,11 @@ void segmentTable(const Mat &frame, const Vec<Point2f, 4> &tableCorners, const S
 		{
 			if(polyImage.at<uchar>(i, j) == 255 && mask.at<uchar>(i, j) == 255)
 			{
-				segmented.at<Vec3b>(i, j) = Vec3b(0, 255, 0);
+				segmented.at<Vec3b>(i, j) = PLAYING_FIELD_BGR_COLOR;
+			}
+			else
+			{
+				segmented.at<Vec3b>(i, j) = BACKGROUND_BGR_COLOR;
 			}
 		}
 	}
@@ -42,18 +46,18 @@ void segmentBalls(const Mat &frame, const vector<Ball> &balls, Mat& segmented)
 {
 	float radius;
 	Point center;
-	segmented = frame.clone();
+	//segmented = frame.clone();
 	Scalar c = Scalar(0, 0, 0);
 	for (const Ball &ball : balls)
 	{
 		if(ball.getCategory() == Category::BLACK_BALL)
-			c = Scalar(0, 0, 0);
+			c = BLACK_BGR_COLOR;
 		else if(ball.getCategory() == Category::WHITE_BALL)
-			c = Scalar(255, 255, 255);
+			c = WHITE_BGR_COLOR;
 		else if(ball.getCategory() == Category::SOLID_BALL)
-			c = Scalar(0, 0, 255);
+			c = SOLID_BGR_COLOR;
 		else if(ball.getCategory() == Category::STRIPED_BALL)
-			c = Scalar(255, 0, 0);
+			c = STRIPED_BGR_COLOR;
 		Rect b = ball.getBbox();
 		radius = b.width / 2;
 		center = Point(b.tl().x + radius, b.tl().y + radius);

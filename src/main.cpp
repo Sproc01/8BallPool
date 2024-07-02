@@ -12,6 +12,7 @@
 #include "transformation.h"
 #include "minimapConstants.h"
 #include "tracking.h"
+#include "metrics.h"
 
 using namespace std;
 using namespace cv;
@@ -65,6 +66,10 @@ int main(int argc, char* argv[]){
 	// TODO better manage using table.ballsPtr()
 	table.addBalls(balls);
 	segmentBalls(segmented, balls, segmented);
+	imshow("segmented", segmented);
+	waitKey(0);
+	double s = mIoUSegmentation(segmented,"../Dataset/game1_clip1/masks/frame_first.png");
+	cout << s<< endl;
 	imshow("segmentedBalls", segmented);
 	waitKey(0);
 

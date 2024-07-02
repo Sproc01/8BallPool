@@ -182,6 +182,7 @@ double mIoUCategory(const Mat &segmentedImage, const Mat &groundTruthMask, Categ
 // For balls and playing field segmentation, the mean Intersection over Union (mIoU) metric, that is the average of the IoU computed for each class (background, white ball, black ball, solid color, striped and playing field)
 double mIoUSegmentation(const Mat &segmentedImage, const string& groundTruthMaskPath){
 	Mat groundTruthMask = imread(groundTruthMaskPath, IMREAD_GRAYSCALE);
+	cout << "readed" << endl;
 
 	double mIoU = 0;
 

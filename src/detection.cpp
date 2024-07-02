@@ -90,13 +90,13 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 	{
 		return norm(a) < norm(b);
 	});
-	// TODO remove auto
-	auto end2 = unique(intersections.begin(), intersections.end(), [&CLOSE_POINT_THRESHOLD](Point a, Point b) -> bool
+	// auto or this one TODO decide
+	vector<Point2f>::iterator end2 = unique(intersections.begin(), intersections.end(), [&CLOSE_POINT_THRESHOLD](Point a, Point b) -> bool
 	{
 		return abs(a.x - b.x) < CLOSE_POINT_THRESHOLD && abs(a.y - b.y) < CLOSE_POINT_THRESHOLD;
 	});
-	// TODO remove auto
-	for(auto it = intersections.begin(); it != end2; it++)
+	// auto or this one TODO decide
+	for(vector<Point2f>::iterator it = intersections.begin(); it != end2; it++)
 	{
 		intersectionsGood.push_back(*it);
 	}
@@ -139,7 +139,7 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	const int HOUGH_PARAM1 = 100;
 	const int HOUGH_PARAM2 = 11;
 	const float ACCUMULATOR_RESOLUTION = 1;
-	const int MIN_DISTANCE = 25;
+	const int MIN_DISTANCE = 20;
 
 	// const filters
 	const int DIM_STRUCTURING_ELEMENT = 15;
@@ -152,8 +152,8 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	const int MEAN_WHITE_CHANNEL3 = 210;
 	const int MEAN_BLACK_CHANNEL3 = 90;
 	const int STD_DEV_BLACK = 60;
-	const int STD_DEV_SOLID = 40;
-	const int STD_DEV_STRIPED = 40;
+	const int STD_DEV_SOLID = 20;
+	const int STD_DEV_STRIPED = 20;
 
 	// variables
 	Mat gray, imgBorder, HSVImg, mask;
@@ -222,10 +222,10 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	meanRadius /= circles.size();
 	//cout << "Mean radius: " << meanRadius << endl;
 	Rect rect;
-	bool ballFound;
+	//bool ballFound;
 	for(size_t i = 0; i < circles.size(); i++ )
 	{
-		ballFound = true;
+		//ballFound = true;
 		c = circles[i];
 		center = Point(c[0], c[1]);
 		radius = c[2];
@@ -280,16 +280,16 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 				circle(frameCircle, center, radius, STRIPED_BGR_COLOR, 1, LINE_AA);
 				rectangle(frameRect, rect, STRIPED_BGR_COLOR, 1, LINE_AA);
 			}
-			else
-			{
-				circle(frameCircle, center, radius, Scalar(255, 255, 255), 1, LINE_AA);
-				ballFound = false;
-			}
-			if(ballFound)
-			{
+			// else
+			// {
+			// 	circle(frameCircle, center, radius, Scalar(255, 255, 255), 1, LINE_AA);
+			// 	ballFound = false;
+			// }
+			// if(ballFound)
+			// {
 				//Ball ball(rect, category);
 				balls.push_back(Ball(rect, category));
-			}
+			// }
 		}
 	}
 	imshow("detected circles", frameCircle);

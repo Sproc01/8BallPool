@@ -3,6 +3,7 @@
 #include "metrics.h"
 #include "category.h"
 #include "table.h"
+#include "minimapConstants.h"
 #include <stdexcept>
 #include <filesystem>
 #include <utility>
@@ -10,6 +11,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include <fstream>
 #include <iostream>
+#include <opencv2/highgui.hpp>
 
 using namespace std;
 using namespace cv;
@@ -174,20 +176,51 @@ double mAPDetection(const Ptr<vector<Ball>> &detectedBalls, const string &ground
 
 
 double mIoUCategory(const Mat &segmentedImage, const Mat &groundTruthMask, Category cat){
-	Mat segmentedImageCat = (segmentedImage == static_cast<int>(cat));
-	Mat groundTruthMaskCat = (groundTruthMask == static_cast<int>(cat));
+	cout<< "cat: " << cat << endl;
+	Mat segmentedImageCat = (segmentedImage == static_cast<unsigned char>(cat));
+	Mat groundTruthMaskCat = (groundTruthMask == static_cast<unsigned char>(cat));
+	imshow("segmentedImageCat", segmentedImageCat);
+	imshow("groundTruthMaskCat", groundTruthMaskCat);
+	waitKey();
 	return IoU(segmentedImageCat, groundTruthMaskCat);
 }
 
 // For balls and playing field segmentation, the mean Intersection over Union (mIoU) metric, that is the average of the IoU computed for each class (background, white ball, black ball, solid color, striped and playing field)
 double mIoUSegmentation(const Mat &segmentedImage, const string& groundTruthMaskPath){
+	// Convert the segmented image from BGR colors to grayscale category-related colors
+	Mat segmentedImageGray = Mat::zeros(segmentedImage.size(), CV_8UC1);
+	for (int i = 0; i < segmentedImage.rows; i++){
+		for (int j = 0; j < segmentedImage.cols; j++){
+			if (segmentedImage.at<Vec3b>(i,j) == BACKGROUND_BGR_COLOR){
+				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::BACKGROUND);
+			}
+			else if (segmentedImage.at<Vec3b>(i,j) == WHITE_BGR_COLOR){
+				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::WHITE_BALL);
+			}
+			else if (segmentedImage.at<Vec3b>(i,j) == BLACK_BGR_COLOR){
+				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::BLACK_BALL);
+			}
+			else if (segmentedImage.at<Vec3b>(i,j) == SOLID_BGR_COLOR){
+				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::SOLID_BALL);
+			}
+			else if (segmentedImage.at<Vec3b>(i,j) == STRIPED_BGR_COLOR){
+				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::STRIPED_BALL);
+			}
+			else if (segmentedImage.at<Vec3b>(i,j) == PLAYING_FIELD_BGR_COLOR){
+				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::PLAYING_FIELD);
+			}
+			else{
+				throw invalid_argument("Invalid color");
+			}
+		}
+	}
+
 	Mat groundTruthMask = imread(groundTruthMaskPath, IMREAD_GRAYSCALE);
-	cout << "readed" << endl;
 
 	double mIoU = 0;
 
 	for (Category cat=Category::BACKGROUND; cat<=Category::PLAYING_FIELD; cat=static_cast<Category>(cat+1)){
-		mIoU += mIoUCategory(segmentedImage, groundTruthMask, cat);
+		mIoU += mIoUCategory(segmentedImageGray, groundTruthMask, cat);
 	}
 
 	return mIoU / static_cast<double>(Category::PLAYING_FIELD - Category::BACKGROUND + 1);

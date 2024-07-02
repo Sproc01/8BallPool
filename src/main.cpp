@@ -45,11 +45,12 @@ int main(int argc, char* argv[]){
 		VideoCapture vid = VideoCapture("../Dataset"+name[i]);
 		vid.read(frame);
 		detectTable(frame, tableCorners, colorTable);
+		cout << "new image" << endl;
 		detectBalls(frame, balls, tableCorners, colorTable);
-		segmentTable(frame, tableCorners, colorTable, segmented);
-		imshow("segT", segmented);
-		segmentBalls(frame, balls, segmented);
-		imshow("segB", segmented);
+		// segmentTable(frame, tableCorners, colorTable, segmented);
+		// imshow("segT", segmented);
+		// segmentBalls(frame, balls, segmented);
+		// imshow("segB", segmented);
 		waitKey(0);
 	}
 	// VideoCapture vid = VideoCapture("../Dataset/game1_clip1/game1_clip1.mp4");

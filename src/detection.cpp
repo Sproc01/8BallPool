@@ -26,15 +26,16 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 	// variables
 	Mat imgGray, imgLine, imgBorder, thisImg, mask, kernel;
 	vector<Vec4i> lines;
-	int rowsover4 = frame.rows/4, colsover4 = frame.cols/4;
+	//int rowsover4 = frame.rows/4;
+	int colsover4 = frame.cols/4;
 	Scalar line_color = Scalar(0, 0, 255);
 	vector<Point2f> intersections;
 	vector<Vec3f> coefficients;
 
 	// get the color range
-	colorRange = mostFrequentColor(frame.rowRange(rowsover4, 3*rowsover4).colRange(colsover4, 3*colsover4));
+	colorRange = mostFrequentColor(frame.colRange(colsover4, 3*colsover4)); //.rowRange(rowsover4, 3*rowsover4)
 
-	// mask the image
+	// // mask the image
 	cvtColor(frame, thisImg, COLOR_BGR2HSV);
 	inRange(thisImg, Scalar(colorRange[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
 				Scalar(colorRange[1], 255, 255), mask);
@@ -68,10 +69,9 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 		equationFormula(pt1.x, pt1.y, pt2.x, pt2.y, aLine, bLine, cLine);
 		coefficients.push_back(Vec3f(aLine, bLine, cLine));
 	}
-	if(lines.size() < 4){
-		cout << lines.size()<<endl;
+	if(lines.size() < 4)
 		throw runtime_error("Not enough lines found");
-	}
+
 	// find intersections
 	Point2f intersection;
 	for(size_t i = 0; i < coefficients.size(); i++)
@@ -88,7 +88,7 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 	vector<Point2f> intersectionsGood;
 	sort(intersections.begin(), intersections.end(), [](Point a, Point b) -> bool
 	{
-		return norm(a) <= norm(b);
+		return norm(a) < norm(b);
 	});
 	// TODO remove auto
 	auto end2 = unique(intersections.begin(), intersections.end(), [&CLOSE_POINT_THRESHOLD](Point a, Point b) -> bool
@@ -114,10 +114,8 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 			return false;
 	});
 
-	if(intersectionsGood.size() < 4){
-		imshow("Line", imgLine);
+	if(intersectionsGood.size() < 4)
 		throw runtime_error("Not enough unique intersections found");
-	}
 
 	vector<Scalar> colors = {Scalar(255, 0, 0), Scalar(0, 255, 0), Scalar(0, 0, 255), Scalar(255, 255, 0)};
 	for(size_t i = 0; i < 4; i++)
@@ -143,12 +141,18 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	const float ACCUMULATOR_RESOLUTION = 1;
 	const int MIN_DISTANCE = 25;
 
+	// const filters
+	const int DIM_STRUCTURING_ELEMENT = 15;
+	// const int DIM_BILATERAL_FILTER = 5;
+	// const int SIGMA_COLOR = 10;
+	// const int SIGMA_SPACE = 50;
+
 	// const for the ball
 	const int MEAN_WHITE_CHANNEL2 = 110;
 	const int MEAN_WHITE_CHANNEL3 = 210;
 	const int MEAN_BLACK_CHANNEL3 = 90;
-	const int STD_DEV_BLACK = 70;
-	const int STD_DEV_SOLID = 35;
+	const int STD_DEV_BLACK = 60;
+	const int STD_DEV_SOLID = 40;
 	const int STD_DEV_STRIPED = 40;
 
 	// variables
@@ -156,19 +160,18 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	cvtColor(frame, HSVImg, COLOR_BGR2HSV);
 	inRange(HSVImg, Scalar(colorTable[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
 			Scalar(colorTable[1], 255, 255), mask);
-	Mat kernel = getStructuringElement(MORPH_ELLIPSE, Size(15, 15));
+	Mat kernel = getStructuringElement(MORPH_ELLIPSE, Size(DIM_STRUCTURING_ELEMENT, DIM_STRUCTURING_ELEMENT));
 	morphologyEx(mask, mask, MORPH_ERODE, kernel);
 
-	Mat dst;
-	bilateralFilter(frame, dst, 5, 10, 50);
-	cvtColor(dst, gray, COLOR_BGR2GRAY);
+	//Mat dst;
+	//bilateralFilter(frame, dst, DIM_BILATERAL_FILTER, SIGMA_COLOR, SIGMA_SPACE);
+	cvtColor(frame, gray, COLOR_BGR2GRAY);
 	vector<Vec3f> circles;
 	vector<Rect> boundRect;
 	Mat frameRect = frame.clone();
 	Mat frameCircle = frame.clone();
 
-	Mat cropped;
-	cropped = Mat::zeros(gray.size(), CV_8UC1);
+	Mat cropped = Mat::zeros(gray.size(), CV_8UC1);
 
 	// needed otherwise exception
 	vector<Point> tableCornersInt;
@@ -190,8 +193,8 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 				gray.at<uchar>(i,j) = 0;
 		}
 	}
-	imshow("Cropped image", gray);
-	//imshow("mask", mask);
+	imshow("image Balls", gray);
+	imshow("mask", mask);
 
 	// Hough transform
 	HoughCircles(gray, circles, HOUGH_GRADIENT,
@@ -219,12 +222,14 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	meanRadius /= circles.size();
 	//cout << "Mean radius: " << meanRadius << endl;
 	Rect rect;
+	bool ballFound;
 	for(size_t i = 0; i < circles.size(); i++ )
 	{
+		ballFound = true;
 		c = circles[i];
 		center = Point(c[0], c[1]);
 		radius = c[2];
-		// Inside the cropped image, not too small, not too big, not on the border
+		// Inside the cropped image, not too small, not too big, not selected by the table mask
 		if(radius > 0.5 * meanRadius && radius < 1.8 * meanRadius
 		 	&& cropped.at<uchar>(center.y, center.x) == 255
 			&& cropped.at<uchar>(center.y+radius, center.x) == 255
@@ -238,7 +243,8 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 			boundRect.push_back(rect);
 			int halfRad = static_cast<int>(radius/2);
 			subImg = HSVImg.colRange(c[0]-halfRad, c[0]+halfRad).rowRange(c[1]-halfRad, c[1]+halfRad);
-
+			// Vec2b color = mostFrequentColor(frame.colRange(c[0]-halfRad, c[0]+halfRad).rowRange(c[1]-halfRad, c[1]+halfRad));
+			// cout << (int)color[0] << "....." << (int)color[1] << endl;
 			// only for debug
 //			for(int j = 0; j < subImg.rows; j++)
 //			{
@@ -269,18 +275,21 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 				rectangle(frameRect, rect, SOLID_BGR_COLOR, 1, LINE_AA);
 			}
 			else if(stddev[0] > STD_DEV_STRIPED)
-			{ // striped green
+			{ // striped blue
 				category = Category::STRIPED_BALL;
 				circle(frameCircle, center, radius, STRIPED_BGR_COLOR, 1, LINE_AA);
 				rectangle(frameRect, rect, STRIPED_BGR_COLOR, 1, LINE_AA);
 			}
 			else
 			{
-				circle(frameCircle, center, radius, Scalar(255,255,255), 1, LINE_AA);
-				rectangle(frameRect, rect, Scalar(255,255,255), 1, LINE_AA);
+				circle(frameCircle, center, radius, Scalar(255, 255, 255), 1, LINE_AA);
+				ballFound = false;
 			}
-			Ball ball(rect, category);
-			balls.push_back(ball);
+			if(ballFound)
+			{
+				//Ball ball(rect, category);
+				balls.push_back(Ball(rect, category));
+			}
 		}
 	}
 	imshow("detected circles", frameCircle);

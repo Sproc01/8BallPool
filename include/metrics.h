@@ -22,11 +22,10 @@ void compareMetrics(Table &table, cv::Mat &segmentedImage, const std::string &fo
 
 std::vector<std::pair<cv::Rect, Category>> readGroundTruthBboxFile(const std::string &filename);
 
-float mAP();
-float mIoUSegmentation(const cv::Mat &segmentedImage, const std::string& groundTruthMaskPath);
+double mAPDetection(const cv::Ptr<std::vector<Ball>> &detectedBalls, const std::string &groundTruthBboxPath, float iouThreshold = MAP_IOU_THRESHOLD);
+double mIoUSegmentation(const cv::Mat &segmentedImage, const std::string& groundTruthMaskPath);
 
-float AP();
-//float IoU(cv::Rect &rect1, cv::Rect &rect2);
-float IoU(const cv::Mat &mask1, const cv::Mat &mask2);
+double IoU(cv::Rect &rect1, cv::Rect &rect2);
+double IoU(const cv::Mat &mask1, const cv::Mat &mask2);
 
 #endif //METRICS_H

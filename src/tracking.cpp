@@ -4,6 +4,7 @@
 #include "ball.h"
 #include <opencv2/tracking.hpp>
 #include <iostream>
+#include "metrics.h"
 
 using namespace cv;
 
@@ -40,12 +41,17 @@ Rect BallTracker::trackOne(unsigned short ballIndex, const Mat &frame, bool call
 		ballTrackers_[ballIndex]->init(frame, bbox);
 	} else {
 		isBboxUpdated = ballTrackers_[ballIndex]->update(frame, bbox);
-		ballsVec_->at(ballIndex).setBbox(bbox); // do not update if shift is too little (use IoU)
+		const float IOU_THRESHOLD = 0.9;    // TODO tune IoU threshold for updating ball position
+		if (isBboxUpdated && IoU(ballsVec_->at(ballIndex).getBbox_prec(), bbox) > IOU_THRESHOLD) {  // if IoU is too high, do not update: the shift is not significant
+			isBboxUpdated = false;
+			// TODO check if not updating the bbox makes the tracker lose the ball
+		} else {
+			ballsVec_->at(ballIndex).setBbox(bbox); // do not update if shift is too little (use IoU)
+		}
 	}
 	std::cout<< "Ball " << ballIndex << " updated? " << isBboxUpdated << " current bbox: " << bbox << std::endl;
 
 	return bbox;
-
 
 //		return cv::Point(bbox.x + bbox.width / 2, bbox.y + bbox.height / 2);
 }

@@ -4,6 +4,7 @@
 #include <opencv2/videoio.hpp>
 #include <iostream>
 #include <filesystem>
+//#include "../img/minimap.h"
 
 #include "ball.h"
 #include "table.h"
@@ -12,6 +13,7 @@
 #include "transformation.h"
 #include "minimapConstants.h"
 #include "tracking.h"
+#include "metrics.h"
 #include "util.h"
 
 using namespace std;
@@ -56,6 +58,7 @@ int main(int argc, char* argv[]){
 	// 	// imshow("segB", segmented);
 	// 	// waitKey(0);
 	// }
+
 	VideoCapture vid = VideoCapture("../Dataset/game2_clip2/game2_clip2.mp4");
 	Mat frame;
 	Vec2b colorTable;
@@ -85,6 +88,9 @@ int main(int argc, char* argv[]){
 
 	Mat minimap = imread(MINIMAP_PATH);
 	Mat tempMinimap = minimap.clone();  // TODO minimap always draws over the same image
+//	vector<unsigned char> minimapVec(MINIMAP_DATA, MINIMAP_DATA + MINIMAP_DATA_SIZE);
+//	Mat minimap = imdecode(minimapVec, cv::IMREAD_UNCHANGED);
+//	Mat minimap = imread(MINIMAP_PATH);
 //	imshow("minimap", minimap);
 
 	//create minimap with balls

@@ -20,12 +20,12 @@ const cv::Point2f BOTTOM_LEFT_MAP_CORNER = cv::Point2f(75, 486);
 const int MAP_BALL_RADIUS = 12;
 
 //colors for the balls in the minimap
-const cv::Vec3d BACKGROUND_BGR_COLOR = cv::Vec3d(0, 0, 0);      // black
-const cv::Vec3d WHITE_BGR_COLOR = cv::Vec3d(255, 0, 255);       // purple
-const cv::Vec3d BLACK_BGR_COLOR = cv::Vec3d(100, 100, 100);     // gray
-const cv::Vec3d SOLID_BGR_COLOR = cv::Vec3d(0, 0, 255);         // red
-const cv::Vec3d STRIPED_BGR_COLOR = cv::Vec3d(255, 0, 0);       // blue
-const cv::Vec3d PLAYING_FIELD_BGR_COLOR = cv::Vec3d(0, 255, 0); // green
+const cv::Vec3b BACKGROUND_BGR_COLOR = cv::Vec3b(0, 0, 0);      // black
+const cv::Vec3b WHITE_BGR_COLOR = cv::Vec3b(255, 0, 255);       // purple
+const cv::Vec3b BLACK_BGR_COLOR = cv::Vec3b(100, 100, 100);     // gray
+const cv::Vec3b SOLID_BGR_COLOR = cv::Vec3b(0, 0, 255);         // red
+const cv::Vec3b STRIPED_BGR_COLOR = cv::Vec3b(255, 0, 0);       // blue
+const cv::Vec3b PLAYING_FIELD_BGR_COLOR = cv::Vec3b(0, 255, 0); // green
 
 // S>70, V>100 to be a color and not black or white
 const int S_CHANNEL_COLOR_THRESHOLD = 70;

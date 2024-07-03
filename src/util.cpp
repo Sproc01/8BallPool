@@ -1,5 +1,7 @@
 //Author: TODO
 #include <opencv2/opencv.hpp>
+
+using namespace std;
 using namespace cv;
 
 Point2f getCenter(Point2f p1, Point2f p2) {
@@ -90,6 +92,7 @@ Vec2b mostFrequentColor(const Mat &img)
 	return Vec2b(start, start + diameter);
 }
 
+
 void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res)
 {
 	const int offset = 408;
@@ -100,4 +103,40 @@ void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res
 	for(int i = 0; i < resized.rows; i++)
 		for(int j = 0; j < resized.cols; j++)
 			res.at<Vec3b>(i+offset,j) = resized.at<Vec3b>(i,j);
+}
+
+
+void kMeansClustering(const Mat inputImage, Mat& clusteredImage, int clusterCount)
+{
+    Mat blurred, samples, labels;
+    GaussianBlur(inputImage, blurred, Size(15,15), 0, 0);
+    int attempts = 5;
+    vector<Vec3b> colors;
+    for(int i = 0; i < clusterCount; i++)
+    {
+        colors.push_back(Vec3b(rand()%256, rand()%256, rand()%256));
+    }
+    samples = Mat(inputImage.total(), 3, CV_32F);
+    int index = 0;
+    for(int i = 0; i < inputImage.rows; i++)
+    {
+        for(int j = 0; j < inputImage.cols; j++)
+        {
+            samples.at<float>(index, 0) = inputImage.at<Vec3b>(i, j)[0];
+            samples.at<float>(index, 1) = inputImage.at<Vec3b>(i, j)[1];
+            samples.at<float>(index, 2) = inputImage.at<Vec3b>(i, j)[2];
+            index++;
+        }
+    }
+    TermCriteria criteria = TermCriteria(TermCriteria::MAX_ITER|TermCriteria::EPS, 10, 0.01);
+    kmeans(samples, clusterCount, labels, criteria, attempts, KMEANS_PP_CENTERS);
+    clusteredImage = Mat(inputImage.size(), CV_8UC3);
+    for(int i = 0; i < inputImage.rows; i++)
+    {
+        for(int j = 0; j < inputImage.cols; j++)
+        {
+            int cluster_idx = labels.at<int>(i * inputImage.cols + j);
+            clusteredImage.at<Vec3b>(i, j) = colors[cluster_idx];
+        }
+    }
 }

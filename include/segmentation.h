@@ -7,7 +7,6 @@
 #include "ball.h"
 #include "table.h"
 
-void kMeansClustering(const cv::Mat inputImage, cv::Mat& clusteredImage, int clusterCount = 2);
 void segmentTable(const cv::Mat &frame, const cv::Vec<cv::Point2f, 4> &tableCorners,const cv::Scalar &colorTable, cv::Mat &segmented);
 void segmentBalls(const cv::Mat &frame, const std::vector<Ball> &balls, cv::Mat &segmented);
 

@@ -59,7 +59,7 @@ Vec2b mostFrequentColor(const Mat &img)
 	cvtColor(img, thisImg, COLOR_BGR2HSV);
 	Mat hist;
 	int histSize = 8; // number of bins
-	float range[] = {0, 179+1}; // range (upper bound is exclusive)
+	float range[] = {0, 179+1}; // range (upper bound is exclusive) TODO check because 0-180 is the range
 	const float* histRange[] = { range };
 
 	// Evaluate only H channel
@@ -88,4 +88,16 @@ Vec2b mostFrequentColor(const Mat &img)
 	int diameter = (range[1] / histSize);
 	//imshow("Histogram", histImg);
 	return Vec2b(start, start + diameter);
+}
+
+void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res)
+{
+	const int offset = 408;
+	const float scaling_factor = 0.3;
+	Mat resized;
+	res = frame.clone();
+	resize(minimap_with_balls, resized, Size(), scaling_factor, scaling_factor, INTER_LINEAR);
+	for(int i = 0; i < resized.rows; i++)
+		for(int j = 0; j < resized.cols; j++)
+			res.at<Vec3b>(i+offset,j) = resized.at<Vec3b>(i,j);
 }

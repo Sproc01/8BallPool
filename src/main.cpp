@@ -17,109 +17,113 @@ using namespace std;
 using namespace cv;
 
 
-int main(int argc, char* argv[]){
-	if (argc != 2){
-		cout << "Usage: " << argv[0] << " <video_path>" << endl;
-//		return -1;  // TODO re add
-		argv[1] = "../Dataset/game1_clip1/game1_clip1.mp4"; // TODO remove
-	}
-	filesystem::path videoPath = filesystem::path(argv[1]);
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        cout << "Usage: " << argv[0] << " <video_path>" << endl;
+        //		return -1;  // TODO re add
+        argv[1] = "../Dataset/game1_clip1/game1_clip1.mp4"; // TODO remove
+    }
+    filesystem::path videoPath = filesystem::path(argv[1]);
 
 
-	Table table;
-	vector<Ball> balls;
-	Vec<Point2f, 4> tableCorners;
-	Mat segmented;
-	Mat segmentedFrame;
-	int frameCount = 0;
-	// vector<string> name ={"/game1_clip1/game1_clip1.mp4", "/game1_clip2/game1_clip2.mp4", "/game1_clip3/game1_clip3.mp4",
-	// 						"/game1_clip4/game1_clip4.mp4", "/game2_clip1/game2_clip1.mp4", "/game2_clip2/game2_clip2.mp4",
-	// 						"/game3_clip1/game3_clip1.mp4", "/game3_clip2/game3_clip2.mp4", "/game4_clip1/game4_clip1.mp4",
-	// 						"/game4_clip2/game4_clip2.mp4"};
-	// Mat frame;
-	// Vec2b colorTable;
-	// for(int i = 0; i < name.size(); i++)
-	// {
-	// 	VideoCapture vid = VideoCapture("../Dataset"+name[i]);
-	// 	vid.read(frame);
-	// 	detectTable(frame, tableCorners, colorTable);
-	// 	segmentTable(frame, tableCorners, colorTable, segmented);
-	// 	waitKey(0);
-	// }
-	VideoCapture vid = VideoCapture("../Dataset/game1_clip1/game1_clip1.mp4");
-	Mat frame;
-	Vec2b colorTable;
+    Table table;
+    vector<Ball> balls;
+    Vec<Point2f, 4> tableCorners;
+    Mat segmented;
+    Mat segmentedFrame;
+    int frameCount = 0;
+    // vector<string> name ={"/game1_clip1/game1_clip1.mp4", "/game1_clip2/game1_clip2.mp4", "/game1_clip3/game1_clip3.mp4",
+    // 						"/game1_clip4/game1_clip4.mp4", "/game2_clip1/game2_clip1.mp4", "/game2_clip2/game2_clip2.mp4",
+    // 						"/game3_clip1/game3_clip1.mp4", "/game3_clip2/game3_clip2.mp4", "/game4_clip1/game4_clip1.mp4",
+    // 						"/game4_clip2/game4_clip2.mp4"};
+    // Mat frame;
+    // Vec2b colorTable;
+    // for(int i = 0; i < name.size(); i++)
+    // {
+    // 	VideoCapture vid = VideoCapture("../Dataset"+name[i]);
+    // 	vid.read(frame);
+    // 	detectTable(frame, tableCorners, colorTable);
+    // 	segmentTable(frame, tableCorners, colorTable, segmented);
+    // 	waitKey(0);
+    // }
+    VideoCapture vid = VideoCapture("../Dataset/game1_clip1/game1_clip1.mp4");
+    Mat frame;
+    Vec2b colorTable;
 
-	// // TODO work on first frame
-	if (!vid.isOpened() || !vid.read(frame)){
-		cout << "Error opening video file" << endl;
-		return -1;
-	}
-	++frameCount;
-	imshow("First frame", frame);
-	detectTable(frame, tableCorners, colorTable);
-	table = Table(tableCorners, colorTable);
-	segmentTable(frame, tableCorners, colorTable, segmented);
-	imshow("segmentedTable", segmented);
-	detectBalls(frame, balls, tableCorners, colorTable);
-	// TODO better manage using table.ballsPtr()
-	table.addBalls(balls);
-	segmentBalls(segmented, balls, segmented);
-	imshow("segmentedBalls", segmented);
-	waitKey(0);
+    // // TODO work on first frame
+    if (!vid.isOpened() || !vid.read(frame)) {
+        cout << "Error opening video file" << endl;
+        return -1;
+    }
+    ++frameCount;
+    imshow("First frame", frame);
+    detectTable(frame, tableCorners, colorTable);
+    table = Table(tableCorners, colorTable);
+    segmentTable(frame, tableCorners, colorTable, segmented);
+    imshow("segmentedTable", segmented);
+    detectBalls(frame, balls, tableCorners, colorTable);
+    // TODO better manage using table.ballsPtr()
+    table.addBalls(balls);
+    segmentBalls(segmented, balls, segmented);
+    imshow("segmentedBalls", segmented);
+    //waitKey(0);
 
-	// Mat minimap = imread(MINIMAP_PATH);
-	// Mat tempMinimap = minimap.clone();  // TODO minimap always draws over the same image
-//	 imshow("minimap", minimap);
+    Mat minimap = imread(MINIMAP_PATH);
+    Mat tempMinimap = minimap.clone(); // TODO minimap always draws over the same image
+    imshow("minimap", minimap);
 
-	// //create minimap with balls
-	// Mat minimap_with_balls = minimapWithBalls(tempMinimap, table, frame);
-	// imshow("Minimap with balls", minimap_with_balls);
+    //create minimap with balls
+    Mat minimap_with_balls = drawMinimap(tempMinimap, table, frame);
+    imshow("Minimap with balls", minimap_with_balls);
+    waitKey(0);
 
-	// BallTracker tracker = BallTracker(table.ballsPtr());
-	// tracker.trackAll(frame);
+    BallTracker tracker = BallTracker(table.ballsPtr());
+    tracker.trackAll(frame);
 
-	// TODO calculate metrics using videoPath.file_parent()
+    // TODO calculate metrics using videoPath.file_parent()
 
-	// waitKey();
+    waitKey();
 
-	// while (vid.isOpened()){  // work on middle frames
-	// 	bool ret = vid.read(frame);
+    while (vid.isOpened()) {
+        // work on middle frames
+        bool ret = vid.read(frame);
 
-	// 	// if frame is read correctly ret is True
-	// 	if (!ret){
-	// 		printf("Can't receive frame (stream end?). Exiting ... maybe end of file\n");
-	// 		break;
-	// 	}
-	// 	++frameCount;
+        // if frame is read correctly ret is True
+        if (!ret) {
+            printf("Can't receive frame (stream end?). Exiting ... maybe end of file\n");
+            break;
+        }
+        ++frameCount;
 
-	// 	cout << "Frame number: " << frameCount << endl;
-// //		imshow("frame " + std::to_string(frameCount), frame);
-// 		//detectTable(frame, tableCorners);
-// 		//detectBalls(frame, balls, tableCorners);
-// //		segmentedFrame = frame.clone();
-// 		// segmentTable(segmentedFrame, tableCorners);
-// 		// segmentBalls(segmentedFrame, balls);
-// 		// imshow("segmentedFrame", segmentedFrame);
-// 		//if (waitKey(0) == 'q')
-// 		//waitKey(0);
+        /*
+        cout << "Frame number: " << frameCount << endl;
+        imshow("frame " + std::to_string(frameCount), frame);
+        detectTable(frame, tableCorners);
+        detectBalls(frame, balls, tableCorners);
+        segmentedFrame = frame.clone();
+        segmentTable(segmentedFrame, tableCorners);
+        segmentBalls(segmentedFrame, balls);
+        imshow("segmentedFrame", segmentedFrame);
+        */
+        //if (waitKey(0) == 'q')
+            //waitKey(0);
 
-		// tracker.trackAll(frame);
-		// if (!(frameCount % 30)){
-		// 	tempMinimap = minimap.clone();
-		// 	minimap_with_balls = minimapWithBalls(tempMinimap, table, frame);
-		// 	imshow("frame " + to_string(frameCount), frame);
-		// 	imshow("Minimap with balls " + to_string(frameCount), minimap_with_balls);
-		// 	if (!(frameCount % 30))
-		// 		waitKey();
-		// }
+        tracker.trackAll(frame);
+        //if (!(frameCount % 10)) {
+            //tempMinimap = minimap.clone();
+            minimap_with_balls = drawMinimap(tempMinimap, table, frame);
+            imshow("frame " + to_string(frameCount), frame);
+            imshow("Minimap with balls " + to_string(frameCount), minimap_with_balls);
+            //if (!(frameCount % 10))
+                //waitKey(0);
+        //}
+    }
 
-		// TODO write frame on video
-	//}
+        // TODO write frame on video
+        //}
 
-// 	// TODO work on last frame
+        // 	// TODO work on last frame
 
-// 	waitKey();
-// 	return 0;
+        waitKey();
+        return 0;
 }
-

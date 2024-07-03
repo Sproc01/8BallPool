@@ -8,6 +8,6 @@
 #include "ball.h"
 #include "table.h"
 
-cv::Mat minimapWithBalls(cv::Mat minimap, Table table, cv::Mat frame);
+cv::Mat drawMinimap(cv::Mat &minimap, Table table, cv::Mat frame);
 
 #endif //TRANSFORMATION_H

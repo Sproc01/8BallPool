@@ -8,7 +8,7 @@
 
 using namespace cv;
 
-cv::Rect Ball::getBbox() const 
+Rect Ball::getBbox() const
 {
     if (bbox_.empty())
         throw std::runtime_error("bbox is uninitialized");
@@ -24,7 +24,7 @@ Category Ball::getCategory() const
     return category_;
 }
 
-cv::Rect Ball::getBbox_prec() const
+Rect Ball::getBbox_prec() const
 {
     if (bbox_prec_.empty())
         throw std::runtime_error("bbox_prec is uninitialized");
@@ -32,7 +32,7 @@ cv::Rect Ball::getBbox_prec() const
     return bbox_prec_;
 }
 
-void Ball::setBbox(cv::Rect bbox)
+void Ball::setBbox(Rect bbox)
 {
     bbox_ = bbox;
 }
@@ -42,19 +42,29 @@ void Ball::setCategory(Category category)
     category_ = category;
 }
 
-void Ball::setBbox_prec(cv::Rect bbox_prec)
+void Ball::setBbox_prec(Rect bbox_prec)
 {
     bbox_prec_ = bbox_prec;
 }
 
-Point2f Ball::getBBoxCenter() {
+Point2f getBBoxCenterGeneral(Rect bbox)
+{
     Point2f center;
-    float dx_half = abs(bbox_.x - bbox_.br().x)/2;
-    float dy_half = abs(bbox_.y - bbox_.br().y)/2;
-    if(bbox_.x > bbox_.br().x)
+    float dx_half = abs(bbox.x - bbox.br().x)/2;
+    float dy_half = abs(bbox.y - bbox.br().y)/2;
+    if(bbox.x > bbox.br().x)
         dx_half *= -1;
-    if(bbox_.y > bbox_.br().y)
+    if(bbox.y > bbox.br().y)
         dy_half *= -1;
-    center = Point(bbox_.x + dx_half, bbox_.br().y + dy_half);
+    center = Point(bbox.x + dx_half, bbox.br().y + dy_half);
     return center;
+}
+
+Point2f Ball::getBBoxCenter() {
+    return getBBoxCenterGeneral(bbox_);
+}
+
+Point2f Ball::getBboxCenter_prec()
+{
+    return getBBoxCenterGeneral(bbox_prec_);
 }

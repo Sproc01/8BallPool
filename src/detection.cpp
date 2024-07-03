@@ -88,7 +88,7 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 	vector<Point2f> intersectionsGood;
 	sort(intersections.begin(), intersections.end(), [](Point a, Point b) -> bool
 	{
-		return norm(a) <= norm(b);
+		return norm(a) < norm(b);
 	});
 	// TODO remove auto
 	auto end2 = unique(intersections.begin(), intersections.end(), [&CLOSE_POINT_THRESHOLD](Point a, Point b) -> bool

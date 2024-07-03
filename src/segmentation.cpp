@@ -10,17 +10,16 @@
 using namespace cv;
 using namespace std;
 
-void kMeansClustering(const Mat inputImage, Mat& clusteredImage)
+void kMeansClustering(const Mat inputImage, Mat& clusteredImage, int clusterCount)
 {
-	int clusterCount = 2;
     Mat blurred, samples, labels;
     GaussianBlur(inputImage, blurred, Size(15,15), 0, 0);
     int attempts = 5;
-    vector<uchar> colors = {0, 255};
-    // for(int i = 0; i < clusterCount; i++)
-    // {
-    //     colors.push_back(Vec3b(rand()%256, rand()%256, rand()%256));
-    // }
+    vector<Vec3b> colors;
+    for(int i = 0; i < clusterCount; i++)
+    {
+        colors.push_back(Vec3b(rand()%256, rand()%256, rand()%256));
+    }
     samples = Mat(inputImage.total(), 3, CV_32F);
     int index = 0;
     for(int i = 0; i < inputImage.rows; i++)
@@ -35,13 +34,13 @@ void kMeansClustering(const Mat inputImage, Mat& clusteredImage)
     }
     TermCriteria criteria = TermCriteria(TermCriteria::MAX_ITER|TermCriteria::EPS, 10, 0.01);
     kmeans(samples, clusterCount, labels, criteria, attempts, KMEANS_PP_CENTERS);
-    clusteredImage = Mat(inputImage.size(), CV_8U);
+    clusteredImage = Mat(inputImage.size(), CV_8UC3);
     for(int i = 0; i < inputImage.rows; i++)
     {
         for(int j = 0; j < inputImage.cols; j++)
         {
             int cluster_idx = labels.at<int>(i * inputImage.cols + j);
-            clusteredImage.at<uchar>(i, j) = colors[cluster_idx];
+            clusteredImage.at<Vec3b>(i, j) = colors[cluster_idx];
         }
     }
 }

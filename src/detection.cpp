@@ -9,9 +9,65 @@
 #include "detection.h"
 #include "util.h"
 #include "minimapConstants.h"
+#include "segmentation.h"
 
 using namespace cv;
 using namespace std;
+
+Mat otsuClustering(cv::Mat inputImage)
+{
+    Mat gray, blurred, result;
+    GaussianBlur(inputImage, blurred, Size(5,5), 0);
+    cvtColor(blurred, gray, COLOR_BGR2GRAY);
+    threshold(gray, result, 0, 255, THRESH_OTSU);
+    return result;
+}
+
+Mat watershedClustering(const Mat inputImage)
+{
+    Mat blur, gray, dist, dist_8u, markers, drawing, result;
+    GaussianBlur(inputImage, blur, Size(5,5), 0);
+    cvtColor(blur, gray, COLOR_BGR2GRAY);
+    threshold(gray, gray, 40, 255, THRESH_BINARY | THRESH_OTSU);
+    distanceTransform(gray, dist, DIST_L2, 3);
+    normalize(dist, dist, 0, 1.0, NORM_MINMAX);
+    //imshow("Distance Transform Image", dist);
+    threshold(dist, dist, 0.5, 1.0, THRESH_BINARY);
+    Mat kernel1 = Mat::ones(3, 3, CV_8U);
+    dilate(dist, dist, kernel1);
+    //imshow("Peaks", dist);
+    dist.convertTo(dist_8u, CV_8U);
+    vector<vector<Point>> contours;
+    findContours(dist_8u, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+    markers = Mat::zeros(dist.size(), CV_32SC1);
+	//Mat res = Mat::zeros(dist.size(), CV_8UC3);
+    for(int i = 0; i < contours.size(); i++)
+    {
+		drawContours(markers, contours, i, Scalar::all(i+1), -1);
+		//drawContours(res, contours, i, Vec3b(255,255,0), -1);
+	}
+    circle(markers, Point(5,5), 3, Scalar(255,255,255), -1);
+    //imshow("Contours", drawing);
+    watershed(inputImage, markers);
+    result = Mat::zeros(inputImage.size(), CV_8UC3);
+    vector<Vec3b> colors;
+    for(int i = 0; i<contours.size(); i++)
+    {
+        colors.push_back(Vec3b(rand()%255, rand()%255, rand()%255));
+    }
+    for (int i = 0; i < markers.rows; i++)
+    {
+        for (int j = 0; j < markers.cols; j++)
+        {
+            int index = markers.at<int>(i, j);
+            if (index > 0 && index <= contours.size())
+                result.at<Vec3b>(i, j) = colors[index-1];
+            else
+                result.at<Vec3b>(i, j) = Vec3b(0, 0, 0);
+        }
+    }
+    return result;
+}
 
 void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 {
@@ -166,6 +222,7 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	//Mat dst;
 	//bilateralFilter(frame, dst, DIM_BILATERAL_FILTER, SIGMA_COLOR, SIGMA_SPACE);
 	cvtColor(frame, gray, COLOR_BGR2GRAY);
+
 	vector<Vec3f> circles;
 	vector<Rect> boundRect;
 	Mat frameRect = frame.clone();
@@ -180,6 +237,7 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 		tableCornersInt.push_back(Point(static_cast<int>(tableCorners[i].x), static_cast<int>(tableCorners[i].y)));
 	}
 	fillConvexPoly(cropped, tableCornersInt, 255);
+	Mat water = frame.clone();
 
 	// mask the image
 	for(int i = 0; i < cropped.rows; i++)
@@ -187,14 +245,29 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 		for(int j = 0; j < cropped.cols; j++)
 		{
 			if(cropped.at<uchar>(i, j) != 255)
+			{
 				gray.at<uchar>(i, j) = 0;
+				water.at<Vec3b>(i,j) = Vec3b(0,0,0);
+			}
 
 			if(mask.at<uchar>(i,j) == 255)
+			{
 				gray.at<uchar>(i,j) = 0;
+				//water.at<Vec3b>(i,j) = Vec3b(0,0,0);
+			}
 		}
 	}
-	imshow("image Balls", gray);
-	imshow("mask", mask);
+	// Mat res; // = watershedClustering(frame);
+	// // imshow("watershed", res);
+	// imshow("input",water);
+	// //Mat res = watershedClustering(water);
+	// // imshow("watershed", res);
+	// kMeansClustering(water, res, 3);
+	// imshow("kmeans", res);
+	// // res = otsuClustering(water);
+	// // imshow("otsu", res);
+	// // vector<vector<Point>> contours;
+	// cvtColor(res, gray, COLOR_BGR2GRAY);
 
 	// Hough transform
 	HoughCircles(gray, circles, HOUGH_GRADIENT,

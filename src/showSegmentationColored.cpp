@@ -1,4 +1,6 @@
 #include <opencv2/highgui.hpp>
+#include "category.h"
+#include "minimapConstants.h"
 #include <iostream>
 
 using namespace std;
@@ -11,26 +13,26 @@ int main(){
 	for (int i = 0; i < segmented.rows; i++){
 		for (int j = 0; j < segmented.cols; j++){
 			switch (segmented.at<uchar>(i, j)){
-				case 0: // background
-					segmentedColored.at<Vec3b>(i, j) = Vec3b(0, 0, 0);
+				case Category::BACKGROUND:
+					segmentedColored.at<Vec3b>(i, j) = BACKGROUND_BGR_COLOR;
 					break;
-				case 1: // cue ball
-					segmentedColored.at<Vec3b>(i, j) = Vec3b(255, 255, 255);
+				case Category::WHITE_BALL:
+					segmentedColored.at<Vec3b>(i, j) = WHITE_BGR_COLOR;
 					break;
-				case 2: // black ball
-					segmentedColored.at<Vec3b>(i, j) = Vec3b(100, 100, 100);
+				case Category::BLACK_BALL:
+					segmentedColored.at<Vec3b>(i, j) = BLACK_BGR_COLOR;
 					break;
-				case 3: // solid ball
-					segmentedColored.at<Vec3b>(i, j) = Vec3b(0, 0, 255);
+				case Category::SOLID_BALL:
+					segmentedColored.at<Vec3b>(i, j) = SOLID_BGR_COLOR;
 					break;
-				case 4: // striped ball
-					segmentedColored.at<Vec3b>(i, j) = Vec3b(255, 0, 0);
+				case Category::STRIPED_BALL:
+					segmentedColored.at<Vec3b>(i, j) = STRIPED_BGR_COLOR;
 					break;
-				case 5: // playing field
-					segmentedColored.at<Vec3b>(i, j) = Vec3b(0, 255, 0);
+				case Category::PLAYING_FIELD:
+					segmentedColored.at<Vec3b>(i, j) = PLAYING_FIELD_BGR_COLOR;
 					break;
-				default:// in case of error
-					segmentedColored.at<Vec3b>(i, j) = Vec3b(255, 0, 255);
+				default:    // in case of error
+					segmentedColored.at<Vec3b>(i, j) = Vec3b(255, 255, 0);
 					break;
 			}
 		}

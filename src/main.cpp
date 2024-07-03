@@ -16,6 +16,9 @@
 #include "metrics.h"
 #include "util.h"
 
+#include <chrono>
+using namespace std::chrono;
+
 using namespace std;
 using namespace cv;
 
@@ -59,7 +62,7 @@ int main(int argc, char* argv[]){
 	// 	// waitKey(0);
 	// }
 
-	VideoCapture vid = VideoCapture("../Dataset/game2_clip2/game2_clip2.mp4");
+	VideoCapture vid = VideoCapture("../Dataset/game1_clip1/game1_clip1.mp4");
 	Mat frame;
 	Vec2b colorTable;
 
@@ -94,7 +97,7 @@ int main(int argc, char* argv[]){
 //	imshow("minimap", minimap);
 
 	//create minimap with balls
-	Mat minimap_with_balls = minimapWithBalls(tempMinimap, table, frame);
+	Mat minimap_with_balls = drawMinimap(tempMinimap, table, frame);
 	imshow("Minimap with balls", minimap_with_balls);
 
 	BallTracker tracker = BallTracker(table.ballsPtr());
@@ -103,7 +106,9 @@ int main(int argc, char* argv[]){
 	//imshow("result", res);
 	vidOutput.write(res);
 	// TODO calculate metrics using videoPath.file_parent()
+	waitKey(0);
 
+	auto start = high_resolution_clock::now();
 	while (vid.isOpened()){  // work on middle frames
 	 	bool ret = vid.read(frame);
 
@@ -126,8 +131,8 @@ int main(int argc, char* argv[]){
 		// 	return 0;
 
 		tracker.trackAll(frame);
-		tempMinimap = minimap.clone();
-		minimap_with_balls = minimapWithBalls(tempMinimap, table, frame);
+		//tempMinimap = minimap.clone();
+		minimap_with_balls = drawMinimap(tempMinimap, table, frame);
 		// imshow("frame " + to_string(frameCount), frame);
 		// imshow("Minimap with balls " + to_string(frameCount), minimap_with_balls);
 		createOutputImage(frame, minimap_with_balls, res);
@@ -137,6 +142,9 @@ int main(int argc, char* argv[]){
 		// 	waitKey();
 		// TODO write frame on video
 	}
+	auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(stop - start);
+	cout << duration.count() << endl;
 	vidOutput.release();
 
         // 	// TODO work on last frame

@@ -42,8 +42,8 @@ Mat computeTransformation(Table &table, Mat &frame) {
 
     //apply transformation considering corners such as top-left is the first one, followed by a long table side
     Mat imgTransformed = imgWithTransform(frame, perspectiveTransformMat, table);
-    imshow("First img transformed", imgTransformed);
-    waitKey(0);
+    //imshow("First img transformed", imgTransformed);
+    //waitKey(0);
 
     //TODO: check corners_img_cropped
     //put as first point the top left which is followed by a longer edge clockwise

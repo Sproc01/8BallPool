@@ -8,7 +8,7 @@
 using namespace cv;
 
 BallTracker::BallTracker(Ptr<std::vector<Ball>> balls) { // NOLINT(*-unnecessary-value-param)
-	std::cout<<"constructor balltracker"<<std::endl;
+	//std::cout<<"constructor balltracker"<<std::endl;
 	isInitialized_ = false;
 
 	ballsVec_ = balls;
@@ -25,7 +25,7 @@ void BallTracker::createTrackers() {
 	}
 
 	ballTrackers_.shrink_to_fit();
-	std::cout<<"trackers created"<<std::endl;
+	//std::cout<<"trackers created"<<std::endl;
 }
 
 
@@ -42,7 +42,7 @@ Rect BallTracker::trackOne(unsigned short ballIndex, const Mat &frame, bool call
 		isBboxUpdated = ballTrackers_[ballIndex]->update(frame, bbox);
 		ballsVec_->at(ballIndex).setBbox(bbox); // do not update if shift is too little (use IoU)
 	}
-	std::cout<< "Ball " << ballIndex << " updated? " << isBboxUpdated << " current bbox: " << bbox << std::endl;
+	//std::cout<< "Ball " << ballIndex << " updated? " << isBboxUpdated << " current bbox: " << bbox << std::endl;
 
 	return bbox;
 
@@ -52,7 +52,7 @@ Rect BallTracker::trackOne(unsigned short ballIndex, const Mat &frame, bool call
 
 
 Ptr<std::vector<Ball>> BallTracker::trackAll(const Mat &frame) {
-	std::cout<<"trackAll, initialized: "<<isInitialized_<<std::endl;
+	//std::cout<<"trackAll, initialized: "<<isInitialized_<<std::endl;
 	if (!isInitialized_) {
 		createTrackers();
 		for (unsigned short i = 0; i < ballsVec_->size(); i++) {

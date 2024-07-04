@@ -241,7 +241,7 @@ double mIoUSegmentation(const Mat &segmentedImage, const string& groundTruthMask
 //}
 
 
-double IoU(Rect &rect1, Rect &rect2){
+double IoU(const Rect &rect1, const Rect &rect2){
 	Rect i = rect1 & rect2;
 	Rect u = rect1 | rect2;
 	return static_cast<double>(i.area()) / static_cast<double>(u.area());

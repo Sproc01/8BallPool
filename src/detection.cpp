@@ -131,40 +131,103 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 }
 
 
+Category classifyBall(Vec3i c, const Mat& img)
+{
+	// const to classify the ball
+	const int MEAN_WHITE_CHANNEL2 = 150;
+	const int MEAN_WHITE_CHANNEL3 = 150;
+	const int MEAN_BLACK_CHANNEL3 = 120;
+	const int STD_DEV_BLACK = 60;
+	const int STD_DEV_SOLID = 50;
+	const int STD_DEV_STRIPED = 50;
+
+
+	//vector<double> mean, stddev;
+	//meanStdDev(img, mean, stddev);
+	Mat hist, gray, mask;
+	mask = Mat::zeros(img.size(), CV_8U);
+	imshow("original", img);
+	cvtColor(img, gray, COLOR_BGR2GRAY);
+	Point2f center = Point(img.cols/2, img.rows/2);
+	double radius = c[2];
+	circle(mask, center, radius, 255, FILLED, 8, 0);
+	imshow("mask", mask);
+	for(int i = 0; i < img.rows; i++)
+		for(int j = 0; j < img.cols; j++)
+			if(mask.at<uchar>(i,j) != 255)
+				gray.at<uchar>(i,j) = 0;
+
+	const int channel[] = {0};
+	int histSize = 25;
+	float range[] = {0, 255};
+	const float* histRange[] = {range};
+	calcHist(&gray, 1, channel, Mat(), hist, 1, &histSize, histRange, true, false);
+
+	// draw histogram
+	int hist_w = 512;
+    int hist_h = 512;
+    Mat histImage(hist_h, hist_w, CV_8U, Scalar(0));
+    int bin_w = cvRound((double) hist_w/histSize);
+    normalize(hist, hist, 0, histImage.rows, NORM_MINMAX, -1, Mat());
+
+    for(int i = 1; i < histSize; i++)
+    {
+        line(histImage, Point(bin_w*(i-1), hist_h - cvRound(hist.at<float>(i-1))) ,
+                        Point(bin_w*(i), hist_h - cvRound(hist.at<float>(i))),
+                        Scalar(255), 2, 8, 0);
+    }
+	imshow("histogram", histImage);
+	waitKey(0);
+
+	// Mat argmax;
+	// reduceArgMax(hist, argmax, 0);
+	// hist.at<Mat>(argmax.at<int>(0)) = 0;
+	// cout << argmax << endl;
+	// reduceArgMax(hist, argmax, 0);
+	// cout << argmax << endl;
+
+
+	// if(mean[1] < MEAN_WHITE_CHANNEL2 && mean[2] > MEAN_WHITE_CHANNEL3)
+	// 	return WHITE_BALL;
+	// else if(mean[2] < MEAN_BLACK_CHANNEL3 && stddev[2] < STD_DEV_BLACK)
+	// 	return BLACK_BALL;
+	// else if(stddev[1] < STD_DEV_SOLID)
+	// 	return SOLID_BALL;
+	// else if(stddev[1] > STD_DEV_STRIPED)
+	// 	return STRIPED_BALL;
+	// else
+	return SOLID_BALL;
+}
+
+void watershedClustering(Mat inputImage)
+{
+    Mat gray, thresh;
+	cvtColor(inputImage, gray, COLOR_BGR2GRAY);
+	threshold(gray,thresh, 0, 255, THRESH_BINARY | THRESH_OTSU);
+
+    imshow("watershed", thresh);
+}
+
 void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &tableCorners, const Scalar &colorTable)
 {
 	// const used during the function
 	const int MIN_RADIUS = 6;
 	const int MAX_RADIUS = 15;
 	const int HOUGH_PARAM1 = 120;
-	const int HOUGH_PARAM2 = 8;
-	const float ACCUMULATOR_RESOLUTION = 1;
+	const int HOUGH_PARAM2 = 7;
+	const float ACCUMULATOR_RESOLUTION = 0.1;
 	const int MIN_DISTANCE = 20;
 
-	// const filters
-	const int DIM_STRUCTURING_ELEMENT1 = 15;
-	const int DIM_STRUCTURING_ELEMENT2 = 3;
-	const int NUMBER_CLUSTER_KMEANS = 8;
-
-	// const to classify the ball
-	const int MEAN_WHITE_CHANNEL2 = 170;
-	const int MEAN_WHITE_CHANNEL3 = 170;
-	const int MEAN_BLACK_CHANNEL3 = 90;
-	const int STD_DEV_BLACK = 60;
-	const int STD_DEV_SOLID = 20;
-	const int STD_DEV_STRIPED = 20;
+	// const
+	const int NUMBER_CLUSTER_KMEANS = 7;
 
 	// variables
-	Mat gray, imgBorder, HSVImg, mask;
+	Mat gray, HSVImg, mask;
 	cvtColor(frame, HSVImg, COLOR_BGR2HSV);
 	inRange(HSVImg, Scalar(colorTable[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
 			Scalar(colorTable[1], 255, 255), mask);
-	Mat kernel = getStructuringElement(MORPH_ELLIPSE, Size(DIM_STRUCTURING_ELEMENT1, DIM_STRUCTURING_ELEMENT1));
-	morphologyEx(mask, mask, MORPH_ERODE, kernel);
-	imshow("mask", mask);
-
+	imshow("HSV", HSVImg);
 	vector<Vec3f> circles;
-	vector<Rect> boundRect;
 	Mat frameRect = frame.clone();
 	Mat frameCircle = frame.clone();
 
@@ -177,81 +240,81 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 		tableCornersInt.push_back(Point(static_cast<int>(tableCorners[i].x), static_cast<int>(tableCorners[i].y)));
 	}
 	fillConvexPoly(cropped, tableCornersInt, 255);
+	for(int i = 0; i < tableCornersInt.size(); i++)
+		circle(cropped, tableCornersInt[i], 25, 0, FILLED, 8, 0);
+	imshow("Poly", cropped);
 
-	//erosion rectangle to remove information near the border
-	Mat kernel2 = getStructuringElement(MORPH_ELLIPSE, Size(DIM_STRUCTURING_ELEMENT2, DIM_STRUCTURING_ELEMENT2));
-	morphologyEx(cropped, cropped, MORPH_ERODE, kernel);
-	Mat water = frame.clone();
+	// Mat kernel = getStructuringElement(MORPH_CROSS, Size(3, 3));
+	// morphologyEx(cropped, cropped, MORPH_ERODE, kernel);
+	// imshow("Poly eroded", cropped);
 
 	// mask the image
 	for(int i = 0; i < cropped.rows; i++)
 		for(int j = 0; j < cropped.cols; j++)
 			if(cropped.at<uchar>(i, j) != 255)
-				water.at<Vec3b>(i,j) = Vec3b(0,0,0);
+				HSVImg.at<Vec3b>(i,j) = Vec3b(0, 0, 0);
 
 
-	Mat res;
-	kMeansClustering(water, res, NUMBER_CLUSTER_KMEANS);
-	imshow("kmeans", res);
-	cvtColor(res, gray, COLOR_BGR2GRAY);
+	Mat resClustering;
+	kMeansClustering(HSVImg, resClustering, NUMBER_CLUSTER_KMEANS);
+	//watershedClustering(resClustering);
+	cvtColor(resClustering, gray, COLOR_BGR2GRAY);
+	imshow("Kmeans", resClustering);
 	imshow("res kmeans gray", gray);
 
 	// Hough transform
 	HoughCircles(gray, circles, HOUGH_GRADIENT,
 					ACCUMULATOR_RESOLUTION, MIN_DISTANCE, HOUGH_PARAM1, HOUGH_PARAM2, MIN_RADIUS, MAX_RADIUS);
-	Mat subImg;
-	vector<double> mean, stddev;
+
 	Category category;
 	Point center;
 	int radius;
 	Vec3i c;
 	Rect rect;
+	bool ballFound;
+	Mat subImg;
 	for(size_t i = 0; i < circles.size(); i++ )
 	{
+		ballFound = true;
 		c = circles[i];
-		center = Point(c[0], c[1]);
-		radius = c[2];
-		// Inside the cropped image, not selected by the table mask
+	 	center = Point(c[0], c[1]);
+	 	radius = c[2];
 		if(cropped.at<uchar>(center.y, center.x) == 255
-			&& cropped.at<uchar>(center.y+radius, center.x) == 255
+	 		&& cropped.at<uchar>(center.y+radius, center.x) == 255
 			&& cropped.at<uchar>(center.y-radius, center.x) == 255
-			&& cropped.at<uchar>(center.y, center.x+radius) == 255
-			&& cropped.at<uchar>(center.y, center.x-radius) == 255
-			&& mask.at<uchar>(center.y, center.x) == 0)
+	 		&& cropped.at<uchar>(center.y, center.x+radius) == 255
+	 		&& cropped.at<uchar>(center.y, center.x-radius) == 255
+	 		&& mask.at<uchar>(center.y, center.x) == 0)
 		{
-			// rect and circle
+			subImg = frame.colRange(c[0]-radius, c[0]+radius).rowRange(c[1]-radius, c[1]+radius);
 			rect = Rect(center.x-c[2], center.y-c[2], 2*c[2], 2*c[2]);
-			boundRect.push_back(rect);
-			subImg = HSVImg.colRange(c[0]-radius, c[0]+radius).rowRange(c[1]-radius, c[1]+radius);
-
-			// check the color of the ball
-			meanStdDev(subImg, mean, stddev);
-			if(mean[1] < MEAN_WHITE_CHANNEL2 && mean[2] > MEAN_WHITE_CHANNEL3)
-			{ // white ball
-				category = Category::WHITE_BALL;
-				circle(frameCircle, center, radius, WHITE_BGR_COLOR, 1, LINE_AA);
-				rectangle(frameRect, rect, WHITE_BGR_COLOR, 1, LINE_AA);
+			category = SOLID_BALL//classifyBall(c, subImg);
+			switch(category)
+			{
+				case WHITE_BALL:
+						circle(frameCircle, center, radius, WHITE_BGR_COLOR, 1, LINE_AA);
+						rectangle(frameRect, rect, WHITE_BGR_COLOR, 1, LINE_AA);
+					break;
+				case BLACK_BALL:
+						circle(frameCircle, center, radius, BLACK_BGR_COLOR, 1, LINE_AA);
+						rectangle(frameRect, rect, BLACK_BGR_COLOR, 1, LINE_AA);
+					break;
+				case SOLID_BALL:
+						circle(frameCircle, center, radius, SOLID_BGR_COLOR, 1, LINE_AA);
+						rectangle(frameRect, rect, SOLID_BGR_COLOR, 1, LINE_AA);
+					break;
+				case STRIPED_BALL:
+						circle(frameCircle, center, radius, STRIPED_BGR_COLOR, 1, LINE_AA);
+						rectangle(frameRect, rect, STRIPED_BGR_COLOR, 1, LINE_AA);
+					break;
+				default:
+						ballFound = false;
+					break;
 			}
-			else if(mean[2] < MEAN_BLACK_CHANNEL3 && stddev[2] < STD_DEV_BLACK)
-			{ // black ball
-				category = Category::BLACK_BALL;
-				circle(frameCircle, center, radius, BLACK_BGR_COLOR, 1, LINE_AA);
-				rectangle(frameRect, rect, BLACK_BGR_COLOR, 1, LINE_AA);
-			}
-			else if(stddev[0] < STD_DEV_SOLID)
-			{ // solid red
-				category = Category::SOLID_BALL;
-				circle(frameCircle, center, radius, SOLID_BGR_COLOR, 1, LINE_AA);
-				rectangle(frameRect, rect, SOLID_BGR_COLOR, 1, LINE_AA);
-			}
-			else if(stddev[0] > STD_DEV_STRIPED)
-			{ // striped blue
-				category = Category::STRIPED_BALL;
-				circle(frameCircle, center, radius, STRIPED_BGR_COLOR, 1, LINE_AA);
-				rectangle(frameRect, rect, STRIPED_BGR_COLOR, 1, LINE_AA);
-			}
-			balls.push_back(Ball(rect, category));
+			if(ballFound)
+				balls.push_back(Ball(rect, category));
 		}
+
 	}
 	imshow("detected circles", frameCircle);
 	//imshow("detected rectangles", frameRect);

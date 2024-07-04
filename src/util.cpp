@@ -55,14 +55,14 @@ void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point2f &inters
 
 Vec2b mostFrequentColor(const Mat &img)
 {
-	std::vector<Scalar> rgbColors = {Scalar(255, 0, 0), Scalar(0, 255, 0), Scalar(0, 0, 255)};
+	//std::vector<Scalar> rgbColors = {Scalar(255, 0, 0), Scalar(0, 255, 0), Scalar(0, 0, 255)};
 	//imshow("Cropped image (hist)", img);
 	Mat thisImg;
 	cvtColor(img, thisImg, COLOR_BGR2HSV);
 	Mat hist;
 	int histSize = 8; // number of bins
-	float range[] = {0, 179+1}; // range (upper bound is exclusive) TODO check because 0-180 is the range
-	const float* histRange[] = { range };
+	float range[] = {0, 179+1}; // range (upper bound is exclusive)
+	const float* histRange[] = {range};
 
 	// Evaluate only H channel
 	int hCh_idx = 0;
@@ -71,21 +71,19 @@ Vec2b mostFrequentColor(const Mat &img)
 	calcHist(&thisImg, 1, c, Mat(), hist, 1, &histSize, histRange);
 
 	// draw histogram
-	int hist_w = 512, hist_h = 400;
-	Mat histImg(hist_h, hist_w, CV_8UC3, Scalar(0, 0, 0));
-	int bin_w = cvRound((double) hist_w/histSize);
-	normalize(hist, hist, 0, histImg.rows, NORM_MINMAX, -1, Mat());
-	for(int i = 1; i < histSize; i++){
-		line(histImg, Point(bin_w*(i-1), hist_h - cvRound(hist.at<float>(i-1))),
-			 Point(bin_w*(i), hist_h - cvRound(hist.at<float>(i))),
-			 rgbColors[hCh_idx], 2, 8, 0);
-	}
+	// int hist_w = 512, hist_h = 400;
+	// Mat histImg(hist_h, hist_w, CV_8UC3, Scalar(0, 0, 0));
+	// int bin_w = cvRound((double) hist_w/histSize);
+	// normalize(hist, hist, 0, histImg.rows, NORM_MINMAX, -1, Mat());
+	// for(int i = 1; i < histSize; i++){
+	// 	line(histImg, Point(bin_w*(i-1), hist_h - cvRound(hist.at<float>(i-1))),
+	// 		 Point(bin_w*(i), hist_h - cvRound(hist.at<float>(i))),
+	// 		 rgbColors[hCh_idx], 2, 8, 0);
+	// }
 
 	// find the argmax
 	Mat argmax;
 	reduceArgMax(hist, argmax, 0);
-	//cout<<hist<<endl;
-	//cout << argmax << endl;
 	int start = range[1] / histSize * argmax.at<int>(0);
 	int diameter = (range[1] / histSize);
 	//imshow("Histogram", histImg);
@@ -114,7 +112,7 @@ void kMeansClustering(const Mat inputImage, Mat& clusteredImage, int clusterCoun
     vector<Vec3b> colors;
     for(int i = 0; i < clusterCount; i++)
     {
-        colors.push_back(Vec3b(rand()%256, rand()%256, rand()%256));
+        colors.push_back(Vec3b(rand()%255, rand()%255, rand()%255));
     }
     samples = Mat(inputImage.total(), 3, CV_32F);
     int index = 0;

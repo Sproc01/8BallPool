@@ -47,19 +47,11 @@ void Ball::setBbox_prec(Rect bbox_prec)
     bbox_prec_ = bbox_prec;
 }
 
-//TODO: use center in util
-Point2f getBBoxCenterGeneral(Rect bbox)
-{
-    Point2f center;
-    center = Point(bbox.x + bbox.width/2, bbox.y + bbox.height/2);
-    return center;
-}
-
 Point2f Ball::getBBoxCenter() {
-    return getBBoxCenterGeneral(bbox_);
+    return Point(bbox_.x + bbox_.width/2, bbox_.y + bbox_.height/2);
 }
 
 Point2f Ball::getBboxCenter_prec()
 {
-    return getBBoxCenterGeneral(bbox_prec_);
+    return Point(bbox_prec_.x + bbox_prec_.width/2, bbox_prec_.y + bbox_prec_.height/2);
 }

@@ -23,15 +23,12 @@ using namespace std;
 using namespace cv;
 
 int main(int argc, char* argv[]){
-	if (argc != 2){
-		cout << "Usage: " << argv[0] << " <video_path>" << endl;
-//		return -1;  // TODO re add
-		argv[1] = "../Dataset/game1_clip1/game1_clip1.mp4"; // TODO remove
-	}
-	filesystem::path videoPath = filesystem::path(argv[1]);
 
-
-	string pathOutput = "../Output/video.mp4";
+	//VARIABLES
+	filesystem::path videoPath;
+	string pathOutput;
+	Mat frame;
+	Vec2b colorTable;
 	Table table;
 	vector<Ball> balls;
 	Vec<Point2f, 4> tableCorners;
@@ -39,6 +36,20 @@ int main(int argc, char* argv[]){
 	Mat segmentedFrame;
 	int frameCount = 0;
 	Mat res;
+
+	//INPUT
+	if (argc == 2){
+		videoPath = filesystem::path(argv[1]);
+	}
+	else if (argc == 1) { //TODO: remove at the end
+		videoPath = filesystem::path("../Dataset/game1_clip1/game1_clip1.mp4");
+	}
+	else {
+		cout << "Error of number of parameters: insert one parameter" << endl;
+		return -1;
+	}
+	cout << "Video path: " << videoPath << endl;
+
 
 	// vector<string> name ={"/game1_clip1/game1_clip1.mp4", "/game1_clip2/game1_clip2.mp4", "/game1_clip3/game1_clip3.mp4",
 	// 						"/game1_clip4/game1_clip4.mp4", "/game2_clip1/game2_clip1.mp4", "/game2_clip2/game2_clip2.mp4",
@@ -62,52 +73,55 @@ int main(int argc, char* argv[]){
 	// 	// waitKey(0);
 	// }
 
-	VideoCapture vid = VideoCapture("../Dataset/game1_clip1/game1_clip1.mp4");
-	Mat frame;
-	Vec2b colorTable;
-
+	//START THE VIDEO
+	VideoCapture vid = VideoCapture("../Dataset/game3_clip1/game3_clip1.mp4");
 	// TODO work on first frame
 	if (!vid.isOpened() || !vid.read(frame)){
-	 	cout << "Error opening video file" << endl;
-	 	return -1;
+		cout << "Error opening video file" << endl;
+		return -1;
 	}
+	string videoName = videoPath.stem().string();
+	pathOutput = "../Output/" + videoName + "_output.mp4";
 	++frameCount;
 	imshow("First frame", frame);
 	int codec = VideoWriter::fourcc('m', 'p', '4', 'v');
 	VideoWriter vidOutput = VideoWriter();
 	double fps = vid.get(CAP_PROP_FPS);
 	vidOutput.open(pathOutput, codec, fps, frame.size(), 1);
+
+	//DETECT AND SEGMENT TABLE
 	detectTable(frame, tableCorners, colorTable);
 	table = Table(tableCorners, colorTable);
 	segmentTable(frame, tableCorners, colorTable, segmented);
 	// imshow("segmentedTable", segmented);
+
+	//DETECT AND SEGMENT BALLS
 	detectBalls(frame, balls, tableCorners, colorTable);
 	// TODO better manage using table.ballsPtr()
 	table.addBalls(balls);
 	segmentBalls(segmented, balls, segmented);
 	// imshow("segmentedBalls", segmented);
 
-	//compute transformation
+	//TRANSFORMATION
 	Vec<Point2f, 4>  img_corners = table.getBoundaries();
 	table.setTransform(computeTransformation(frame, img_corners));
 	table.setBoundaries(img_corners);
 
+	//MINIMAP
 	Mat minimap = imread(MINIMAP_PATH);
 	Mat minimap_with_track = minimap.clone();
 	Mat minimap_with_balls = minimap.clone();
-//	vector<unsigned char> minimapVec(MINIMAP_DATA, MINIMAP_DATA + MINIMAP_DATA_SIZE);
-//	Mat minimap = imdecode(minimapVec, cv::IMREAD_UNCHANGED);
-//	Mat minimap = imread(MINIMAP_PATH);
-//	imshow("minimap", minimap);
+	//	vector<unsigned char> minimapVec(MINIMAP_DATA, MINIMAP_DATA + MINIMAP_DATA_SIZE);
+	//	Mat minimap = imdecode(minimapVec, cv::IMREAD_UNCHANGED);
+	//	Mat minimap = imread(MINIMAP_PATH);
+	//	imshow("minimap", minimap);
 
-	//compute transformation
-
-	//create minimap with balls
 	Mat transform;
 	table.getTransform(transform); //TODO: getTranform(transform)?
 	minimap_with_balls = drawMinimap(minimap_with_track, transform, *table.ballsPtr());
 	imshow("Minimap with balls", minimap_with_balls);
 
+	//TRACKER
 	BallTracker tracker = BallTracker(table.ballsPtr());
 	tracker.trackAll(frame);
 	createOutputImage(frame, minimap_with_balls, res);
@@ -116,6 +130,7 @@ int main(int argc, char* argv[]){
 	// TODO calculate metrics using videoPath.file_parent()
 	waitKey(0);
 
+	//VIDEO WITH MINIMAP
 	auto start = high_resolution_clock::now();
 	while (vid.isOpened()){  // work on middle frames
 	 	bool ret = vid.read(frame);
@@ -139,29 +154,29 @@ int main(int argc, char* argv[]){
 		// 	return 0;
 
 		tracker.trackAll(frame);
-		//tempMinimap = minimap.clone();
 		minimap_with_balls = drawMinimap(minimap_with_track, transform, *table.ballsPtr());
 
-
+		/*
+		//show minimap status every 10 frame
 		if((frameCount % 10) == 0) {
 			imshow("frame " + to_string(frameCount), frame);
 			imshow("Minimap with balls " + to_string(frameCount), minimap_with_balls);
 			waitKey(0);
 		}
+		*/
 
 		createOutputImage(frame, minimap_with_balls, res);
 		// imshow("result", res);
 		vidOutput.write(res);
-		// if (!(frameCount % 30))
-		// 	waitKey();
+
 		// TODO write frame on video
 	}
 	auto stop = high_resolution_clock::now();
-	auto duration = duration_cast<seconds>(stop - start);
-	cout << duration.count() << endl;
+	auto duration = duration_cast<minutes>(stop - start);
+	cout << "Time to create the video: " << duration.count() <<" minutes" << endl;
 	vidOutput.release();
 
-        // 	// TODO work on last frame
+	// TODO work on last frame
 
  	waitKey(0);
  	return 0;

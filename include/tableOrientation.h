@@ -5,6 +5,6 @@
 
 #include <opencv2/opencv.hpp>
 
-bool checkHorizontalTable(cv::Mat table_img, cv::Vec<cv::Point2f, 4> &corners);
+bool checkHorizontalTable(cv::Mat table_img);
 
 #endif //TABLEORIENTATION_H

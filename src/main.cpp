@@ -79,7 +79,6 @@ int main(int argc, char* argv[]){
 	vidOutput.open(pathOutput, codec, fps, frame.size(), 1);
 	detectTable(frame, tableCorners, colorTable);
 	table = Table(tableCorners, colorTable);
-	// waitKey(0);
 	segmentTable(frame, tableCorners, colorTable, segmented);
 	// imshow("segmentedTable", segmented);
 	detectBalls(frame, balls, tableCorners, colorTable);
@@ -87,17 +86,26 @@ int main(int argc, char* argv[]){
 	table.addBalls(balls);
 	segmentBalls(segmented, balls, segmented);
 	// imshow("segmentedBalls", segmented);
-	// waitKey(0);
+
+	//compute transformation
+	Vec<Point2f, 4>  img_corners = table.getBoundaries();
+	table.setTransform(computeTransformation(frame, img_corners));
+	table.setBoundaries(img_corners);
 
 	Mat minimap = imread(MINIMAP_PATH);
-	Mat tempMinimap = minimap.clone();  // TODO minimap always draws over the same image
+	Mat minimap_with_track = minimap.clone();
+	Mat minimap_with_balls = minimap.clone();
 //	vector<unsigned char> minimapVec(MINIMAP_DATA, MINIMAP_DATA + MINIMAP_DATA_SIZE);
 //	Mat minimap = imdecode(minimapVec, cv::IMREAD_UNCHANGED);
 //	Mat minimap = imread(MINIMAP_PATH);
 //	imshow("minimap", minimap);
 
+	//compute transformation
+
 	//create minimap with balls
-	Mat minimap_with_balls = drawMinimap(tempMinimap, table, frame);
+	Mat transform;
+	table.getTransform(transform); //TODO: getTranform(transform)?
+	minimap_with_balls = drawMinimap(minimap_with_track, transform, *table.ballsPtr());
 	imshow("Minimap with balls", minimap_with_balls);
 
 	BallTracker tracker = BallTracker(table.ballsPtr());
@@ -132,9 +140,15 @@ int main(int argc, char* argv[]){
 
 		tracker.trackAll(frame);
 		//tempMinimap = minimap.clone();
-		minimap_with_balls = drawMinimap(tempMinimap, table, frame);
-		// imshow("frame " + to_string(frameCount), frame);
-		// imshow("Minimap with balls " + to_string(frameCount), minimap_with_balls);
+		minimap_with_balls = drawMinimap(minimap_with_track, transform, *table.ballsPtr());
+
+
+		if((frameCount % 10) == 0) {
+			imshow("frame " + to_string(frameCount), frame);
+			imshow("Minimap with balls " + to_string(frameCount), minimap_with_balls);
+			waitKey(0);
+		}
+
 		createOutputImage(frame, minimap_with_balls, res);
 		// imshow("result", res);
 		vidOutput.write(res);
@@ -143,7 +157,7 @@ int main(int argc, char* argv[]){
 		// TODO write frame on video
 	}
 	auto stop = high_resolution_clock::now();
-	auto duration = duration_cast<microseconds>(stop - start);
+	auto duration = duration_cast<seconds>(stop - start);
 	cout << duration.count() << endl;
 	vidOutput.release();
 

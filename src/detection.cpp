@@ -199,27 +199,18 @@ Category classifyBall(Vec3i c, const Mat& img)
 	return SOLID_BALL;
 }
 
-void watershedClustering(Mat inputImage)
-{
-    Mat gray, thresh;
-	cvtColor(inputImage, gray, COLOR_BGR2GRAY);
-	threshold(gray,thresh, 0, 255, THRESH_BINARY | THRESH_OTSU);
-
-    imshow("watershed", thresh);
-}
-
 void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &tableCorners, const Scalar &colorTable)
 {
 	// const used during the function
 	const int MIN_RADIUS = 6;
 	const int MAX_RADIUS = 15;
-	const int HOUGH_PARAM1 = 120;
-	const int HOUGH_PARAM2 = 7;
+	const int HOUGH_PARAM1 = 100;
+	const int HOUGH_PARAM2 = 9;
 	const float ACCUMULATOR_RESOLUTION = 0.1;
 	const int MIN_DISTANCE = 20;
 
 	// const
-	const int NUMBER_CLUSTER_KMEANS = 7;
+	const int NUMBER_CLUSTER_KMEANS = 6;
 
 	// variables
 	Mat gray, HSVImg, mask;
@@ -227,6 +218,9 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	inRange(HSVImg, Scalar(colorTable[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
 			Scalar(colorTable[1], 255, 255), mask);
 	imshow("HSV", HSVImg);
+	Mat smooth;
+	bilateralFilter(HSVImg, smooth, 3, 75, 75);
+	imshow("smoothed", smooth);
 	vector<Vec3f> circles;
 	Mat frameRect = frame.clone();
 	Mat frameCircle = frame.clone();
@@ -236,28 +230,30 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	// needed otherwise exception
 	vector<Point> tableCornersInt;
 	for(int i = 0; i < 4; i++)
-	{
 		tableCornersInt.push_back(Point(static_cast<int>(tableCorners[i].x), static_cast<int>(tableCorners[i].y)));
-	}
+
 	fillConvexPoly(cropped, tableCornersInt, 255);
 	for(int i = 0; i < tableCornersInt.size(); i++)
-		circle(cropped, tableCornersInt[i], 25, 0, FILLED, 8, 0);
+		circle(cropped, tableCornersInt[i], 15, 0, FILLED, 8, 0);
 	imshow("Poly", cropped);
 
-	// Mat kernel = getStructuringElement(MORPH_CROSS, Size(3, 3));
-	// morphologyEx(cropped, cropped, MORPH_ERODE, kernel);
-	// imshow("Poly eroded", cropped);
+	Mat kernel = getStructuringElement(MORPH_RECT, Size(2, 2));
+	morphologyEx(cropped, cropped, MORPH_ERODE, kernel, Point(-1,-1), 4);
+	imshow("Poly eroded", cropped);
+
+	// kernel = getStructuringElement(MORPH_ELLIPSE, Size(2, 1));
+	// morphologyEx(mask, mask, MORPH_DILATE, kernel);
+	// imshow("mask dilate", mask);
 
 	// mask the image
 	for(int i = 0; i < cropped.rows; i++)
 		for(int j = 0; j < cropped.cols; j++)
 			if(cropped.at<uchar>(i, j) != 255)
-				HSVImg.at<Vec3b>(i,j) = Vec3b(0, 0, 0);
+				smooth.at<Vec3b>(i,j) = Vec3b(0, 0, 0);
 
 
 	Mat resClustering;
-	kMeansClustering(HSVImg, resClustering, NUMBER_CLUSTER_KMEANS);
-	//watershedClustering(resClustering);
+	kMeansClustering(smooth, resClustering, NUMBER_CLUSTER_KMEANS);
 	cvtColor(resClustering, gray, COLOR_BGR2GRAY);
 	imshow("Kmeans", resClustering);
 	imshow("res kmeans gray", gray);
@@ -288,7 +284,7 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 		{
 			subImg = frame.colRange(c[0]-radius, c[0]+radius).rowRange(c[1]-radius, c[1]+radius);
 			rect = Rect(center.x-c[2], center.y-c[2], 2*c[2], 2*c[2]);
-			category = SOLID_BALL//classifyBall(c, subImg);
+			category = SOLID_BALL; //classifyBall(c, subImg);
 			switch(category)
 			{
 				case WHITE_BALL:

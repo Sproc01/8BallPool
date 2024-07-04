@@ -134,16 +134,38 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 Category classifyBall(Vec3i c, const Mat& img)
 {
 	// const to classify the ball
-	const int MEAN_WHITE_CHANNEL2 = 150;
-	const int MEAN_WHITE_CHANNEL3 = 150;
-	const int MEAN_BLACK_CHANNEL3 = 120;
-	const int STD_DEV_BLACK = 60;
-	const int STD_DEV_SOLID = 50;
-	const int STD_DEV_STRIPED = 50;
+	// const int MEAN_WHITE_CHANNEL2 = 110;
+	// const int MEAN_WHITE_CHANNEL3 = 150;
+	// const int MEAN_BLACK_CHANNEL3 = 120;
+	// const int STD_DEV_BLACK = 60;
+	// const int STD_DEV_SOLID = 50;
+	// const int STD_DEV_STRIPED = 50;
+	// vector<double> mean, stddev;
+	// meanStdDev(img, mean, stddev);
+	// if(mean[1] < MEAN_WHITE_CHANNEL2 && mean[2] > MEAN_WHITE_CHANNEL3)
+	// 	return WHITE_BALL;
+	// else if(mean[2] < MEAN_BLACK_CHANNEL3 && stddev[2] < STD_DEV_BLACK)
+	// 	return BLACK_BALL;
+	// else if(stddev[1] < STD_DEV_SOLID)
+	// 	return SOLID_BALL;
+	// else if(stddev[1] > STD_DEV_STRIPED)
+	// 	return STRIPED_BALL;
+	// else
+	// 	return PLAYING_FIELD;
 
+	// const int MEAN_WHITE_CHANNEL1 = 150;
+	// const int MEAN_WHITE_CHANNEL2 = 150;
+	// const int MEAN_WHITE_CHANNEL3 = 150;
+	// const int MEAN_BLACK_CHANNEL1 = 50;
+	// const int MEAN_BLACK_CHANNEL2 = 50;
+	// const int MEAN_BLACK_CHANNEL3 = 50;
+	// vector<double> mean, stddev;
+	// meanStdDev(img, mean, stddev);
+	// if(mean[0] > MEAN_WHITE_CHANNEL1 && mean[1] > MEAN_WHITE_CHANNEL2 && mean[2] > MEAN_WHITE_CHANNEL3)
+	// 	return WHITE_BALL;
+	// else if(mean[0] < MEAN_BLACK_CHANNEL1 && mean[1] < MEAN_BLACK_CHANNEL2 && mean[2] < MEAN_BLACK_CHANNEL3)
+	//  	return BLACK_BALL;
 
-	//vector<double> mean, stddev;
-	//meanStdDev(img, mean, stddev);
 	Mat hist, gray, mask;
 	mask = Mat::zeros(img.size(), CV_8U);
 	imshow("original", img);
@@ -177,25 +199,31 @@ Category classifyBall(Vec3i c, const Mat& img)
                         Scalar(255), 2, 8, 0);
     }
 	imshow("histogram", histImage);
+
+	// first peak
+	Mat argmax;
+	reduceArgMax(hist, argmax, 0);
+	cout << "first " << argmax << endl;
+	float val = hist.at<float>(argmax.at<int>(0));
+	hist.at<float>(argmax.at<int>(0)) = 0;
+
+	// second peak
+	Mat argmax2;
+	reduceArgMax(hist, argmax2, 0);
+	cout << "second " << argmax2 << endl;
+	float val2 = hist.at<float>(argmax2.at<int>(0));
+	hist.at<float>(argmax2.at<int>(0)) = 0;
+
 	waitKey(0);
-
-	// Mat argmax;
-	// reduceArgMax(hist, argmax, 0);
-	// hist.at<Mat>(argmax.at<int>(0)) = 0;
-	// cout << argmax << endl;
-	// reduceArgMax(hist, argmax, 0);
-	// cout << argmax << endl;
-
-
-	// if(mean[1] < MEAN_WHITE_CHANNEL2 && mean[2] > MEAN_WHITE_CHANNEL3)
-	// 	return WHITE_BALL;
-	// else if(mean[2] < MEAN_BLACK_CHANNEL3 && stddev[2] < STD_DEV_BLACK)
-	// 	return BLACK_BALL;
-	// else if(stddev[1] < STD_DEV_SOLID)
-	// 	return SOLID_BALL;
-	// else if(stddev[1] > STD_DEV_STRIPED)
-	// 	return STRIPED_BALL;
-	// else
+	if(val2 > 0.9 * val)
+		cout << "Striped" << endl;
+	else if(argmax.at<int>(0) > 20)
+		cout << "white" << endl;
+	else if(argmax.at<int>(0) < 5)
+		cout << "black" << endl;
+	else
+		cout << "solid" << endl;
+	waitKey(0);
 	return SOLID_BALL;
 }
 
@@ -203,10 +231,10 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 {
 	// const used during the function
 	const int MIN_RADIUS = 6;
-	const int MAX_RADIUS = 15;
+	const int MAX_RADIUS = 14;
 	const int HOUGH_PARAM1 = 100;
 	const int HOUGH_PARAM2 = 9;
-	const float ACCUMULATOR_RESOLUTION = 0.1;
+	const float INVERSE_ACCUMULATOR_RESOLUTION = 0.1;
 	const int MIN_DISTANCE = 20;
 
 	// const
@@ -241,9 +269,9 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	morphologyEx(cropped, cropped, MORPH_ERODE, kernel, Point(-1,-1), 4);
 	imshow("Poly eroded", cropped);
 
-	// kernel = getStructuringElement(MORPH_ELLIPSE, Size(2, 1));
-	// morphologyEx(mask, mask, MORPH_DILATE, kernel);
-	// imshow("mask dilate", mask);
+	kernel = getStructuringElement(MORPH_ELLIPSE, Size(2, 2));
+	morphologyEx(mask, mask, MORPH_DILATE, kernel);
+	imshow("mask dilate", mask);
 
 	// mask the image
 	for(int i = 0; i < cropped.rows; i++)
@@ -259,8 +287,8 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	imshow("res kmeans gray", gray);
 
 	// Hough transform
-	HoughCircles(gray, circles, HOUGH_GRADIENT,
-					ACCUMULATOR_RESOLUTION, MIN_DISTANCE, HOUGH_PARAM1, HOUGH_PARAM2, MIN_RADIUS, MAX_RADIUS);
+	HoughCircles(gray, circles, HOUGH_GRADIENT, INVERSE_ACCUMULATOR_RESOLUTION,
+					MIN_DISTANCE, HOUGH_PARAM1, HOUGH_PARAM2, MIN_RADIUS, MAX_RADIUS);
 
 	Category category;
 	Point center;
@@ -284,7 +312,7 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 		{
 			subImg = frame.colRange(c[0]-radius, c[0]+radius).rowRange(c[1]-radius, c[1]+radius);
 			rect = Rect(center.x-c[2], center.y-c[2], 2*c[2], 2*c[2]);
-			category = SOLID_BALL; //classifyBall(c, subImg);
+			category = classifyBall(c, subImg);
 			switch(category)
 			{
 				case WHITE_BALL:

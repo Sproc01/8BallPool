@@ -24,7 +24,7 @@ void segmentTable(const Mat &frame, const Vec<Point2f, 4> &tableCorners, const S
 	fillConvexPoly(polyImage, tableCornersInt, 255);
 
 	Mat clustered;
-	kMeansClustering(frame, clustered);
+	kMeansClustering(frame, clustered, 2);
 	Vec3b color = clustered.at<Vec3b>(clustered.rows/2, clustered.cols/2); 	//at the center there is the color of the table
 
 	segmented = Mat::zeros(frame.size(), CV_8UC3);

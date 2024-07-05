@@ -178,9 +178,9 @@ double mAPDetection(const Ptr<vector<Ball>> &detectedBalls, const string &ground
 double mIoUCategory(const Mat &segmentedImage, const Mat &groundTruthMask, Category cat){
 	Mat segmentedImageCat = (segmentedImage == static_cast<unsigned char>(cat));
 	Mat groundTruthMaskCat = (groundTruthMask == static_cast<unsigned char>(cat));
-	imshow("segmentedImageCat", segmentedImageCat);
-	imshow("groundTruthMaskCat", groundTruthMaskCat);
-	waitKey();
+	// imshow("segmentedImageCat", segmentedImageCat);
+	// imshow("groundTruthMaskCat", groundTruthMaskCat);
+	//waitKey();
 	double iou = IoU(segmentedImageCat, groundTruthMaskCat);
 	cout<< "cat: " << cat << '\t' << "iou: " << iou << endl;
 	return iou;

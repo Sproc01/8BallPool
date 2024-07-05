@@ -114,7 +114,7 @@ void kMeansClustering(const Mat inputImage, Mat& clusteredImage, int clusterCoun
     TermCriteria criteria = TermCriteria(TermCriteria::EPS, 0, 1.0);
     kmeans(samples, clusterCount, labels, criteria, attempts, KMEANS_PP_CENTERS);
     clusteredImage = Mat(inputImage.size(), CV_8UC3);
-	
+
 	int cluster_idx = -1;
     for(int i = 0; i < inputImage.rows; i++)
     {

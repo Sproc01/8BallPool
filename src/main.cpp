@@ -37,28 +37,34 @@ int main(int argc, char* argv[]){
 	int frameCount = 0;
 	Mat res;
 
-	vector<string> name ={"/game1_clip1/game1_clip1.mp4", "/game1_clip2/game1_clip2.mp4", "/game1_clip3/game1_clip3.mp4",
+	vector<string> nameVideo ={"/game1_clip1/game1_clip1.mp4", "/game1_clip2/game1_clip2.mp4", "/game1_clip3/game1_clip3.mp4",
 							"/game1_clip4/game1_clip4.mp4", "/game2_clip1/game2_clip1.mp4", "/game2_clip2/game2_clip2.mp4",
 							"/game3_clip1/game3_clip1.mp4", "/game3_clip2/game3_clip2.mp4", "/game4_clip1/game4_clip1.mp4",
 							"/game4_clip2/game4_clip2.mp4"};
+	vector<string> name ={"/game1_clip1", "/game1_clip2", "/game1_clip3",
+							"/game1_clip4", "/game2_clip1", "/game2_clip2",
+							"/game3_clip1", "/game3_clip2", "/game4_clip1",
+							"/game4_clip2"};
 	Mat frame;
 	Vec2b colorTable;
 	for(int i = 0; i < name.size(); i++)
 	{
 		segmented = Mat::zeros(frame.size(), CV_8UC3);
 		balls.clear();
-		VideoCapture vid = VideoCapture("../Dataset"+name[i]);
+		VideoCapture vid = VideoCapture("../Dataset"+nameVideo[i]);
 		vid.read(frame);
 		detectTable(frame, tableCorners, colorTable);
 		//cout << "new image" << endl;
 		detectBalls(frame, balls, tableCorners, colorTable);
-		// table.addBalls(balls);
-		// segmentTable(frame, tableCorners, colorTable, segmented);
-		// // // imshow("segT", segmented);
-		// segmentBalls(frame, balls, segmented);
-		// imshow("segB", segmented);
+		table.addBalls(balls);
+		segmentTable(frame, tableCorners, colorTable, segmented);
+		// // imshow("segT", segmented);
+		segmentBalls(frame, balls, segmented);
+		//imshow("segB", segmented);
+		cout << i << endl;
+		compareMetrics(table, segmented,"../Dataset"+name[i], FIRST);
+		cout << "----------------------" << endl;
 		waitKey(0);
-		// compareMetrics(table, segmented,"../Dataset/game1_clip1", FIRST);
 	}
 
 // 	VideoCapture vid = VideoCapture("../Dataset/game2_clip2/game2_clip2.mp4");

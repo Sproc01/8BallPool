@@ -16,12 +16,14 @@ class Ball
 
 public:
     Ball(cv::Rect bbox, Category category, cv::Rect bbox_prec) : bbox_(bbox), category_(category), bbox_prec_(bbox_prec) {}
-    Ball(cv::Rect bbox, Category category) : bbox_(bbox), category_(category), bbox_prec_(cv::Rect(0, 0, 0, 0)) {}
+    //TODO: bbox_prec = -1, -1 for first frame?
+    Ball(cv::Rect bbox, Category category) : bbox_(bbox), category_(category), bbox_prec_(cv::Rect(-1, -1, 0, 0)) {}
 
     cv::Rect getBbox() const;
     Category getCategory() const;
     cv::Rect getBbox_prec() const;
     cv::Point2f getBBoxCenter();
+    cv::Point2f getBboxCenter_prec();
 
     void setBbox(cv::Rect bbox);
     void setCategory(Category category);

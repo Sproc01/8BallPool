@@ -40,7 +40,12 @@ double computeTablePercentile(Mat &mask_img, Rect rect) {
 
 //TODO: must be called after transformation otherwise the centers are not correct
 //TODO: see if it is needed for table oriented horizontal in the frame
-bool checkHorizontalTable(Mat table_img, Vec<Point2f, 4> &corners){
+bool checkHorizontalTable(Mat table_img){
+
+    Vec<Point2f, 4> corners =  {Point2f(0, 0),
+                                Point2f(table_img.cols, 0),
+                                Point2f(table_img.cols, table_img.rows),
+                                Point2f(0, table_img.rows)};
 
     //compute the centers of each table edge
     vector<Edge> edges(4);

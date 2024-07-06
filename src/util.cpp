@@ -6,6 +6,7 @@
 using namespace std;
 using namespace cv;
 
+//return center between two points
 Point2f getCenter(Point2f p1, Point2f p2) {
     Point2f center;
     int dx_half = abs(p1.x - p2.x)/2;
@@ -18,6 +19,35 @@ Point2f getCenter(Point2f p1, Point2f p2) {
     return center;
 }
 
+//return the color of a specific category
+Vec3b getColorFromCategory(Category category) {
+	switch (category) {
+		case BLACK_BALL: return BLACK_BGR_COLOR; break;
+		case WHITE_BALL: return WHITE_BGR_COLOR; break;
+		case STRIPED_BALL: return STRIPED_BGR_COLOR; break;
+		case SOLID_BALL: return SOLID_BGR_COLOR; break;
+		case BACKGROUND: return BACKGROUND_BGR_COLOR; break;
+		case PLAYING_FIELD: return BACKGROUND_BGR_COLOR; break;
+		default:
+			//TODO: throw error if no correct category is found
+				break;
+	}
+}
+
+//rotate the corners of the table clockwise
+void rotateCornersClockwise(Vec<Point2f, 4> &corners) {
+	Vec<Point2f, 4> img_vertices_temp = corners;
+	for(int i = 0; i < 4; i++) {
+		if(i+1 < 4) {
+			corners[i].x = img_vertices_temp[i+1].x;
+			corners[i].y = img_vertices_temp[i+1].y;
+		}
+		else {
+			corners[i].x = img_vertices_temp[0].x;
+			corners[i].y = img_vertices_temp[0].y;
+		}
+	}
+}
 
 // Gives the equation of the line passing through two points in the form  ax + by + c = 0
 void equationFormula(float x1, float y1, float x2, float y2, float &a, float &b, float &c)

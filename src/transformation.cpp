@@ -4,135 +4,85 @@
 #include "detection.h"
 #include "minimapConstants.h"
 #include "tableOrientation.h"
+#include "util.h"
 
 using namespace cv;
 using namespace std;
 
-Mat imgWithTransform(Mat frame, Mat transform, Table table) {
-    Vec<Point2f, 4> img_vertices = table.getBoundaries();
+//compute the image transformed cropped
+Mat imgTransformedCropped(Mat img, Mat transform) {
+    Vec<Point2f, 4> map_corners = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
 
-    //show frame perspective
-    Mat frame_perspective;
-    warpPerspective(frame, frame_perspective, transform,
-        Size(frame.cols, frame.rows));
-    //imshow("Frame perspective", frame_perspective);
-    //waitKey(0);
+    //img transformed with perspective
+    Mat img_transformed;
+    warpPerspective(img, img_transformed, transform,
+        Size(img.cols, img.rows));
 
-    //show frame perspective cropped
-    Vec<Point2f, 4> img_vertices_perspective;
-    perspectiveTransform(img_vertices, img_vertices_perspective, transform);
-    Mat frame_perspective_cropped;
-    frame_perspective_cropped = frame_perspective.rowRange(img_vertices_perspective[0].y, img_vertices_perspective[3].y)
-                                            .colRange(img_vertices_perspective[0].x, img_vertices_perspective[1].x);
-    //imshow("Frame perspective cropped", frame_perspective_cropped);
-    //waitKey(0);
+    //img transformed cropped
+    Mat img_transformed_cropped = img_transformed.rowRange(map_corners[0].y, map_corners[3].y)
+                                            .colRange(map_corners[0].x, map_corners[1].x);
 
-    return frame_perspective_cropped;
+    return img_transformed_cropped;
 }
 
-//compute the transformation matrix as product of rotation and perspective
-//TODO: use table or the set of edges as parameter?
-Mat computeTransformation(Table &table, Mat &frame) {
-    //convert vertices vector to vector of Point2f (needed for getPerspectiveTransform)
-    Vec<Point2f, 4> map_vertices = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
-    Vec<Point2f, 4> img_vertices = table.getBoundaries();
+//compute the transformation matrix using perspective transform
+Mat computeTransformation(Mat img, Vec<Point2f, 4>  &img_corners) {
+    Vec<Point2f, 4> map_corners = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
 
     //compute perspective transform
-    Mat perspectiveTransformMat = getPerspectiveTransform	(img_vertices, map_vertices);
-    //put as first point the top left which is followed by a longer edge clockwise
-    Vec<Point2f, 4> corners_img_cropped =
-        {   Point2f(0, 0),
-            Point2f(TOP_RIGHT_MAP_CORNER.x - TOP_LEFT_MAP_CORNER.x, 0),
-            Point2f(TOP_RIGHT_MAP_CORNER.x - TOP_LEFT_MAP_CORNER.x, BOTTOM_RIGHT_MAP_CORNER.y - TOP_RIGHT_MAP_CORNER.y),
-            Point2f(0, BOTTOM_RIGHT_MAP_CORNER.y - TOP_RIGHT_MAP_CORNER.y)};
-    if(!checkHorizontalTable(imgWithTransform(frame, perspectiveTransformMat, table), corners_img_cropped)) {
-        //compute transform with the corners rotated
-        Vec<Point2f, 4> img_vertices_temp = table.getBoundaries();
-        for(int i = 0; i < 4; i++) {
-            if(i+1 < 4) {
-                img_vertices[i].x = img_vertices_temp[i+1].x;
-                img_vertices[i].y = img_vertices_temp[i+1].y;
-            }
-            else {
-                img_vertices[i].x = img_vertices_temp[0].x;
-                img_vertices[i].y = img_vertices_temp[0].y;
-            }
-        }
-        table.setBoundaries(img_vertices);
-        //compute perspective transform correct
-        perspectiveTransformMat = getPerspectiveTransform	(img_vertices, map_vertices);
-    }
-    return perspectiveTransformMat;
+    Mat transform = getPerspectiveTransform(img_corners, map_corners);
 
+    //apply transformation considering corners such as top-left is the first one, followed by a long table side
+    Mat imgTransformed = imgTransformedCropped(img, transform);
+    //imshow("Img transformed cropped", imgTransformed);
+
+    //check if the transformation produces the table oriented correctly (in horizontal direction)
+    if(!checkHorizontalTable(imgTransformed)) {
+        //the table is not correctly rotated
+
+        //rotate the corners correctly
+        rotateCornersClockwise(img_corners);
+
+        //compute perspective transform with corners correctly ordered
+        transform = getPerspectiveTransform(img_corners, map_corners);
+        //imgTransformed = imgTransformedCropped(img, transform, map_corners);
+        //imshow("Img transformed cropped", imgTransformed);
+    }
+    return transform;
 }
 
-//compute the positions of the balls in the minimap
-vector<Point2f> computeBallsPositions(vector<Ball> &balls, const Mat &transform) {
-    vector<Point2f> map_balls;
-    vector<Point2f> balls_positions (balls.size());
+Mat drawMinimap(Mat &minimap_with_track, Mat transform, vector<Ball> balls) {
+    //compute balls and prec balls positions in the image
+    vector<Point2f> img_balls_pos (balls.size());
+    vector<Point2f> img_prec_balls_pos (balls.size());
+    vector<Vec3b> ball_colors (balls.size());
     for(int i = 0; i < balls.size(); i++) {
-        balls_positions[i] = balls[i].getBBoxCenter();
+        img_balls_pos[i] = balls[i].getBBoxCenter();
+        ball_colors[i] = getColorFromCategory(balls[i].getCategory());
+        img_prec_balls_pos[i] = balls[i].getBboxCenter_prec();
     }
 
-    perspectiveTransform(balls_positions, map_balls, transform);
+    //compute balls and prec balls positions in the map
+    vector<Point2f> map_balls_pos;
+    perspectiveTransform(img_balls_pos, map_balls_pos, transform);
+    vector<Point2f> map_prec_balls_pos;
+    perspectiveTransform(img_prec_balls_pos, map_prec_balls_pos, transform);
 
-    return map_balls;
-}
-
-//given the ball positions and the minimap draw the balls with their category color
-void drawBallsOnMap(Mat &map_img, vector<Point2f> balls_map, vector<Ball> balls) {
-
-    //TODO: see if the position is correct (or if it starts from the top left of the image without considering the border)
-    Point2f position;
-
-    //compute the color of the current ball using its category
-    Vec3b color;
-    for(int i = 0; i < balls_map.size(); i++) {
-        position = balls_map[i];
-        switch (balls[i].getCategory()) {
-            case BLACK_BALL:
-                color = BLACK_BGR_COLOR;
-                break;
-            case WHITE_BALL:
-                color = WHITE_BGR_COLOR;
-                break;
-            case STRIPED_BALL:
-                color = STRIPED_BGR_COLOR;
-                break;
-            case SOLID_BALL:
-                color = SOLID_BGR_COLOR;
-                break;
-            default:
-                //TODO: throw error if no correct category is found
-                // throw error
-                break;
+    //TODO: check if you want to draw someway to an outside point
+    //draw tracking lines
+    for(int i = 0; i < balls.size(); i++) {
+        //check if a precedent ball exists, otherwise do not draw a line
+        if(map_prec_balls_pos[i].x >= 0 && map_prec_balls_pos[i].y >= 0) {
+            line(minimap_with_track, map_prec_balls_pos[i], map_balls_pos[i], Vec3d(0, 0, 0), 2);
         }
-
-        circle(map_img, position, MAP_BALL_RADIUS, color, -1);
     }
-}
 
-Mat minimapWithBalls(Mat minimap, Table table, Mat frame) {
-	cv::Mat transform;
-	if (!table.getTransform(transform)) {
-		table.setTransform(computeTransformation(table, frame));
-		table.getTransform(transform);
-	}
-	imgWithTransform(frame, transform, table);
-
-    //TODO: change name of Compute ball positions to something that can be applied to other things (?)
-	vector<Point2f> ball_in_map = computeBallsPositions(*(table.ballsPtr()), transform);
-
-    //draw corners on map with transformation
-    /*
-    Vec<Point2f, 4> corner_in_map;
-    perspectiveTransform(table.getBoundaries(), corner_in_map, transform);
-    for(int i = 0; i < 4; i++) {
-        circle(minimap, corner_in_map[i], 8, Vec3d(100, 100, 100), -1);
+    //draw balls in the returned minimap
+    Mat minimap_with_balls = minimap_with_track.clone();
+    for(int i = 0; i < balls.size(); i++) {
+        circle(minimap_with_balls, map_balls_pos[i], MAP_BALL_RADIUS, ball_colors[i], -1);
+        circle(minimap_with_balls, map_balls_pos[i], MAP_BALL_RADIUS, Vec3d(0, 0, 0), 2);
     }
-    */
 
-	drawBallsOnMap(minimap, ball_in_map, *(table.ballsPtr()));
-
-	return minimap;
+	return minimap_with_balls;
 }

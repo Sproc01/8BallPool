@@ -4,11 +4,12 @@
 #include "ball.h"
 #include <opencv2/tracking.hpp>
 #include <iostream>
+#include "metrics.h"
 
 using namespace cv;
 
 BallTracker::BallTracker(Ptr<std::vector<Ball>> balls) { // NOLINT(*-unnecessary-value-param)
-	std::cout<<"constructor balltracker"<<std::endl;
+	//std::cout<<"constructor balltracker"<<std::endl;
 	isInitialized_ = false;
 
 	ballsVec_ = balls;
@@ -25,7 +26,7 @@ void BallTracker::createTrackers() {
 	}
 
 	ballTrackers_.shrink_to_fit();
-	std::cout<<"trackers created"<<std::endl;
+	//std::cout<<"trackers created"<<std::endl;
 }
 
 
@@ -40,19 +41,24 @@ Rect BallTracker::trackOne(unsigned short ballIndex, const Mat &frame, bool call
 		ballTrackers_[ballIndex]->init(frame, bbox);
 	} else {
 		isBboxUpdated = ballTrackers_[ballIndex]->update(frame, bbox);
-		ballsVec_->at(ballIndex).setBbox(bbox); // do not update if shift is too little (use IoU)
+		const float IOU_THRESHOLD = 0.9;    // TODO tune IoU threshold for updating ball position
+		if (isBboxUpdated && IoU(ballsVec_->at(ballIndex).getBbox_prec(), bbox) > IOU_THRESHOLD) {  // if IoU is too high, do not update: the shift is not significant
+			isBboxUpdated = false;
+			// TODO check if not updating the bbox makes the tracker lose the ball
+		} else {
+			ballsVec_->at(ballIndex).setBbox(bbox); // do not update if shift is too little (use IoU)
+		}
 	}
-	std::cout<< "Ball " << ballIndex << " updated? " << isBboxUpdated << " current bbox: " << bbox << std::endl;
+	//std::cout<< "Ball " << ballIndex << " updated? " << isBboxUpdated << " current bbox: " << bbox << std::endl;
 
 	return bbox;
-
 
 //		return cv::Point(bbox.x + bbox.width / 2, bbox.y + bbox.height / 2);
 }
 
 
 Ptr<std::vector<Ball>> BallTracker::trackAll(const Mat &frame) {
-	std::cout<<"trackAll, initialized: "<<isInitialized_<<std::endl;
+	//std::cout<<"trackAll, initialized: "<<isInitialized_<<std::endl;
 	if (!isInitialized_) {
 		createTrackers();
 		for (unsigned short i = 0; i < ballsVec_->size(); i++) {

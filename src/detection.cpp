@@ -9,6 +9,7 @@
 #include "detection.h"
 #include "util.h"
 #include "minimapConstants.h"
+#include "tableOrientation.h"
 
 using namespace cv;
 using namespace std;
@@ -134,8 +135,8 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 Category classifyBall(const Mat& img, double radius)
 {
 	// const to classify the ball
-	const int MEAN_WHITE_CHANNEL2 = 130;
-	const int MEAN_WHITE_CHANNEL3 = 150;
+	const int MEAN_WHITE_CHANNEL2 = 125;
+	const int MEAN_WHITE_CHANNEL3 = 160;
 	const int MEAN_BLACK_CHANNEL3 = 115;
 
 	Mat hist, gray, mask;
@@ -201,7 +202,7 @@ Category classifyBall(const Mat& img, double radius)
 	// cout << val2 << endl;
 	// cout << argmax2 << endl;
 	// waitKey(0);
-	if(argmax.at<int>(0) > 5)
+	if(argmax.at<int>(0) > 7)
 	{
 		if(mean[1] < MEAN_WHITE_CHANNEL2 && mean[2] > MEAN_WHITE_CHANNEL3)
 			return WHITE_BALL;
@@ -224,14 +225,14 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	// const used during the function
 	const int MIN_RADIUS = 6;
 	const int MAX_RADIUS = 14;
-	const int HOUGH_PARAM1 = 100;
-	const int HOUGH_PARAM2 = 9;
+	const int HOUGH_PARAM1 = 90;
+	const int HOUGH_PARAM2 = 7;
 	const float INVERSE_ACCUMULATOR_RESOLUTION = 0.1;
 	const int MIN_DISTANCE = 25;
 	const int NUMBER_CLUSTER_KMEANS = 6;
 
 	// variables
-	Mat gray, HSVImg, mask, smooth, kernel;
+	Mat gray, HSVImg, mask, smooth, kernel, graySmooth;
 	Mat frameRect = frame.clone();
 	Mat frameCircle = frame.clone();
 	Mat cropped = Mat::zeros(frame.size(), CV_8UC1);
@@ -241,9 +242,9 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	cvtColor(frame, HSVImg, COLOR_BGR2HSV);
 	inRange(HSVImg, Scalar(colorTable[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
 			Scalar(colorTable[1], 255, 255), mask);
-	kernel = getStructuringElement(MORPH_ELLIPSE, Size(2, 2));
+	kernel = getStructuringElement(MORPH_CROSS, Size(3, 3));
 	morphologyEx(mask, mask, MORPH_DILATE, kernel);
-	// imshow("mask dilate", mask);
+	imshow("mask dilate", mask);
 
 	// imshow("HSV", HSVImg);
 	bilateralFilter(HSVImg, smooth, 3, 75, 75);
@@ -257,8 +258,9 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	fillConvexPoly(cropped, tableCornersInt, 255);
 	//imshow("Poly", cropped);
 	for(int i = 0; i < tableCornersInt.size(); i++)
-		circle(cropped, tableCornersInt[i], 15, 0, FILLED, 8, 0);
-	kernel = getStructuringElement(MORPH_RECT, Size(2, 2));
+		circle(cropped, tableCornersInt[i], 20, 0, FILLED, 8, 0);
+	//imshow("Cropped", cropped);
+	kernel = getStructuringElement(MORPH_ELLIPSE, Size(2, 2));
 	morphologyEx(cropped, cropped, MORPH_ERODE, kernel, Point(-1,-1), 4);
 	//imshow("Poly eroded", cropped);
 
@@ -272,11 +274,12 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	Mat resClustering;
 	kMeansClustering(smooth, resClustering, NUMBER_CLUSTER_KMEANS);
 	cvtColor(resClustering, gray, COLOR_BGR2GRAY);
-	// imshow("Kmeans", resClustering);
-	// imshow("res kmeans gray", gray);
+	bilateralFilter(gray, graySmooth, 3, 100, 100);
+	imshow("res kmeans gray", graySmooth);
+	imshow("Kmeans", resClustering);
 
 	// Hough transform
-	HoughCircles(gray, circles, HOUGH_GRADIENT, INVERSE_ACCUMULATOR_RESOLUTION,
+	HoughCircles(graySmooth, circles, HOUGH_GRADIENT, INVERSE_ACCUMULATOR_RESOLUTION,
 					MIN_DISTANCE, HOUGH_PARAM1, HOUGH_PARAM2, MIN_RADIUS, MAX_RADIUS);
 
 	// circles classification
@@ -287,12 +290,14 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 	Rect rect;
 	bool ballFound;
 	Mat subImg;
+	vector<Vec3f> lines;
 	for(size_t i = 0; i < circles.size(); i++ )
 	{
 		ballFound = true;
 		c = circles[i];
 	 	center = Point(c[0], c[1]);
 	 	radius = c[2];
+
 		if(cropped.at<uchar>(center.y, center.x) == 255
 	 		&& cropped.at<uchar>(center.y+radius, center.x) == 255
 			&& cropped.at<uchar>(center.y-radius, center.x) == 255
@@ -322,7 +327,7 @@ void detectBalls(const Mat &frame, vector<Ball> &balls, const Vec<Point2f, 4> &t
 						rectangle(frameRect, rect, STRIPED_BGR_COLOR, 1, LINE_AA);
 					break;
 				default:
-						circle(frameCircle, center, radius, Scalar(120,0,120), 1, LINE_AA);
+						circle(frameCircle, center, radius, Scalar(255,0,120), 1, LINE_AA);
 						ballFound = false;
 					break;
 			}

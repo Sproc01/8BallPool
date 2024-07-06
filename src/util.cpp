@@ -66,7 +66,7 @@ void equationFormula(float x1, float y1, float x2, float y2, float &a, float &b,
 	}
 }
 
-
+// compute intersection of two lines if there is one
 void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point2f &intersection)
 {
 	float a1 = line1[0], b1 = line1[1], c1 = line1[2];
@@ -84,7 +84,7 @@ void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point2f &inters
 	}
 }
 
-
+// calculate the most frequent color in the image
 Vec2b mostFrequentColor(const Mat &img)
 {
 	Mat thisImg, hist;
@@ -105,7 +105,7 @@ Vec2b mostFrequentColor(const Mat &img)
 	return Vec2b(start, start + diameter);
 }
 
-
+// create the output image with frame and minimap
 void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res)
 {
 	const int offset = 408;
@@ -119,7 +119,7 @@ void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res
 			res.at<Vec3b>(i+offset,j) = resized.at<Vec3b>(i,j);
 }
 
-
+// do the kmeans clustering on the input image
 void kMeansClustering(const Mat inputImage, Mat& clusteredImage, int clusterCount)
 {
     Mat blurred, samples, labels;

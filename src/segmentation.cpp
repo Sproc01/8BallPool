@@ -23,7 +23,10 @@ void segmentTable(const Mat &frame, const Vec<Point2f, 4> &tableCorners, const S
 	}
 	fillConvexPoly(polyImage, tableCornersInt, 255);
 
-	Mat clustered;
+	Mat clustered, HSVimg, mask;
+	cvtColor(frame, HSVimg, COLOR_BGR2GRAY);
+	inRange(HSVimg, Scalar(colorTable[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
+				Scalar(colorTable[1], 255, 255), mask);
 	kMeansClustering(frame, clustered, 2);
 	Vec3b color = clustered.at<Vec3b>(clustered.rows/2, clustered.cols/2); 	//at the center there is the color of the table
 
@@ -32,7 +35,7 @@ void segmentTable(const Mat &frame, const Vec<Point2f, 4> &tableCorners, const S
 	{
 		for(int j = 0; j < segmented.cols; j++)
 		{
-			if(polyImage.at<uchar>(i, j) == 255 && clustered.at<Vec3b>(i, j) == color)
+			if(polyImage.at<uchar>(i, j) == 255 && (clustered.at<Vec3b>(i, j) == color || mask.at<uchar>(i,j) == 255))
 			{
 				segmented.at<Vec3b>(i, j) = PLAYING_FIELD_BGR_COLOR;
 			}

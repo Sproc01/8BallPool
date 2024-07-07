@@ -16,7 +16,7 @@ Mat imgTransformedCropped(Mat img, Mat transform) {
     //img transformed with perspective
     Mat img_transformed;
     warpPerspective(img, img_transformed, transform,
-        Size(img.cols, img.rows));
+        Size(967, 560)); //TODO: constants
 
     //img transformed cropped
     Mat img_transformed_cropped = img_transformed.rowRange(map_corners[0].y, map_corners[3].y)
@@ -72,7 +72,7 @@ Mat drawMinimap(Mat &minimap_with_track, Mat transform, vector<Ball> balls) {
     //draw tracking lines
     for(int i = 0; i < balls.size(); i++) {
         //check if a precedent ball exists, otherwise do not draw a line
-        if(map_prec_balls_pos[i].x >= 0 && map_prec_balls_pos[i].y >= 0) {
+        if(img_prec_balls_pos[i].x != -1 && img_prec_balls_pos[i].y != -1) { 
             line(minimap_with_track, map_prec_balls_pos[i], map_balls_pos[i], Vec3d(0, 0, 0), 2);
         }
     }

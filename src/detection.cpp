@@ -1,5 +1,7 @@
 // Author: Michele Sprocatti
 
+#define _USE_MATH_DEFINES
+
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <opencv2/features2d.hpp>
@@ -9,6 +11,7 @@
 #include "detection.h"
 #include "util.h"
 #include "minimapConstants.h"
+#include "math.h"
 
 using namespace cv;
 using namespace std;

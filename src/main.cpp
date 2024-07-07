@@ -42,7 +42,7 @@ int main(int argc, char* argv[]){
 		videoPath = filesystem::path(argv[1]);
 	}
 	else if (argc == 1) { //TODO: remove at the end
-		videoPath = filesystem::path("../Dataset/game2_clip1/game2_clip1.mp4");
+		videoPath = filesystem::path("../Dataset/game4_clip1/game4_clip1.mp4");
 	}
 	else {
 		cout << "Error of number of parameters: insert one parameter" << endl;
@@ -83,10 +83,12 @@ int main(int argc, char* argv[]){
 	string videoName = videoPath.stem().string();
 	pathOutput = "../Output/" + videoName + "_output.mp4";
 	++frameCount;
+	//TODO: check output in frame when the resolution is bigger (it is cropped)
 	imshow("First frame", frame);
 	int codec = VideoWriter::fourcc('m', 'p', '4', 'v');
 	VideoWriter vidOutput = VideoWriter();
 	double fps = vid.get(CAP_PROP_FPS);
+	//TODO: remove the video if some error occour, or if the execution is closed before end (it is corrupted)
 	vidOutput.open(pathOutput, codec, fps, frame.size(), 1);
 
 	//DETECT AND SEGMENT TABLE
@@ -134,6 +136,7 @@ int main(int argc, char* argv[]){
 	auto start = high_resolution_clock::now();
 	while (vid.isOpened()){  // work on middle frames
 	 	bool ret = vid.read(frame);
+		//cout << "Frame number: " << ++frameCount << endl;
 
 // 	BallTracker tracker = BallTracker(table.ballsPtr());
 // 	tracker.trackAll(frame);

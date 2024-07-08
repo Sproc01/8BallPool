@@ -152,7 +152,7 @@ Category classifyBall(const Mat& img, double radius)
 				gray.at<uchar>(i,j) = 0;
 	//imshow("gray", gray);
 	//cout << img.rows << "," << img.cols << endl;
-	int numberOfBackgroundPixels = 4 * pow(radius, 2) - M_PI * pow(radius, 2);
+	int numberOfBackgroundPixels = 4 * pow(radius, 2) - CV_PI * pow(radius, 2);
 	//cout << numberOfBackgroundPixels << endl;
 	const int channel[] = {0};
 	int histSize = 20;

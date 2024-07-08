@@ -26,22 +26,32 @@ bool compareByPercentile(const Edge &e1, const Edge &e2)
 //Return the percentile of pixels in the color_range within the rectangle in the image
 double computeTablePercentile(Mat &mask_img, Rect rect) {
     double count = 0;
+    double count_tot = 0;
     for(int x = rect.x; x < rect.x + rect.width; x++) {
         for(int y = rect.y; y < rect.y + rect.height; y++) {
             if(x >= 0 && x < mask_img.cols && y >= 0 && y < mask_img.rows) {
                 if(mask_img.at<uchar>(y, x) == 255) {
                     count++;
                 }
+                count_tot++;
             }
         }
     }
-    return count/rect.area();
+    return count/count_tot;
+}
+
+bool oppositeEdges(Edge e1, Edge e2) {
+    if((e1.corner1 == e2.corner2)||
+        e1.corner2 == e2.corner1 ||
+        e1.corner1 == e2.corner1 ||
+        e1.corner2 == e2.corner2)
+        return false;
+    return true;
 }
 
 //TODO: must be called after transformation otherwise the centers are not correct
 //TODO: see if it is needed for table oriented horizontal in the frame
 bool checkHorizontalTable(Mat table_img){
-
     Vec<Point2f, 4> corners =  {Point2f(0, 0),
                                 Point2f(table_img.cols, 0),
                                 Point2f(table_img.cols, table_img.rows),
@@ -92,6 +102,14 @@ bool checkHorizontalTable(Mat table_img){
     inRange(frameHSV, Scalar(background_color[0], 50, 90),
                 Scalar(background_color[1], 255, 255), mask_img);
     //imshow("Mask img", mask_img);
+
+	//print the rectangles on the pool of the masked img (just for testing)
+    //TODO: remove this
+    Mat mask_img_rectangles = mask_img.clone();
+    for(int i = 0; i < 4; i++) {
+        rectangle(mask_img_rectangles, edges[i].center_rect, Scalar(0, 0, 255), 1, LINE_AA);
+    }
+    //imshow("Rectangles on pools (mask)", mask_img_rectangles);
     //waitKey(0);
 
     //compute the rects with and without the pools
@@ -100,6 +118,36 @@ bool checkHorizontalTable(Mat table_img){
         edges[i].background_percentile = computeTablePercentile(mask_img, edges[i].center_rect);
     }
 
+    //order the edges by the percentile of background in the rectangle around the center of the edge
+    vector<Edge> ordered_edges;
+    copy(edges.begin(), edges.end(), back_inserter(ordered_edges));
+    sort(ordered_edges.begin(), ordered_edges.end(), compareByPercentile);
+
+    //waitKey(0);
+    if(oppositeEdges(ordered_edges[0], ordered_edges[1])) {
+        //the one with "more pool" are opposite edges -> they are the longest edges
+        if(ordered_edges[0].center == edges[0].center || ordered_edges[1].center == edges[0].center)
+            return true;
+        else
+            return false;
+    }
+    else if (oppositeEdges(ordered_edges[0], ordered_edges[3])) {
+        //the one with "more pool" is opposite to the one with "less pool" --> they are not the longest edges
+        if(ordered_edges[0].center == edges[0].center || ordered_edges[3].center == edges[0].center)
+            return false;
+        else
+            return true;
+    }
+    else {
+        //there is uncertanty, probably the one with "more pool" is one longest edge
+        if(ordered_edges[0].center == edges[0].center)
+            return true;
+        else
+            return false;
+    }
+
+    //
+    /* old method
     if(edges[0].background_percentile + edges[2].background_percentile <  edges[1].background_percentile + edges[3].background_percentile) {
         //edges[0] and edges[2] contain pools
         return true;
@@ -107,4 +155,5 @@ bool checkHorizontalTable(Mat table_img){
     else {
         return false;
     }
+    */
 }

@@ -42,7 +42,7 @@ int main(int argc, char* argv[]){
 		videoPath = filesystem::path(argv[1]);
 	}
 	else if (argc == 1) { //TODO: remove at the end
-		videoPath = filesystem::path("../Dataset/game2_clip1/game2_clip1.mp4");
+		videoPath = filesystem::path("../Dataset/game4_clip1/game4_clip1.mp4");
 	}
 	else {
 		cout << "Error of number of parameters: insert one parameter" << endl;
@@ -115,10 +115,25 @@ int main(int argc, char* argv[]){
 	//	Mat minimap = imread(MINIMAP_PATH);
 	//	imshow("minimap", minimap);
 
-	// Mat transform;
-	// table.getTransform(transform); //TODO: getTranform(transform)?
-	// minimap_with_balls = drawMinimap(minimap_with_track, transform, *table.ballsPtr());
-	// imshow("Minimap with balls", minimap_with_balls);
+	Mat transform;
+	table.getTransform(transform); //TODO: getTranform(transform)?
+	minimap_with_balls = drawMinimap(minimap_with_track, transform, *table.ballsPtr());
+	imshow("Minimap with balls", minimap_with_balls);
+
+	//TRACKER
+	BallTracker tracker = BallTracker(table.ballsPtr());
+	tracker.trackAll(frame);
+	createOutputImage(frame, minimap_with_balls, res);
+	//imshow("result", res);
+	vidOutput.write(res);
+	// TODO calculate metrics using videoPath.file_parent()
+	waitKey(0);
+
+	//VIDEO WITH MINIMAP
+	auto start = high_resolution_clock::now();
+	while (vid.isOpened()){  // work on middle frames
+	 	bool ret = vid.read(frame);
+		//cout << "Frame number: " << ++frameCount << endl;
 
 // 	//TRACKER
 // 	BallTracker tracker = BallTracker(table.ballsPtr());

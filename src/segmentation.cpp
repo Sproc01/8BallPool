@@ -11,10 +11,12 @@
 using namespace cv;
 using namespace std;
 
-void segmentTable(const Mat &frame, const Vec<Point2f, 4> &tableCorners, const Scalar &colorTable, Mat& segmented)
+void segmentTable(const Mat &frame, const Table& table, Mat& segmented)
 {
 	Mat polyImage = Mat::zeros(frame.size(), CV_8UC1);
 	vector<Point> tableCornersInt;
+	Vec2b colorTable = table.getColor();
+	Vec<Point2f, 4> tableCorners = table.getBoundaries();
 
 	//needed otherwise error
 	for(int i = 0; i < 4; i++)
@@ -25,9 +27,10 @@ void segmentTable(const Mat &frame, const Vec<Point2f, 4> &tableCorners, const S
 
 	Mat clustered, HSVimg, mask;
 	cvtColor(frame, HSVimg, COLOR_BGR2GRAY);
+
 	inRange(HSVimg, Scalar(colorTable[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
 				Scalar(colorTable[1], 255, 255), mask);
-	kMeansClustering(frame, clustered, 2);
+	kMeansClustering(frame, 2, clustered);
 	Vec3b color = clustered.at<Vec3b>(clustered.rows/2, clustered.cols/2); 	//at the center there is the color of the table
 
 	segmented = Mat::zeros(frame.size(), CV_8UC3);

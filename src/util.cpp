@@ -85,7 +85,7 @@ void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point2f &inters
 }
 
 // calculate the most frequent color in the image
-Vec2b mostFrequentColor(const Mat &img)
+Vec2b mostFrequentHueColor(const Mat &img)
 {
 	Mat thisImg, hist;
 	cvtColor(img, thisImg, COLOR_BGR2HSV);
@@ -119,17 +119,15 @@ void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res
 			res.at<Vec3b>(i+offset,j) = resized.at<Vec3b>(i,j);
 }
 
-// do the kmeans clustering on the input image
-void kMeansClustering(const Mat inputImage, Mat& clusteredImage, int clusterCount)
+void kMeansClustering(const Mat inputImage, int clusterCount, Mat& clusteredImage)
 {
-    Mat blurred, samples, labels;
+    Mat samples, labels;
 	int attempts = 10;
     vector<Vec3b> colors;
 	for(int i = 0; i < clusterCount; i++)
         colors.push_back(Vec3b(rand()%255, rand()%255, rand()%255));
-
-    GaussianBlur(inputImage, blurred, Size(15,15), 0, 0);
     samples = Mat(inputImage.total(), 3, CV_32F);
+
 
     int index = 0;
     for(int i = 0; i < inputImage.rows; i++)

@@ -9,6 +9,6 @@
 
 void detectTable(const cv::Mat &frame, cv::Vec<cv::Point2f, 4> &tableCorners, cv::Vec2b &colorTable);
 Category classifyBall(const cv::Mat& img, double radius);
-void detectBalls(const cv::Mat &frame, std::vector<Ball> &balls, const cv::Vec<cv::Point2f, 4> &tableCorners, const cv::Scalar &colorTable);
+void detectBalls(const cv::Mat &frame, const Table &table, std::vector<Ball> &balls);
 
 #endif // DETECTION_H

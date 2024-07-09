@@ -40,10 +40,10 @@ void compareMetrics(Table &table, Mat &segmentedImage, const string &folderPath,
 	}
 
 	// For ball localization, the mean Average Precision (mAP) calculated at IoU threshold 0.5
-	double mAP = mAPDetection(table.ballsPtr(), groundTruthBboxPath.string(), MAP_IOU_THRESHOLD);
-	cout << "mAP:" << mAP << endl;
 	double mIoU = mIoUSegmentation(segmentedImage, groundTruthMaskPath.string());
 	cout << "mIoU: " << mIoU << endl;
+	double mAP = mAPDetection(table.ballsPtr(), groundTruthBboxPath.string(), MAP_IOU_THRESHOLD);
+	cout << "mAP:" << mAP << endl;
 }
 
 
@@ -55,9 +55,6 @@ double APCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect
 			detectedBallsBboxesCat.push_back(ball.getBbox());
 		}
 	}
-	// if there are no balls with that category return 0;
-	if(detectedBallsBboxesCat.size()==0)
-		return 0;
 
 	// Create a vector of bounding boxes only for the ground truths of the chosen category
 	vector<Rect> groundTruthBboxesCat;
@@ -66,6 +63,13 @@ double APCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect
 			groundTruthBboxesCat.push_back(get<Rect>(groundTruthBall));
 		}
 	}
+
+	// if there are no balls with that category return 0;
+	if(detectedBallsBboxesCat.size()==0 && groundTruthBboxesCat.size() == 0)
+		return 1;
+	if(detectedBallsBboxesCat.size()==0 && groundTruthBboxesCat.size() != 0)
+		return 0;
+
 	vector<double> IoUs(groundTruthBboxesCat.size(), 0);  // if 0, the ground truth ball has not been assigned to any detected ball
 
 	vector<unsigned short> tp(detectedBallsBboxesCat.size(), 0);

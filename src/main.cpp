@@ -51,24 +51,26 @@ int main(int argc, char* argv[]){
 	cout << "Video path: " << videoPath << endl;
 
 
-	vector<string> name ={"/game1_clip1/game1_clip1.mp4", "/game1_clip2/game1_clip2.mp4", "/game1_clip3/game1_clip3.mp4",
-							"/game1_clip4/game1_clip4.mp4", "/game2_clip1/game2_clip1.mp4", "/game2_clip2/game2_clip2.mp4",
-							"/game3_clip1/game3_clip1.mp4", "/game3_clip2/game3_clip2.mp4", "/game4_clip1/game4_clip1.mp4",
-							"/game4_clip2/game4_clip2.mp4"};
+	vector<string> name ={"/game1_clip1", "/game1_clip2", "/game1_clip3",
+							"/game1_clip4", "/game2_clip1", "/game2_clip2",
+							"/game3_clip1", "/game3_clip2", "/game4_clip1",
+							"/game4_clip2"};
 
 	for(int i = 0; i < name.size(); i++)
 	{
 		segmented = Mat::zeros(frame.size(), CV_8UC3);
 		balls.clear();
-		VideoCapture vid = VideoCapture("../Dataset"+name[i]);
+		VideoCapture vid = VideoCapture("../Dataset"+name[i]+name[i]+".mp4");
 		vid.read(frame);
 		detectTable(frame, tableCorners, colorTable);
 		table = Table(tableCorners, colorTable);
-		detectBalls(frame, balls, tableCorners, colorTable);
+		cout << "--------------" << endl;
+		detectBalls(frame, table, balls);
 		table.addBalls(balls);
-		segmentTable(frame, tableCorners, colorTable, segmented);
+		segmentTable(frame, table, segmented);
 		segmentBalls(frame, balls, segmented);
-		imshow("seg", segmented);
+		//imshow("seg", segmented);
+		compareMetrics(table, segmented, "../Dataset"+name[i], FIRST);
 		waitKey(0);
 	}
 
@@ -117,25 +119,25 @@ int main(int argc, char* argv[]){
 	//	Mat minimap = imread(MINIMAP_PATH);
 	//	imshow("minimap", minimap);
 
-	Mat transform;
-	table.getTransform(transform); //TODO: getTranform(transform)?
-	minimap_with_balls = drawMinimap(minimap_with_track, transform, *table.ballsPtr());
-	imshow("Minimap with balls", minimap_with_balls);
+	// Mat transform;
+	// table.getTransform(transform); //TODO: getTranform(transform)?
+	// minimap_with_balls = drawMinimap(minimap_with_track, transform, *table.ballsPtr());
+	// imshow("Minimap with balls", minimap_with_balls);
 
-	//TRACKER
-	BallTracker tracker = BallTracker(table.ballsPtr());
-	tracker.trackAll(frame);
-	createOutputImage(frame, minimap_with_balls, res);
-	//imshow("result", res);
-	vidOutput.write(res);
-	// TODO calculate metrics using videoPath.file_parent()
-	waitKey(0);
+	// //TRACKER
+	// BallTracker tracker = BallTracker(table.ballsPtr());
+	// tracker.trackAll(frame);
+	// createOutputImage(frame, minimap_with_balls, res);
+	// //imshow("result", res);
+	// vidOutput.write(res);
+	// // TODO calculate metrics using videoPath.file_parent()
+	// waitKey(0);
 
-	//VIDEO WITH MINIMAP
-	auto start = high_resolution_clock::now();
-	while (vid.isOpened()){  // work on middle frames
-	 	bool ret = vid.read(frame);
-		//cout << "Frame number: " << ++frameCount << endl;
+	// //VIDEO WITH MINIMAP
+	// auto start = high_resolution_clock::now();
+	// while (vid.isOpened()){  // work on middle frames
+	//  	bool ret = vid.read(frame);
+	// 	//cout << "Frame number: " << ++frameCount << endl;
 
 // 	//TRACKER
 // 	BallTracker tracker = BallTracker(table.ballsPtr());

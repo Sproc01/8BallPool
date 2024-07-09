@@ -5,6 +5,7 @@
 #include "minimapConstants.h"
 #include "tableOrientation.h"
 #include "util.h"
+#include "segmentation.h"
 
 using namespace cv;
 using namespace std;
@@ -32,12 +33,16 @@ Mat computeTransformation(Mat img, Vec<Point2f, 4>  &img_corners) {
     //compute perspective transform
     Mat transform = getPerspectiveTransform(img_corners, map_corners);
 
+    //TODO: check if we want to pass the segmentation or compute it here
+    Mat tableSegmented;
+    segmentTable(img, img_corners, Vec3b(255, 255, 255), tableSegmented); //TODO: remove color
+
     //apply transformation considering corners such as top-left is the first one, followed by a long table side
-    Mat imgTransformed = imgTransformedCropped(img, transform);
+    Mat tableSegmentedTransformed = imgTransformedCropped(tableSegmented, transform);
     //imshow("Img transformed cropped", imgTransformed);
 
     //check if the transformation produces the table oriented correctly (in horizontal direction)
-    if(!checkHorizontalTable(imgTransformed)) {
+    if(!checkHorizontalTable(tableSegmentedTransformed)) {
         //the table is not correctly rotated
 
         //rotate the corners correctly
@@ -72,7 +77,7 @@ Mat drawMinimap(Mat &minimap_with_track, Mat transform, vector<Ball> balls) {
     //draw tracking lines
     for(int i = 0; i < balls.size(); i++) {
         //check if a precedent ball exists, otherwise do not draw a line
-        if(img_prec_balls_pos[i].x != -1 && img_prec_balls_pos[i].y != -1) { 
+        if(img_prec_balls_pos[i].x != -1 && img_prec_balls_pos[i].y != -1) {
             line(minimap_with_track, map_prec_balls_pos[i], map_balls_pos[i], Vec3d(0, 0, 0), 2);
         }
     }

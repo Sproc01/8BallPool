@@ -42,7 +42,7 @@ int main(int argc, char* argv[]){
 		videoPath = filesystem::path(argv[1]);
 	}
 	else if (argc == 1) { //TODO: remove at the end
-		videoPath = filesystem::path("../Dataset/game1_clip1/game1_clip1.mp4");
+		videoPath = filesystem::path("../Dataset/game4_clip1/game4_clip1.mp4");
 	}
 	else {
 		cout << "Error of number of parameters: insert one parameter" << endl;
@@ -85,7 +85,7 @@ int main(int argc, char* argv[]){
 
 	// //TRANSFORMATION
 	Vec<Point2f, 4>  img_corners = table.getBoundaries();
-	table.setTransform(computeTransformation(frame, img_corners));
+	table.setTransform(computeTransformation(frame, segmented, img_corners));
 	table.setBoundaries(img_corners);
 
 	// //MINIMAP

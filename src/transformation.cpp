@@ -11,7 +11,7 @@ using namespace cv;
 using namespace std;
 
 //compute the image transformed cropped
-Mat imgTransformedCropped(Mat img, Mat transform) {
+Mat imgTransformedCropped(const Mat &img, const Mat &transform) {
     Vec<Point2f, 4> map_corners = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
 
     //img transformed with perspective
@@ -27,18 +27,14 @@ Mat imgTransformedCropped(Mat img, Mat transform) {
 }
 
 //compute the transformation matrix using perspective transform
-Mat computeTransformation(Mat img, Vec<Point2f, 4>  &img_corners) {
+Mat computeTransformation(const Mat& img, const Mat& segmented, Vec<Point2f, 4>  &img_corners) {
     Vec<Point2f, 4> map_corners = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
 
     //compute perspective transform
     Mat transform = getPerspectiveTransform(img_corners, map_corners);
 
-    //TODO: check if we want to pass the segmentation or compute it here
-    Mat tableSegmented;
-    segmentTable(img, img_corners, Vec3b(255, 255, 255), tableSegmented); //TODO: remove color
-
     //apply transformation considering corners such as top-left is the first one, followed by a long table side
-    Mat tableSegmentedTransformed = imgTransformedCropped(tableSegmented, transform);
+    Mat tableSegmentedTransformed = imgTransformedCropped(segmented, transform);
     //imshow("Img transformed cropped", imgTransformed);
 
     //check if the transformation produces the table oriented correctly (in horizontal direction)

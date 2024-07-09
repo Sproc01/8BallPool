@@ -50,29 +50,6 @@ int main(int argc, char* argv[]){
 	}
 	cout << "Video path: " << videoPath << endl;
 
-
-	// vector<string> name ={"/game1_clip1/game1_clip1.mp4", "/game1_clip2/game1_clip2.mp4", "/game1_clip3/game1_clip3.mp4",
-	// 						"/game1_clip4/game1_clip4.mp4", "/game2_clip1/game2_clip1.mp4", "/game2_clip2/game2_clip2.mp4",
-	// 						"/game3_clip1/game3_clip1.mp4", "/game3_clip2/game3_clip2.mp4", "/game4_clip1/game4_clip1.mp4",
-	// 						"/game4_clip2/game4_clip2.mp4"};
-	// Mat frame;
-	// Vec2b colorTable;
-	// for(int i = 0; i < name.size(); i++)
-	// {
-	// 	segmented = Mat::zeros(frame.size(), CV_8UC3);
-	// 	balls.clear();
-	// 	VideoCapture vid = VideoCapture("../Dataset"+name[i]);
-	// 	vid.read(frame);
-	// 	detectTable(frame, tableCorners, colorTable);
-	// 	//cout << "new image" << endl;
-	// 	detectBalls(frame, balls, tableCorners, colorTable);
-	// 	// segmentTable(frame, tableCorners, colorTable, segmented);
-	// 	// // imshow("segT", segmented);
-	// 	// segmentBalls(frame, balls, segmented);
-	// 	// imshow("segB", segmented);
-	// 	// waitKey(0);
-	// }
-
 	//START THE VIDEO
 	VideoCapture vid = VideoCapture(videoPath.string());
 	// TODO work on first frame
@@ -84,112 +61,82 @@ int main(int argc, char* argv[]){
 	pathOutput = "../Output/" + videoName + "_output.mp4";
 	++frameCount;
 	//TODO: check output in frame when the resolution is bigger (it is cropped)
-	imshow("First frame", frame);
+	//imshow("First frame", frame);
 	int codec = VideoWriter::fourcc('m', 'p', '4', 'v');
 	VideoWriter vidOutput = VideoWriter();
 	double fps = vid.get(CAP_PROP_FPS);
 	//TODO: remove the video if some error occour, or if the execution is closed before end (it is corrupted)
 	vidOutput.open(pathOutput, codec, fps, frame.size(), true);
 
-	//DETECT AND SEGMENT TABLE
+	// //DETECT AND SEGMENT TABLE
 	detectTable(frame, tableCorners, colorTable);
 	table = Table(tableCorners, colorTable);
-	segmentTable(frame, tableCorners, colorTable, segmented);
-	// imshow("segmentedTable", segmented);
+	segmentTable(frame, table, segmented);
+	// // imshow("segmentedTable", segmented);
 
-	//DETECT AND SEGMENT BALLS
-	detectBalls(frame, balls, tableCorners, colorTable);
+	// //DETECT AND SEGMENT BALLS
+	detectBalls(frame, table, balls);
 	// TODO better manage using table.ballsPtr()
 	table.addBalls(balls);
 	segmentBalls(segmented, balls, segmented);
-	// imshow("segmentedBalls", segmented);
+	// // imshow("segmentedBalls", segmented);
+	compareMetrics(table, segmented, videoPath.parent_path(), FIRST);
 
-	//TRANSFORMATION
+
+	// //TRANSFORMATION
 	Vec<Point2f, 4>  img_corners = table.getBoundaries();
-	table.setTransform(computeTransformation(frame, img_corners));
+	table.setTransform(computeTransformation(frame, segmented, img_corners));
 	table.setBoundaries(img_corners);
 
-	//MINIMAP
+	// //MINIMAP
 	Mat minimap = imread(MINIMAP_PATH);
 	Mat minimap_with_track = minimap.clone();
 	Mat minimap_with_balls = minimap.clone();
-	//	vector<unsigned char> minimapVec(MINIMAP_DATA, MINIMAP_DATA + MINIMAP_DATA_SIZE);
-	//	Mat minimap = imdecode(minimapVec, cv::IMREAD_UNCHANGED);
-	//	Mat minimap = imread(MINIMAP_PATH);
-	//	imshow("minimap", minimap);
+		// vector<unsigned char> minimapVec(MINIMAP_DATA, MINIMAP_DATA + MINIMAP_DATA_SIZE);
+		// Mat minimap = imdecode(minimapVec, cv::IMREAD_UNCHANGED);
+		// Mat minimap = imread(MINIMAP_PATH);
+		// imshow("minimap", minimap);
 
 	Mat transform;
 	table.getTransform(transform); //TODO: getTranform(transform)?
 	minimap_with_balls = drawMinimap(minimap_with_track, transform, *table.ballsPtr());
-	imshow("Minimap with balls", minimap_with_balls);
+	//imshow("Minimap with balls", minimap_with_balls);
+	createOutputImage(frame, minimap_with_balls, res);
+	//imshow("result", res);
+	vidOutput.write(res);
 
 	//TRACKER
 	BallTracker tracker = BallTracker(table.ballsPtr());
 	tracker.trackAll(frame);
-	createOutputImage(frame, minimap_with_balls, res);
-	//imshow("result", res);
-	vidOutput.write(res);
-	// TODO calculate metrics using videoPath.file_parent()
-	waitKey(0);
 
 	//VIDEO WITH MINIMAP
-	auto start = high_resolution_clock::now();
-	while (vid.isOpened()){  // work on middle frames
-	 	bool ret = vid.read(frame);
+	time_point start = high_resolution_clock::now();
+	bool ret = vid.read(frame);
+	while (vid.isOpened() && ret){  // work on middle frames
 		//cout << "Frame number: " << ++frameCount << endl;
-
-// 	BallTracker tracker = BallTracker(table.ballsPtr());
-// 	tracker.trackAll(frame);
-// 	createOutputImage(frame, minimap_with_balls, res);
-// 	//imshow("result", res);
-// 	vidOutput.write(res);
-// 	// TODO calculate metrics using videoPath.file_parent()
-
-// 	while (vid.isOpened()){  // work on middle frames
-// 	 	bool ret = vid.read(frame);
-
+ 		//VIDEO WITH MINIMAP
 		tracker.trackAll(frame);
 		minimap_with_balls = drawMinimap(minimap_with_track, transform, *table.ballsPtr());
-
+		createOutputImage(frame, minimap_with_balls, res);
+		imshow("result", res);
+		vidOutput.write(res);
+		//waitKey(0);
+		ret = vid.read(frame);
 		/*
-		//show minimap status every 10 frame
+		// show minimap status every 10 frame
 		if((frameCount % 10) == 0) {
 			imshow("frame " + to_string(frameCount), frame);
 			imshow("Minimap with balls " + to_string(frameCount), minimap_with_balls);
 			waitKey(0);
 		}
 		*/
-
-		createOutputImage(frame, minimap_with_balls, res);
-		// imshow("result", res);
-		vidOutput.write(res);
-
-		// TODO write frame on video
 	}
-	auto stop = high_resolution_clock::now();
-	auto duration = duration_cast<minutes>(stop - start);
+	time_point stop = high_resolution_clock::now();
+	chrono::minutes duration = duration_cast<minutes>(stop - start);
 	cout << "Time to create the video: " << duration.count() <<" minutes" << endl;
 	vidOutput.release();
 
 	// TODO work on last frame
-
-// 		tracker.trackAll(frame);
-// 		tempMinimap = minimap.clone();
-// 		minimap_with_balls = minimapWithBalls(tempMinimap, table, frame);
-// 		// imshow("frame " + to_string(frameCount), frame);
-// 		// imshow("Minimap with balls " + to_string(frameCount), minimap_with_balls);
-// 		createOutputImage(frame, minimap_with_balls, res);
-// 		// imshow("result", res);
-// 		vidOutput.write(res);
-// 		// if (!(frameCount % 30))
-// 		// 	waitKey();
-// 		// TODO write frame on video
-// 	}
-// 	vidOutput.release();
-
-// // 	// TODO work on last frame
-
-//  	waitKey(0);
 
 	return 0;
 }

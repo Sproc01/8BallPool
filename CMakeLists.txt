@@ -22,24 +22,36 @@ add_library(Utils include/category.h include/minimapConstants.h include/util.h s
 add_executable(${PROJECT_NAME} src/main.cpp)
 
 target_link_libraries(${PROJECT_NAME}
-        ${OpenCV_LIBS}
-        Ball
-        Table
-        Detection
-        Segmentation
-        TableOrientation
-        Transformation
-        Tracking
-        Metrics
-        Utils)
+    ${OpenCV_LIBS}
+    Ball
+    Table
+    Detection
+    Segmentation
+    TableOrientation
+    Transformation
+    Tracking
+    Metrics
+    Utils
+)
 
 add_executable(InteractiveTracking src/testTrackingInteractive.cpp)
 target_link_libraries(InteractiveTracking
-        ${OpenCV_LIBS}
+    ${OpenCV_LIBS}
 )
 
 add_executable(ShowSegmentationColored src/showSegmentationColored.cpp)
 target_link_libraries(ShowSegmentationColored
-        ${OpenCV_LIBS}
-        Utils
+    ${OpenCV_LIBS}
+    Utils
+)
+
+add_executable(TestAllFirstClip src/TestAllFirstClip.cpp)
+target_link_libraries(TestAllFirstClip
+    ${OpenCV_LIBS}
+    Ball
+    Table
+    Detection
+    Segmentation
+    Utils
+    Metrics
 )

@@ -40,10 +40,10 @@ void compareMetrics(Table &table, Mat &segmentedImage, const string &folderPath,
 	}
 
 	// For ball localization, the mean Average Precision (mAP) calculated at IoU threshold 0.5
-	double mAP = mAPDetection(table.ballsPtr(), groundTruthBboxPath.string(), MAP_IOU_THRESHOLD);
-
 	double mIoU = mIoUSegmentation(segmentedImage, groundTruthMaskPath.string());
 	cout << "mIoU: " << mIoU << endl;
+	double mAP = mAPDetection(table.ballsPtr(), groundTruthBboxPath.string(), MAP_IOU_THRESHOLD);
+	cout << "mAP: " << mAP << endl;
 }
 
 
@@ -64,16 +64,23 @@ double APCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect
 		}
 	}
 
+	if(detectedBallsBboxesCat.size() == 0 && groundTruthBboxesCat.size() == 0)
+		return 1; // if there are no balls with that category in both gt and detected return 1
+
+
+	if(detectedBallsBboxesCat.size() == 0 && groundTruthBboxesCat.size() != 0)
+		return 0; // if there are no balls with that category in detected but not in gt return 0
+
 	vector<double> IoUs(groundTruthBboxesCat.size(), 0);  // if 0, the ground truth ball has not been assigned to any detected ball
 
 	vector<unsigned short> tp(detectedBallsBboxesCat.size(), 0);
 	vector<unsigned short> fp(detectedBallsBboxesCat.size(), 0);
 
 	// Couple each detected ball with the ground truth ball using the highest IoU
-	for (int i = 0; i<detectedBallsBboxesCat.size(); i++){
+	for (int i = 0; i < detectedBallsBboxesCat.size(); i++){
 		double maxIoU = 0;
 		int maxIoUIndex = -1;
-		for (int j = 0; j<groundTruthBboxesCat.size(); j++){
+		for (int j = 0; j < groundTruthBboxesCat.size(); j++){
 			double iou = IoU(detectedBallsBboxesCat[i], groundTruthBboxesCat[j]);
 			if (iou > maxIoU){
 				maxIoU = iou;
@@ -92,7 +99,7 @@ double APCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect
 	// TODO: check if sorting by IoU is correct
 	// Sort the detections by decreasing IoU
 	vector<int> indices(IoUs.size());
-	for (int i = 0; i<IoUs.size(); i++){
+	for (int i = 0; i < IoUs.size(); i++){
 		indices[i] = i;
 	}
 	sort(indices.begin(), indices.end(),
@@ -101,18 +108,23 @@ double APCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect
 	});
 
 	// sort tp and fp according to the sorted indices "in place"
+	// cout << tp.size() << endl;
+	// cout << fp.size() << endl;
+	// cout << indices.size() << endl;
+	// segmentation fault because indices and tp not the same size because some IoU can be 0
 	vector<unsigned short> tpSorted(tp.size());
 	for (int i = 0; i<indices.size(); i++){
-		tpSorted[i] = tp[indices[i]];
+		if(IoUs[i] != 0)
+			tpSorted[i] = tp[indices[i]];
 	}
 	tp = tpSorted;
 	vector<unsigned short> fpSorted(fp.size());
 	for (int i = 0; i<indices.size(); i++){
-		fpSorted[i] = fp[indices[i]];
+		if(IoUs[i] != 0)
+			fpSorted[i] = fp[indices[i]];
 	}
 	fp = fpSorted;
-	sort(IoUs.begin(), IoUs.end(), greater<>());
-
+	//sort(IoUs.begin(), IoUs.end(), greater<>()); // TODO necessary?
 
 //	double recall = sum(tp)[0] / groundTruthBboxesCat.size();
 //	double precision = sum(tp)[0] / (sum(tp)[0] + sum(fp)[0]);
@@ -122,17 +134,17 @@ double APCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect
 	vector<double> cumFP(fp.size());
 
 	cumTP[0] = tp[0];
-	for (int i = 1; i<tp.size(); i++){
-		cumTP[i] = cumTP[i-1] + tp[i];
+	for (int i = 1; i < tp.size(); i++){
+		cumTP[i] = cumTP[i - 1] + tp[i];
 	}
 	cumFP[0] = fp[0];
-	for (int i = 1; i<fp.size(); i++) {
+	for (int i = 1; i < fp.size(); i++) {
 		cumFP[i] = cumFP[i - 1] + fp[i];
 	}
 
 	// Compute the precision and recall for each detection
 	vector<double> recallVec(tp.size());
-	for (int i = 0; i<tp.size(); i++){
+	for (int i = 0; i < tp.size(); i++){
 		recallVec[i] = cumTP[i] / groundTruthBboxesCat.size();
 	}
 
@@ -149,9 +161,9 @@ double APCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect
 
 	// Compute the Average Precision
 	double AP = 0;
-	for (int t = 0; t<=10; t++){
+	for (int t = 0; t <= 10; t++){
 		double maxPrecision = 0;
-		for (int i = 0; i<tp.size(); i++){
+		for (int i = 0; i < tp.size(); i++){
 			if (recallVec[i] >= static_cast<double>(t) / 10.0 && precisionVec[i] > maxPrecision){
 				maxPrecision = precisionVec[i];
 			}

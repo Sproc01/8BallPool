@@ -66,7 +66,7 @@ void equationFormula(float x1, float y1, float x2, float y2, float &a, float &b,
 	}
 }
 
-
+// compute intersection of two lines if there is one
 void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point2f &intersection)
 {
 	float a1 = line1[0], b1 = line1[1], c1 = line1[2];
@@ -84,28 +84,29 @@ void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point2f &inters
 	}
 }
 
-
-Vec2b mostFrequentColor(const Mat &img)
+// calculate the most frequent color in the image
+Vec2b mostFrequentHueColor(const Mat &img)
 {
 	Mat thisImg, hist;
+	Mat argmax;
+
 	cvtColor(img, thisImg, COLOR_BGR2HSV);
-	const int histSize = 8; // number of bins
-	const float range[] = {0, 179+1}; // range (upper bound is exclusive)
+	const int numberOfBins = 8;
+	const float range[] = {0, 179+1}; // TODO write 180 instead of 179+1
 	const float* histRange[] = {range};
 
 	// Evaluate only H channel
 	const int c[] = {0};
-	calcHist(&thisImg, 1, c, Mat(), hist, 1, &histSize, histRange);
+	calcHist(&thisImg, 1, c, Mat(), hist, 1, &numberOfBins, histRange);
 
 	// find the argmax
-	Mat argmax;
 	reduceArgMax(hist, argmax, 0);
-	int start = range[1] / histSize * argmax.at<int>(0);
-	int diameter = (range[1] / histSize);
+	int start = range[1] / numberOfBins * argmax.at<int>(0);
+	int diameter = (range[1] / numberOfBins);
 	return Vec2b(start, start + diameter);
 }
 
-
+// create the output image with frame and minimap
 void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res)
 {
 	const int offset = 408;
@@ -116,20 +117,22 @@ void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res
 	resize(minimap_with_balls, resized, Size(), scaling_factor, scaling_factor, INTER_LINEAR);
 	for(int i = 0; i < resized.rows; i++)
 		for(int j = 0; j < resized.cols; j++)
+		{
+			if(i+offset > res.rows)
+				throw runtime_error("Offset too big for the specified input image");
 			res.at<Vec3b>(i+offset,j) = resized.at<Vec3b>(i,j);
+		}
 }
 
-
-void kMeansClustering(const Mat &inputImage, Mat& clusteredImage, int clusterCount)
+void kMeansClustering(const Mat inputImage, int clusterCount, Mat& clusteredImage)
 {
-    Mat blurred, samples, labels;
+    Mat samples, labels;
 	int attempts = 10;
     vector<Vec3b> colors;
 	for(int i = 0; i < clusterCount; i++)
         colors.push_back(Vec3b(rand()%255, rand()%255, rand()%255));
-
-    GaussianBlur(inputImage, blurred, Size(15,15), 0, 0);
     samples = Mat(inputImage.total(), 3, CV_32F);
+
 
     int index = 0;
     for(int i = 0; i < inputImage.rows; i++)

@@ -2,12 +2,11 @@
 #include <opencv2/tracking.hpp>
 #include <opencv2/videoio.hpp>
 #include <opencv2/highgui.hpp>
-#include <iostream>
 
 using namespace std;
 using namespace cv;
 
-int main( int argc, char** argv ){
+int main(){
 	VideoCapture cap("../Dataset/game1_clip1/game1_clip1.mp4");
 	Rect roi;
 	Mat frame;

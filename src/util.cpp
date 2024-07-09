@@ -120,7 +120,7 @@ void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res
 }
 
 
-void kMeansClustering(const Mat inputImage, Mat& clusteredImage, int clusterCount)
+void kMeansClustering(const Mat &inputImage, Mat& clusteredImage, int clusterCount)
 {
     Mat blurred, samples, labels;
 	int attempts = 10;

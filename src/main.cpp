@@ -89,7 +89,7 @@ int main(int argc, char* argv[]){
 	VideoWriter vidOutput = VideoWriter();
 	double fps = vid.get(CAP_PROP_FPS);
 	//TODO: remove the video if some error occour, or if the execution is closed before end (it is corrupted)
-	vidOutput.open(pathOutput, codec, fps, frame.size(), 1);
+	vidOutput.open(pathOutput, codec, fps, frame.size(), true);
 
 	//DETECT AND SEGMENT TABLE
 	detectTable(frame, tableCorners, colorTable);
@@ -190,5 +190,6 @@ int main(int argc, char* argv[]){
 // // 	// TODO work on last frame
 
 //  	waitKey(0);
-//  	return 0;
+
+	return 0;
 }

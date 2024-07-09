@@ -155,8 +155,8 @@ Category classificationBall(const Mat& img, double radius)
 
 	Mat grayT;
 	adaptiveThreshold(gray, grayT, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 3, 2);
-	imshow("grayT", grayT);
-	imshow("gray", gray);
+	//imshow("grayT", grayT);
+	//imshow("gray", gray);
 	//cout << img.rows << "," << img.cols << endl;
 	int numberOfBackgroundPixels = 4 * pow(radius, 2) - CV_PI * pow(radius, 2);
 	//cout << numberOfBackgroundPixels << endl;

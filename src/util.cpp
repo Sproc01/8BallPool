@@ -88,20 +88,21 @@ void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point2f &inters
 Vec2b mostFrequentHueColor(const Mat &img)
 {
 	Mat thisImg, hist;
+	Mat argmax;
+
 	cvtColor(img, thisImg, COLOR_BGR2HSV);
-	const int histSize = 8; // number of bins
-	const float range[] = {0, 179+1}; // range (upper bound is exclusive)
+	const int numberOfBins = 8;
+	const float range[] = {0, 179+1}; // TODO write 180 instead of 179+1
 	const float* histRange[] = {range};
 
 	// Evaluate only H channel
 	const int c[] = {0};
-	calcHist(&thisImg, 1, c, Mat(), hist, 1, &histSize, histRange);
+	calcHist(&thisImg, 1, c, Mat(), hist, 1, &numberOfBins, histRange);
 
 	// find the argmax
-	Mat argmax;
 	reduceArgMax(hist, argmax, 0);
-	int start = range[1] / histSize * argmax.at<int>(0);
-	int diameter = (range[1] / histSize);
+	int start = range[1] / numberOfBins * argmax.at<int>(0);
+	int diameter = (range[1] / numberOfBins);
 	return Vec2b(start, start + diameter);
 }
 

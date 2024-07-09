@@ -64,10 +64,11 @@ double APCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect
 		}
 	}
 
-	// if there are no balls with that category return 0;
-	if(detectedBallsBboxesCat.size()==0 && groundTruthBboxesCat.size() == 0)
+	// if there are no balls with that category in both gt and detected return 1
+	if(detectedBallsBboxesCat.size() == 0 && groundTruthBboxesCat.size() == 0)
 		return 1;
-	if(detectedBallsBboxesCat.size()==0 && groundTruthBboxesCat.size() != 0)
+	// if there are no balls with that category in detected but not in gt return 0
+	if(detectedBallsBboxesCat.size() == 0 && groundTruthBboxesCat.size() != 0)
 		return 0;
 
 	vector<double> IoUs(groundTruthBboxesCat.size(), 0);  // if 0, the ground truth ball has not been assigned to any detected ball

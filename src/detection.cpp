@@ -10,8 +10,6 @@
 #include "detection.h"
 #include "util.h"
 #include "minimapConstants.h"
-#include "tableOrientation.h"
-
 
 using namespace cv;
 using namespace std;
@@ -26,6 +24,7 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 	const int MAX_LINE_GAP = 35;
 	const int MIN_LINE_LENGTH = 155;
 	const int CLOSE_POINT_THRESHOLD = 50;
+
 	// variables
 	Mat imgGray, imgLine, imgBorder, thisImg, mask, kernel;
 	vector<Vec4i> lines;
@@ -36,9 +35,7 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 
 	// get the color range
 	colorRange = mostFrequentHueColor(frame.colRange(colsover4, 3*colsover4));
-	Mat clustered;
-	// kMeansClustering(frame, clustered, 3);
-	// imshow("cluster", clustered);
+
 	// mask the image
 	cvtColor(frame, thisImg, COLOR_BGR2HSV);
 	inRange(thisImg, Scalar(colorRange[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
@@ -93,12 +90,10 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 	{
 		return norm(a) < norm(b);
 	});
-	// auto or this one TODO decide
 	vector<Point2f>::iterator end2 = unique(intersections.begin(), intersections.end(), [&CLOSE_POINT_THRESHOLD](Point a, Point b) -> bool
 	{
 		return abs(a.x - b.x) < CLOSE_POINT_THRESHOLD && abs(a.y - b.y) < CLOSE_POINT_THRESHOLD;
 	});
-	// auto or this one TODO decide
 	for(vector<Point2f>::iterator it = intersections.begin(); it != end2; it++)
 	{
 		intersectionsGood.push_back(*it);
@@ -139,19 +134,29 @@ Category classificationBall(const Mat& img, double radius)
 	const int MEAN_WHITE_CHANNEL2 = 125;
 	const int MEAN_WHITE_CHANNEL3 = 160;
 	const int MEAN_BLACK_CHANNEL3 = 115;
+	const int NUMBER_OF_BINS_WHITE = 3;
+	const int NUMBER_OF_BINS_BLACK = 5;
+	const float THRESHOLD_STRIPED_MAX = 0.5;
+	const float THRESHOLD_STRIPED_NPIXELS = 0.35;
+
 
 	Mat hist, gray, mask;
 	mask = Mat::zeros(img.size(), CV_8U);
-	//imshow("original", img);
+	// imshow("original", img);
 	cvtColor(img, gray, COLOR_BGR2GRAY);
 	Point2f center = Point(img.cols/2, img.rows/2);
-	circle(mask, center, radius, 255, FILLED, 8, 0);
-	//imshow("mask", mask);
+	circle(mask, center, radius, 255, -1);
+
+	// imshow("mask", mask);
 	for(int i = 0; i < img.rows; i++)
 		for(int j = 0; j < img.cols; j++)
 			if(mask.at<uchar>(i,j) != 255)
 				gray.at<uchar>(i,j) = 0;
-	//imshow("gray", gray);
+
+	Mat grayT;
+	adaptiveThreshold(gray, grayT, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 3, 2);
+	imshow("grayT", grayT);
+	imshow("gray", gray);
 	//cout << img.rows << "," << img.cols << endl;
 	int numberOfBackgroundPixels = 4 * pow(radius, 2) - CV_PI * pow(radius, 2);
 	//cout << numberOfBackgroundPixels << endl;
@@ -161,36 +166,18 @@ Category classificationBall(const Mat& img, double radius)
 	const float* histRange[] = {range};
 	calcHist(&gray, 1, channel, Mat(), hist, 1, &histSize, histRange, true, false);
 
-	// draw histogram
-	// int hist_w = 512;
-    // int hist_h = 512;
-	// Mat hist2;
-    // Mat histImage(hist_h, hist_w, CV_8U, Scalar(0));
-    // int bin_w = cvRound((double) hist_w/histSize);
-    // normalize(hist, hist2, 0, histImage.rows, NORM_MINMAX, -1, Mat());
-	// cout << hist << endl;
 	hist.at<float>(0) -= numberOfBackgroundPixels;
 	// cout << hist << endl;
-
-    // for(int i = 1; i < histSize; i++)
-    // {
-    //     line(histImage, Point(bin_w*(i-1), hist_h - cvRound(hist2.at<float>(i-1))) ,
-    //                     Point(bin_w*(i), hist_h - cvRound(hist2.at<float>(i))),
-    //                     Scalar(255), 2, 8, 0);
-    // }
-	// imshow("histogram", histImage);
 
 	// first peak
 	Mat argmax;
 	reduceArgMax(hist, argmax, 0);
-	//cout << "first " << argmax << endl;
 	float val = hist.at<float>(argmax.at<int>(0));
 	hist.at<float>(argmax.at<int>(0)) = 0;
 
 	// second peak
 	Mat argmax2;
 	reduceArgMax(hist, argmax2, 0);
-	//cout << "second " << argmax2 << endl;
 	float val2 = hist.at<float>(argmax2.at<int>(0));
 	hist.at<float>(argmax2.at<int>(0)) = 0;
 
@@ -202,17 +189,24 @@ Category classificationBall(const Mat& img, double radius)
 	// cout << argmax << endl;
 	// cout << val2 << endl;
 	// cout << argmax2 << endl;
-	// waitKey(0);
-	if(argmax.at<int>(0) > 3 && mean[1] < MEAN_WHITE_CHANNEL2 && mean[2] > MEAN_WHITE_CHANNEL3)
+	//waitKey(0);
+	int count = 0;
+	int numberOfPixels = grayT.rows * grayT.cols;
+	for(int i = 0; i < grayT.rows; i++)
+		for(int j = 0; j < grayT.rows; j++)
+			if(grayT.at<uchar>(i,j) == 0)
+				count++;
+
+	if(val2 > THRESHOLD_STRIPED_MAX * val
+		&& (argmax2.at<int>(0) > NUMBER_OF_BINS_WHITE || argmax.at<int>(0) > NUMBER_OF_BINS_WHITE))
+			if (count > THRESHOLD_STRIPED_NPIXELS * numberOfPixels)
+				return STRIPED_BALL;
+
+	if(argmax.at<int>(0) > NUMBER_OF_BINS_WHITE && mean[1] < MEAN_WHITE_CHANNEL2 && mean[2] > MEAN_WHITE_CHANNEL3)
 		return WHITE_BALL;
 
-	if(argmax.at<int>(0) < 3 && mean[2] < MEAN_BLACK_CHANNEL3)
+	if(argmax.at<int>(0) < NUMBER_OF_BINS_BLACK && mean[2] < MEAN_BLACK_CHANNEL3)
 		return BLACK_BALL;
-
-
-	if(val2 > 0.8 * val && argmax2.at<int>(0) > 3 || argmax.at<int>(0) > 3)
-		return STRIPED_BALL;
-
 
 	return SOLID_BALL;
 }
@@ -234,7 +228,7 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls)
 	const int NUMBER_CLUSTER_KMEANS = 6;
 	const int SIZE_BILATERAL = 3;
 	const int SIGMA_COLOR = 15;
-	const int SIGMA_SPACE = 80;
+	const int SIGMA_SPACE = 70;
 
 	// variables
 	Mat gray, HSVImg, mask, smooth, kernel;
@@ -279,7 +273,6 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls)
 	kMeansClustering(smooth, NUMBER_CLUSTER_KMEANS, resClustering);
 	bilateralFilter(resClustering, resClusteringSmooth, SIZE_BILATERAL, SIGMA_COLOR, SIGMA_SPACE);
 	cvtColor(resClusteringSmooth, gray, COLOR_BGR2GRAY);
-	//bilateralFilter(gray, graySmooth, SIZE_BILATERAL, SIGMA_COLOR, SIGMA_SPACE);
 	imshow("res kmeans gray", gray);
 	imshow("Kmeans", resClusteringSmooth);
 
@@ -352,7 +345,7 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls)
 						rectangle(frameRect, rect, STRIPED_BGR_COLOR, 1, LINE_AA);
 					break;
 				default:
-						cout << center << ", " << radius << endl;
+						cout << center << ", " << radius << endl; // TODO remove
 						ballFound = false;
 					break;
 			}

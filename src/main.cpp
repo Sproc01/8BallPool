@@ -38,17 +38,17 @@ int main(int argc, char* argv[]){
 	Mat res;
 
 	//INPUT
-	if (argc == 2){
-		videoPath = filesystem::path(argv[1]);
-	}
-	else if (argc == 1) { //TODO: remove at the end
-		videoPath = filesystem::path("../Dataset/game4_clip1/game4_clip1.mp4");
-	}
-	else {
-		cout << "Error of number of parameters: insert one parameter" << endl;
-		return -1;
-	}
-	cout << "Video path: " << videoPath << endl;
+	// if (argc == 2){
+	// 	videoPath = filesystem::path(argv[1]);
+	// }
+	// else if (argc == 1) { //TODO: remove at the end
+	// 	videoPath = filesystem::path("../Dataset/game4_clip1/game4_clip1.mp4");
+	// }
+	// else {
+	// 	cout << "Error of number of parameters: insert one parameter" << endl;
+	// 	return -1;
+	// }
+	// cout << "Video path: " << videoPath << endl;
 
 
 	vector<string> name ={"/game1_clip1", "/game1_clip2", "/game1_clip3",
@@ -75,22 +75,22 @@ int main(int argc, char* argv[]){
 	}
 
 	//START THE VIDEO
-	VideoCapture vid = VideoCapture(videoPath.string());
-	// TODO work on first frame
-	if (!vid.isOpened() || !vid.read(frame)){
-		cout << "Error opening video file" << endl;
-		return -1;
-	}
-	string videoName = videoPath.stem().string();
-	pathOutput = "../Output/" + videoName + "_output.mp4";
-	++frameCount;
-	//TODO: check output in frame when the resolution is bigger (it is cropped)
-	imshow("First frame", frame);
-	int codec = VideoWriter::fourcc('m', 'p', '4', 'v');
-	VideoWriter vidOutput = VideoWriter();
-	double fps = vid.get(CAP_PROP_FPS);
-	//TODO: remove the video if some error occour, or if the execution is closed before end (it is corrupted)
-	vidOutput.open(pathOutput, codec, fps, frame.size(), true);
+	// VideoCapture vid = VideoCapture(videoPath.string());
+	// // TODO work on first frame
+	// if (!vid.isOpened() || !vid.read(frame)){
+	// 	cout << "Error opening video file" << endl;
+	// 	return -1;
+	// }
+	// string videoName = videoPath.stem().string();
+	// pathOutput = "../Output/" + videoName + "_output.mp4";
+	// ++frameCount;
+	// //TODO: check output in frame when the resolution is bigger (it is cropped)
+	// imshow("First frame", frame);
+	// int codec = VideoWriter::fourcc('m', 'p', '4', 'v');
+	// VideoWriter vidOutput = VideoWriter();
+	// double fps = vid.get(CAP_PROP_FPS);
+	// //TODO: remove the video if some error occour, or if the execution is closed before end (it is corrupted)
+	// vidOutput.open(pathOutput, codec, fps, frame.size(), true);
 
 	// //DETECT AND SEGMENT TABLE
 	// detectTable(frame, tableCorners, colorTable);

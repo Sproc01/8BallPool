@@ -64,12 +64,12 @@ double APCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect
 		}
 	}
 
-	// if there are no balls with that category in both gt and detected return 1
 	if(detectedBallsBboxesCat.size() == 0 && groundTruthBboxesCat.size() == 0)
-		return 1;
-	// if there are no balls with that category in detected but not in gt return 0
+		return 1; // if there are no balls with that category in both gt and detected return 1
+
+
 	if(detectedBallsBboxesCat.size() == 0 && groundTruthBboxesCat.size() != 0)
-		return 0;
+		return 0; // if there are no balls with that category in detected but not in gt return 0
 
 	vector<double> IoUs(groundTruthBboxesCat.size(), 0);  // if 0, the ground truth ball has not been assigned to any detected ball
 
@@ -124,7 +124,7 @@ double APCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect
 			fpSorted[i] = fp[indices[i]];
 	}
 	fp = fpSorted;
-	sort(IoUs.begin(), IoUs.end(), greater<>());
+	//sort(IoUs.begin(), IoUs.end(), greater<>()); // TODO necessary?
 
 //	double recall = sum(tp)[0] / groundTruthBboxesCat.size();
 //	double precision = sum(tp)[0] / (sum(tp)[0] + sum(fp)[0]);
@@ -144,7 +144,7 @@ double APCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect
 
 	// Compute the precision and recall for each detection
 	vector<double> recallVec(tp.size());
-	for (int i = 0; i<tp.size(); i++){
+	for (int i = 0; i < tp.size(); i++){
 		recallVec[i] = cumTP[i] / groundTruthBboxesCat.size();
 	}
 
@@ -161,9 +161,9 @@ double APCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect
 
 	// Compute the Average Precision
 	double AP = 0;
-	for (int t = 0; t<=10; t++){
+	for (int t = 0; t <= 10; t++){
 		double maxPrecision = 0;
-		for (int i = 0; i<tp.size(); i++){
+		for (int i = 0; i < tp.size(); i++){
 			if (recallVec[i] >= static_cast<double>(t) / 10.0 && precisionVec[i] > maxPrecision){
 				maxPrecision = precisionVec[i];
 			}

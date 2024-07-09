@@ -21,7 +21,7 @@ const double MAP_BALL_RADIUS = 12.6;
 
 //colors for the balls in the minimap
 const cv::Vec3b BACKGROUND_BGR_COLOR = cv::Vec3b(0, 0, 0);      // black
-const cv::Vec3b WHITE_BGR_COLOR = cv::Vec3b(255, 255, 255);       // white
+const cv::Vec3b WHITE_BGR_COLOR = cv::Vec3b(255, 255, 255);		// white
 const cv::Vec3b BLACK_BGR_COLOR = cv::Vec3b(100, 100, 100);     // gray
 const cv::Vec3b SOLID_BGR_COLOR = cv::Vec3b(0, 0, 255);         // red
 const cv::Vec3b STRIPED_BGR_COLOR = cv::Vec3b(255, 0, 0);       // blue

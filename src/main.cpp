@@ -73,20 +73,22 @@ int main(int argc, char* argv[]){
 	}
 
 	//START THE VIDEO
-	// VideoCapture vid = VideoCapture(videoPath.string());
-	// // TODO work on first frame
-	// if (!vid.isOpened() || !vid.read(frame)){
-	// 	cout << "Error opening video file" << endl;
-	// 	return -1;
-	// }
-	// string videoName = videoPath.stem().string();
-	// pathOutput = "../Output/" + videoName + "_output.mp4";
-	// ++frameCount;
-	// imshow("First frame", frame);
-	// int codec = VideoWriter::fourcc('m', 'p', '4', 'v');
-	// VideoWriter vidOutput = VideoWriter();
-	// double fps = vid.get(CAP_PROP_FPS);
-	// vidOutput.open(pathOutput, codec, fps, frame.size(), 1);
+	VideoCapture vid = VideoCapture(videoPath.string());
+	// TODO work on first frame
+	if (!vid.isOpened() || !vid.read(frame)){
+		cout << "Error opening video file" << endl;
+		return -1;
+	}
+	string videoName = videoPath.stem().string();
+	pathOutput = "../Output/" + videoName + "_output.mp4";
+	++frameCount;
+	//TODO: check output in frame when the resolution is bigger (it is cropped)
+	imshow("First frame", frame);
+	int codec = VideoWriter::fourcc('m', 'p', '4', 'v');
+	VideoWriter vidOutput = VideoWriter();
+	double fps = vid.get(CAP_PROP_FPS);
+	//TODO: remove the video if some error occour, or if the execution is closed before end (it is corrupted)
+	vidOutput.open(pathOutput, codec, fps, frame.size(), true);
 
 	// //DETECT AND SEGMENT TABLE
 	// detectTable(frame, tableCorners, colorTable);
@@ -201,5 +203,6 @@ int main(int argc, char* argv[]){
 // // 	// TODO work on last frame
 
 //  	waitKey(0);
-//  	return 0;
+
+	return 0;
 }

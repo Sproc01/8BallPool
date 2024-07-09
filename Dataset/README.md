@@ -33,7 +33,7 @@ The frames corresponding to the initial and final status of the game have been a
 - Segmentation masks are provided as grayscale mask where each pixel is assigned the corresponding category ID  (background, white cu ball, black 8-ball, solid color, striped and playing field).
 
 
-Note that segmentation masks can be easily visualized as color images highlighting the different categories by mapping each category ID in a segmentation mask to a RGB color, for example:
+Note that segmentation masks can be easily visualized as color images highlighting the different categories by mapping each category ID in a segmentation mask to an RGB color, for example:
 
 0: (128,128,128)
 1: (255, 255, 255)

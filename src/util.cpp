@@ -116,7 +116,11 @@ void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res
 	resize(minimap_with_balls, resized, Size(), scaling_factor, scaling_factor, INTER_LINEAR);
 	for(int i = 0; i < resized.rows; i++)
 		for(int j = 0; j < resized.cols; j++)
+		{
+			if(i+offset > res.rows)
+				throw runtime_error("Offset too big for the specified input image");
 			res.at<Vec3b>(i+offset,j) = resized.at<Vec3b>(i,j);
+		}
 }
 
 void kMeansClustering(const Mat inputImage, int clusterCount, Mat& clusteredImage)

@@ -43,7 +43,7 @@ void compareMetrics(Table &table, Mat &segmentedImage, const string &folderPath,
 	double mIoU = mIoUSegmentation(segmentedImage, groundTruthMaskPath.string());
 	cout << "mIoU: " << mIoU << endl;
 	double mAP = mAPDetection(table.ballsPtr(), groundTruthBboxPath.string(), MAP_IOU_THRESHOLD);
-	cout << "mAP:" << mAP << endl;
+	cout << "mAP: " << mAP << endl;
 }
 
 

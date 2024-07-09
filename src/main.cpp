@@ -33,8 +33,8 @@ int main(int argc, char* argv[]){
 	vector<Ball> balls;
 	Vec<Point2f, 4> tableCorners;
 	Mat segmented;
-	Mat segmentedFrame;
 	int frameCount = 0;
+	Mat previousFrame;
 	Mat res;
 
 	//INPUT
@@ -42,7 +42,7 @@ int main(int argc, char* argv[]){
 		videoPath = filesystem::path(argv[1]);
 	}
 	else if (argc == 1) { //TODO: remove at the end
-		videoPath = filesystem::path("../Dataset/game4_clip1/game4_clip1.mp4");
+		videoPath = filesystem::path("../Dataset/game1_clip1/game1_clip1.mp4");
 	}
 	else {
 		cout << "Error of number of parameters: insert one parameter" << endl;
@@ -72,30 +72,30 @@ int main(int argc, char* argv[]){
 	detectTable(frame, tableCorners, colorTable);
 	table = Table(tableCorners, colorTable);
 	segmentTable(frame, table, segmented);
-	// // imshow("segmentedTable", segmented);
+	// imshow("segmentedTable", segmented);
 
-	// //DETECT AND SEGMENT BALLS
+	//DETECT AND SEGMENT BALLS
 	detectBalls(frame, table, balls);
 	// TODO better manage using table.ballsPtr()
 	table.addBalls(balls);
 	segmentBalls(segmented, balls, segmented);
-	// // imshow("segmentedBalls", segmented);
+	// imshow("segmentedBalls", segmented);
 	compareMetrics(table, segmented, videoPath.parent_path(), FIRST);
 
 
-	// //TRANSFORMATION
+	//TRANSFORMATION
 	Vec<Point2f, 4>  img_corners = table.getBoundaries();
 	table.setTransform(computeTransformation(frame, segmented, img_corners));
 	table.setBoundaries(img_corners);
 
-	// //MINIMAP
+	//MINIMAP
 	Mat minimap = imread(MINIMAP_PATH);
 	Mat minimap_with_track = minimap.clone();
 	Mat minimap_with_balls = minimap.clone();
-		// vector<unsigned char> minimapVec(MINIMAP_DATA, MINIMAP_DATA + MINIMAP_DATA_SIZE);
-		// Mat minimap = imdecode(minimapVec, cv::IMREAD_UNCHANGED);
-		// Mat minimap = imread(MINIMAP_PATH);
-		// imshow("minimap", minimap);
+	// vector<unsigned char> minimapVec(MINIMAP_DATA, MINIMAP_DATA + MINIMAP_DATA_SIZE);
+	// Mat minimap = imdecode(minimapVec, cv::IMREAD_UNCHANGED);
+	// Mat minimap = imread(MINIMAP_PATH);
+	// imshow("minimap", minimap);
 
 	Mat transform;
 	table.getTransform(transform); //TODO: getTranform(transform)?
@@ -114,14 +114,13 @@ int main(int argc, char* argv[]){
 	bool ret = vid.read(frame);
 	while (vid.isOpened() && ret){  // work on middle frames
 		//cout << "Frame number: " << ++frameCount << endl;
+
  		//VIDEO WITH MINIMAP
 		tracker.trackAll(frame);
 		minimap_with_balls = drawMinimap(minimap_with_track, transform, *table.ballsPtr());
 		createOutputImage(frame, minimap_with_balls, res);
-		imshow("result", res);
+		//imshow("result", res);
 		vidOutput.write(res);
-		//waitKey(0);
-		ret = vid.read(frame);
 		/*
 		// show minimap status every 10 frame
 		if((frameCount % 10) == 0) {
@@ -130,13 +129,24 @@ int main(int argc, char* argv[]){
 			waitKey(0);
 		}
 		*/
+		//waitKey(0);
+		previousFrame = frame.clone();
+		ret = vid.read(frame);
 	}
 	time_point stop = high_resolution_clock::now();
 	chrono::minutes duration = duration_cast<minutes>(stop - start);
 	cout << "Time to create the video: " << duration.count() <<" minutes" << endl;
 	vidOutput.release();
 
-	// TODO work on last frame
-
+	// work on last frame
+	segmentTable(previousFrame, table, segmented);
+	balls.clear();
+	detectBalls(previousFrame, table, balls);
+	table.clearBalls();
+	table.addBalls(balls);
+	segmentBalls(segmented, balls, segmented);
+	//imshow("segmentedBalls", segmented);
+	compareMetrics(table, segmented, videoPath.parent_path(), LAST);
+	//waitKey(0);
 	return 0;
 }

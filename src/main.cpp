@@ -139,8 +139,8 @@ int main(int argc, char* argv[]){
 	vidOutput.release();
 
 	// work on last frame
-	segmentTable(previousFrame, table, segmented);
 	balls.clear();
+	segmentTable(previousFrame, table, segmented);
 	detectBalls(previousFrame, table, balls);
 	table.clearBalls();
 	table.addBalls(balls);

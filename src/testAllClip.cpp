@@ -23,6 +23,8 @@ int main(int argc, char* argv[])
 	vector<Ball> balls;
 	Vec<Point2f, 4> tableCorners;
 	Mat segmented;
+	Mat previousFrame;
+	bool ret;
 
 
 	vector<string> name ={"/game1_clip1", "/game1_clip2", "/game1_clip3",
@@ -39,12 +41,30 @@ int main(int argc, char* argv[])
 		detectTable(frame, tableCorners, colorTable);
 		table = Table(tableCorners, colorTable);
 		cout << "--------------" << endl;
+		cout << name[i] << endl;
+		cout << "------ First frame -----" << endl;
 		detectBalls(frame, table, balls);
 		table.addBalls(balls);
 		segmentTable(frame, table, segmented);
 		segmentBalls(frame, balls, segmented);
-		imshow("seg", segmented);
+		imshow("seg first", segmented);
 		compareMetrics(table, segmented, "../Dataset"+name[i], FIRST);
+		previousFrame = frame.clone();
+		ret = vid.read(frame);
+		while (vid.isOpened() && ret)
+		{
+			previousFrame = frame.clone();
+			ret = vid.read(frame);
+		}
+		cout << "------ Last frame ------" << endl;
+		balls.clear();
+		table.clearBalls();
+		detectBalls(previousFrame, table, balls);
+		table.addBalls(balls);
+		segmentTable(previousFrame, table, segmented);
+		segmentBalls(segmented, balls, segmented);
+		imshow("seg last", segmented);
+		compareMetrics(table, segmented, "../Dataset"+name[i], LAST);
 		waitKey(0);
 	}
 	return 0;

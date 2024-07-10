@@ -45,8 +45,8 @@ target_link_libraries(ShowSegmentationColored
     Utils
 )
 
-add_executable(TestAllFirstClip src/TestAllFirstClip.cpp)
-target_link_libraries(TestAllFirstClip
+add_executable(TestAllClip src/TestAllClip.cpp)
+target_link_libraries(TestAllClip
     ${OpenCV_LIBS}
     Ball
     Table

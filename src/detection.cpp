@@ -256,6 +256,7 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls)
 	const int SIZE_BILATERAL = 3;
 	const int SIGMA_COLOR = 15;
 	const int SIGMA_SPACE = 70;
+	Scalar border_color = Scalar(0, 255, 255);
 
 	// variables
 	Mat gray, HSVImg, mask, smooth, kernel;
@@ -304,7 +305,6 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls)
 	cvtColor(resClusteringSmooth, gray, COLOR_BGR2GRAY);
 	// imshow("res kmeans gray", gray);
 	// imshow("Kmeans", resClusteringSmooth);
-
 
 	// Hough transform
 	HoughCircles(gray, circles, HOUGH_GRADIENT, INVERSE_ACCUMULATOR_RESOLUTION,
@@ -382,8 +382,12 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls)
 			if(ballFound)
 				balls.push_back(Ball(rect, category));
 		}
+		for(int i = 0; i < tableCornersInt.size()-1; i++)
+			line(frameRect, tableCornersInt[i], tableCornersInt[i+1], border_color, 2, LINE_AA);
+
+		line(frameRect, tableCornersInt[0], tableCornersInt[3], border_color, 2, LINE_AA);
 
 	}
-	imshow("detected circles", frameCircle); // TODO remove?
-	//imshow("detected rectangles", frameRect);
+	// imshow("detected circles", frameCircle);
+	imshow("detected rectangles", frameRect);
 }

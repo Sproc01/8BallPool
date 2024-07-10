@@ -78,7 +78,7 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 		equationFormula(pt1.x, pt1.y, pt2.x, pt2.y, aLine, bLine, cLine);
 		coefficients.push_back(Vec3f(aLine, bLine, cLine));
 	}
-	if(lines.size() < 4)
+	if(lines.size() < 4) // 4 lines needed to find 4 points
 		throw runtime_error("Not enough lines found");
 
 	// find intersections
@@ -123,7 +123,7 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 			return false;
 	});
 
-	if(intersectionsGood.size() < 4)
+	if(intersectionsGood.size() < 4) // 4 corners of the table
 		throw runtime_error("Not enough unique intersections found");
 
 	vector<Scalar> colors = {Scalar(255, 0, 0), Scalar(0, 255, 0), Scalar(0, 0, 255), Scalar(255, 255, 0)};

@@ -13,6 +13,14 @@
 using namespace cv;
 using namespace std;
 
+/**
+ * @brief segment the table in the input image: To do this firstly the image is clustered using kmeans
+ * with 2 cluster,Then two mask are created: one using the corners of the table to isolate it
+ * and one using the color of it. Then all the information is put togheter to create the output image
+ * @param frame input image
+ * @param table initialized object containing information about the table in the input image
+ * @param segmented output image where the table is green
+ */
 void segmentTable(const Mat &frame, const Table& table, Mat& segmented)
 {
 	const int NUMBER_CLUSTER = 2;
@@ -64,6 +72,13 @@ void segmentTable(const Mat &frame, const Table& table, Mat& segmented)
 	//imshow("segmented", segmented);
 }
 
+/**
+ * @brief segment the input image by highlight the balls. Using the informatin from each specific ball colors
+ * the corresponding pixels with the correct color.
+ * @param frame input image
+ * @param balls vector of the balls in the image
+ * @param segmented output image where each category of the ball correspond to a different color
+ */
 void segmentBalls(const Mat &frame, const vector<Ball> &balls, Mat& segmented)
 {
 	float radius;

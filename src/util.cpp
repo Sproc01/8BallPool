@@ -49,7 +49,16 @@ void rotateCornersClockwise(Vec<Point2f, 4> &corners) {
 	}
 }
 
-// Gives the equation of the line passing through two points in the form  ax + by + c = 0
+/**
+ * @brief Gives the equation of the line passing through two points in the form  ax + by + c = 0.
+ * @param x1 x-coordinate of the first point
+ * @param y1 y-coordinate of the first point
+ * @param x2 x-coordinate of the second point
+ * @param y2 y-coordinate of the second point
+ * @param a output parameter: coefficient a
+ * @param b output parameter: coefficient b
+ * @param c output parameter: coefficient c
+ */
 void equationFormula(float x1, float y1, float x2, float y2, float &a, float &b, float &c)
 {
 	if(x2==x1)
@@ -66,7 +75,12 @@ void equationFormula(float x1, float y1, float x2, float y2, float &a, float &b,
 	}
 }
 
-// compute intersection of two lines if there is one
+/**
+ * @brief compute intersection of two lines if there is one.
+ * @param line1 first line
+ * @param line2 second line
+ * @param intersection output point that corresponds to the intersection if there is one
+ */
 void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point2f &intersection)
 {
 	float a1 = line1[0], b1 = line1[1], c1 = line1[2];
@@ -84,7 +98,12 @@ void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point2f &inters
 	}
 }
 
-// calculate the most frequent color in the image
+/**
+ * @brief calculate the most frequent value of Hue in the input image.
+ * Convert the image to HSv representation and then evaluate the histogram for the first channel.
+ * @param img input image in BGR format
+ * @return Vec2b the color interval corresponding to the most frequent Hue
+ */
 Vec2b mostFrequentHueColor(const Mat &img)
 {
 	Mat thisImg, hist;
@@ -106,7 +125,13 @@ Vec2b mostFrequentHueColor(const Mat &img)
 	return Vec2b(start, start + diameter);
 }
 
-// create the output image with frame and minimap
+/**
+ * @brief Create a Output Image object
+ * @param frame input image
+ * @param minimap_with_balls minimap that must be superimposed onto the input image
+ * @param res output image containing the input image with superimposition of the minimap
+ * @throw runtime_error if the input image is too small
+ */
 void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res)
 {
 	const int offset = 408;
@@ -124,6 +149,14 @@ void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res
 		}
 }
 
+/**
+ * @brief do the clustering by using only color information on the input image.
+ * It maps each pixel in the color space and then do clustering till the termination criteria is reached.
+ * To initialize the centers it uses Kmeans++.
+ * @param inputImage image to be clustered
+ * @param clusterCount number of cluster in output
+ * @param clusteredImage output image: original image clustered
+ */
 void kMeansClustering(const Mat inputImage, int clusterCount, Mat& clusteredImage)
 {
     Mat samples, labels;

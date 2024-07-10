@@ -2,7 +2,6 @@
 #include <opencv2/videoio.hpp>
 #include <iostream>
 #include <filesystem>
-//#include "../img/minimap.h"
 
 #include "ball.h"
 #include "table.h"
@@ -15,6 +14,8 @@
 using namespace std;
 using namespace cv;
 
+/* simple main to test the detection of the table and the detection of the balls in all the first and last clip
+ and compute the performance */
 int main(int argc, char* argv[])
 {
 	Mat frame;
@@ -25,7 +26,6 @@ int main(int argc, char* argv[])
 	Mat segmented;
 	Mat previousFrame;
 	bool ret;
-
 
 	vector<string> name ={"/game1_clip1", "/game1_clip2", "/game1_clip3",
 							"/game1_clip4", "/game2_clip1", "/game2_clip2",
@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
 		segmentBalls(segmented, balls, segmented);
 		//imshow("seg last", segmented);
 		compareMetrics(table, segmented, "../Dataset"+name[i], LAST);
-		waitKey(0);
+		//waitKey(0);
 	}
 	return 0;
 }

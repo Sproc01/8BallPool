@@ -242,7 +242,7 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls)
 			Scalar(colorTable[1], 255, 255), mask);
 	kernel = getStructuringElement(MORPH_ELLIPSE, Size(3, 3));
 	morphologyEx(mask, mask, MORPH_DILATE, kernel, Point(-1,-1), 3);
-	imshow("mask dilate", mask);
+	//imshow("mask dilate", mask);
 
 	// imshow("HSV", HSVImg);
 	bilateralFilter(HSVImg, smooth, SIZE_BILATERAL, SIGMA_COLOR, SIGMA_SPACE);
@@ -273,8 +273,8 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls)
 	kMeansClustering(smooth, NUMBER_CLUSTER_KMEANS, resClustering);
 	bilateralFilter(resClustering, resClusteringSmooth, SIZE_BILATERAL, SIGMA_COLOR, SIGMA_SPACE);
 	cvtColor(resClusteringSmooth, gray, COLOR_BGR2GRAY);
-	imshow("res kmeans gray", gray);
-	imshow("Kmeans", resClusteringSmooth);
+	// imshow("res kmeans gray", gray);
+	// imshow("Kmeans", resClusteringSmooth);
 
 
 	// Hough transform

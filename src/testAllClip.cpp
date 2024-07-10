@@ -37,34 +37,34 @@ int main(int argc, char* argv[]){
 		VideoCapture vid = VideoCapture("../Dataset"+name[i]+name[i]+".mp4");
 		vid.read(frame);
 		detectTable(frame, tableCorners, colorTable);
-		// table = Table(tableCorners, colorTable);
-		// cout << "--------------" << endl;
-		// cout << name[i] << endl;
-		// cout << "------ First frame -------" << endl;
-		// detectBalls(frame, table, balls);
-		// table.addBalls(balls);
-		// segmentTable(frame, table, segmented);
-		// segmentBalls(frame, balls, segmented);
-		// imshow("seg", segmented);
-		// compareMetrics(table, segmented, "../Dataset"+name[i], FIRST);
-		// waitKey(0);
-		// previousFrame = frame.clone();
-		// ret = vid.read(frame);
-		// while (vid.isOpened() && ret)
-		// {
-		// 	previousFrame = frame.clone();
-		// 	ret = vid.read(frame);
-		// }
-		// cout << "------ Last frame --------" << endl;
-		// balls.clear();
-		// table.clearBalls();
-		// detectBalls(previousFrame, table, balls);
-		// table.addBalls(balls);
-		// segmentTable(previousFrame, table, segmented);
-		// segmentBalls(segmented, balls, segmented);
-		// imshow("seg", segmented);
-		// compareMetrics(table, segmented, "../Dataset"+name[i], LAST);
-		// waitKey(0);
+		table = Table(tableCorners, colorTable);
+		cout << "--------------" << endl;
+		cout << name[i] << endl;
+		cout << "------ First frame -------" << endl;
+		detectBalls(frame, table, balls);
+		table.addBalls(balls);
+		segmentTable(frame, table, segmented);
+		segmentBalls(frame, balls, segmented);
+		imshow("seg", segmented);
+		compareMetrics(table, segmented, "../Dataset"+name[i], FIRST);
+		waitKey(0);
+		previousFrame = frame.clone();
+		ret = vid.read(frame);
+		while (vid.isOpened() && ret){
+			
+			previousFrame = frame.clone();
+			ret = vid.read(frame);
+		}
+		cout << "------ Last frame --------" << endl;
+		balls.clear();
+		table.clearBalls();
+		detectBalls(previousFrame, table, balls);
+		table.addBalls(balls);
+		segmentTable(previousFrame, table, segmented);
+		segmentBalls(segmented, balls, segmented);
+		imshow("seg", segmented);
+		compareMetrics(table, segmented, "../Dataset"+name[i], LAST);
+		waitKey(0);
 	}
 	return 0;
 }

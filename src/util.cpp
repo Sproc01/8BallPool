@@ -61,14 +61,12 @@ void rotateCornersClockwise(Vec<Point2f, 4> &corners) {
  */
 void equationFormula(float x1, float y1, float x2, float y2, float &a, float &b, float &c)
 {
-	if(x2==x1)
-	{
+	if(x2==x1){
 		b = 0;
 		a = -1;
 		c = x1;
 	}
-	else
-	{
+	else{
 		b = -1;
 		a = (y2 - y1) / (x2 - x1);
 		c = -a * x1 - b * y1;
@@ -86,13 +84,11 @@ void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point2f &inters
 	float a1 = line1[0], b1 = line1[1], c1 = line1[2];
 	float a2 = line2[0], b2 = line2[1], c2 = line2[2];
 	float det = a1*b2 - a2*b1;
-	if(det != 0)
-	{
+	if(det != 0){
 		intersection.x = (b1*c2 - b2*c1) / det;
 		intersection.y = (a2*c1 - a1*c2) / det;
 	}
-	else
-	{
+	else{
 		intersection.x = -1;
 		intersection.y = -1;
 	}
@@ -104,8 +100,8 @@ void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point2f &inters
  * @param img input image in BGR format
  * @return Vec2b the color interval corresponding to the most frequent Hue
  */
-Vec2b mostFrequentHueColor(const Mat &img)
-{
+Vec2b mostFrequentHueColor(const Mat &img){
+
 	Mat thisImg, hist;
 	Mat argmax;
 
@@ -132,8 +128,8 @@ Vec2b mostFrequentHueColor(const Mat &img)
  * @param res output image containing the input image with superimposition of the minimap
  * @throw runtime_error if the input image is too small
  */
-void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res)
-{
+void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res){
+
 	const int offset = 408;
 	const float scaling_factor = 0.3;
 
@@ -141,8 +137,8 @@ void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res
 	res = frame.clone();
 	resize(minimap_with_balls, resized, Size(), scaling_factor, scaling_factor, INTER_LINEAR);
 	for(int i = 0; i < resized.rows; i++)
-		for(int j = 0; j < resized.cols; j++)
-		{
+		for(int j = 0; j < resized.cols; j++){
+
 			if(i+offset > res.rows)
 				throw runtime_error("Offset too big for the specified input image");
 			res.at<Vec3b>(i+offset,j) = resized.at<Vec3b>(i,j);
@@ -157,8 +153,8 @@ void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res
  * @param clusterCount number of cluster in output
  * @param clusteredImage output image: original image clustered
  */
-void kMeansClustering(const Mat inputImage, int clusterCount, Mat& clusteredImage)
-{
+void kMeansClustering(const Mat inputImage, int clusterCount, Mat& clusteredImage){
+
     Mat samples, labels;
 	int attempts = 10;
     vector<Vec3b> colors;
@@ -168,10 +164,9 @@ void kMeansClustering(const Mat inputImage, int clusterCount, Mat& clusteredImag
 
 
     int index = 0;
-    for(int i = 0; i < inputImage.rows; i++)
-    {
-        for(int j = 0; j < inputImage.cols; j++)
-        {
+    for(int i = 0; i < inputImage.rows; i++){
+
+        for(int j = 0; j < inputImage.cols; j++){
             samples.at<float>(index, 0) = inputImage.at<Vec3b>(i, j)[0];
             samples.at<float>(index, 1) = inputImage.at<Vec3b>(i, j)[1];
             samples.at<float>(index, 2) = inputImage.at<Vec3b>(i, j)[2];
@@ -184,10 +179,10 @@ void kMeansClustering(const Mat inputImage, int clusterCount, Mat& clusteredImag
     clusteredImage = Mat(inputImage.size(), CV_8UC3);
 
 	int cluster_idx = -1;
-    for(int i = 0; i < inputImage.rows; i++)
-    {
-        for(int j = 0; j < inputImage.cols; j++)
-        {
+    for(int i = 0; i < inputImage.rows; i++){
+
+        for(int j = 0; j < inputImage.cols; j++){
+
             cluster_idx = labels.at<int>(i * inputImage.cols + j);
             clusteredImage.at<Vec3b>(i, j) = colors[cluster_idx];
         }

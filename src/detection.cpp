@@ -19,13 +19,18 @@ using namespace std;
  * Create a mask using the most common color in the image central area, then evaluates the edge with the Canny
  * algorithm and then it uses Hough lines to detect the lines. To select the intersections, it computes them
  * and then merge the closest in order to have the four different corners.
- * @param frame image where there is a table to be detected
- * @param corners output vector containing the 4 corners found
- * @param colorRange output vector containing a range for the table colors
- * @throw runtime_error if it does not find enough lines or enough interceptions
+ * @param frame image where there is a table to be detected.
+ * @param corners output vector containing the 4 corners found.
+ * @param colorRange output vector containing a range for the table colors.
+ * @throw runtime_error if it does not find enough lines.
+ * @throw runtime_error if it does not find enough interceptions.
+ * @throw runtime_error if too many interceptions.
+ * @throw invalid_argument if frame is empty.
  */
-void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
-{
+void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
+	
+	if(frame.empty())
+		throw invalid_argument("Empty image in input");
 	// const used during the function
 	const int DIM_STRUCTURING_ELEMENT = 4;
 	const int CANNY_THRESHOLD1 = 200;
@@ -68,8 +73,8 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 	// lines drawing
 	Point pt1, pt2, pt3, pt4;
 	float aLine, bLine, cLine;
-	for(size_t i = 0; i < lines.size(); i++)
-	{
+	for(size_t i = 0; i < lines.size(); i++){
+
 		pt1.x = lines[i][0];
 		pt1.y = lines[i][1];
 		pt2.x = lines[i][2];
@@ -83,10 +88,10 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 
 	// find intersections
 	Point2f intersection;
-	for(size_t i = 0; i < coefficients.size(); i++)
-	{
-		for(size_t j = i+1; j < coefficients.size(); j++)
-		{
+	for(size_t i = 0; i < coefficients.size(); i++){
+
+		for(size_t j = i+1; j < coefficients.size(); j++){
+
 			computeIntersection(coefficients[i], coefficients[j], intersection);
 			// if valid it is maintened
 			if (intersection.x >= 0 && intersection.x < frame.cols && intersection.y >= 0 && intersection.y < frame.rows)
@@ -97,22 +102,21 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 
 	// remove intersections that are too close
 	vector<Point2f> intersectionsGood;
-	sort(intersections.begin(), intersections.end(), [](Point a, Point b) -> bool
-	{
+	sort(intersections.begin(), intersections.end(), [](Point a, Point b) -> bool {
 		return norm(a) < norm(b);
 	});
-	vector<Point2f>::iterator end2 = unique(intersections.begin(), intersections.end(), [&CLOSE_POINT_THRESHOLD](Point a, Point b) -> bool
-	{
-		return abs(a.x - b.x) < CLOSE_POINT_THRESHOLD && abs(a.y - b.y) < CLOSE_POINT_THRESHOLD;
+	vector<Point2f>::iterator end2 = unique(intersections.begin(), intersections.end(),
+		[&CLOSE_POINT_THRESHOLD](Point a, Point b) -> bool {
+			return abs(a.x - b.x) < CLOSE_POINT_THRESHOLD && abs(a.y - b.y) < CLOSE_POINT_THRESHOLD;
 	});
 	for(vector<Point2f>::iterator it = intersections.begin(); it != end2; it++)
-	{
 		intersectionsGood.push_back(*it);
-	}
+
+	cout << intersectionsGood.size() << endl;
 
 	// clockwise order
-	sort(intersectionsGood.begin(), intersectionsGood.end(), [&center](Point a, Point b) -> bool
-	{
+	sort(intersectionsGood.begin(), intersectionsGood.end(), [&center](Point a, Point b) -> bool {
+
 		if (a.x < center.x && b.x < center.x)
 			return a.y > b.y;
 		else if (a.x < center.x && b.x > center.x)
@@ -125,17 +129,16 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
 
 	if(intersectionsGood.size() < 4) // 4 corners of the table
 		throw runtime_error("Not enough unique intersections found");
+	else if(intersectionsGood.size() > 4)
+		throw runtime_error("Too many unique intersections found"); // TODO decide
 
 	vector<Scalar> colors = {Scalar(255, 0, 0), Scalar(0, 255, 0), Scalar(0, 0, 255), Scalar(255, 255, 0)};
 	for(size_t i = 0; i < 4; i++)
-	{
 		circle(imgLine, intersectionsGood[i], 10, colors[i], -1);
-	}
 
 	for(size_t i = 0; i < 4; i++)
-	{
 		corners[i] = intersectionsGood[i];
-	}
+
 	imshow("Line", imgLine);
 }
 
@@ -143,12 +146,16 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange)
  * @brief classify the ball inside the image passed as argument
  * It mask the image using a circle of the specified radius centered in the center of the image, it evaluates
  * the histogram and compute the two max values, using some conditions then it determines the class.
- * @param img image that contains only one ball centered in the center of the ball
- * @param radius radius of the circle that correspond to the ball
- * @return Category class of the ball
+ * @param img image that contains only one ball centered in the center of the ball.
+ * @param radius radius of the circle that correspond to the ball.
+ * @return Category class of the ball.
+ * @throw invalid_argument if img is empty.
  */
-Category classificationBall(const Mat& img, double radius)
-{
+Category classificationBall(const Mat& img, double radius){
+
+	if(img.empty())
+		throw invalid_argument("Empty image in input");
+
 	// const to classify the ball
 	const int MEAN_WHITE_CHANNEL2 = 125;
 	const int MEAN_WHITE_CHANNEL3 = 160;
@@ -158,25 +165,26 @@ Category classificationBall(const Mat& img, double radius)
 	const float THRESHOLD_STRIPED_MAX = 0.5;
 	const float THRESHOLD_STRIPED_NPIXELS = 0.35;
 
+	Mat hist, gray, mask, grayT, hsv, argmax, argmax2;
 
-	Mat hist, gray, mask;
+
 	mask = Mat::zeros(img.size(), CV_8U);
 	// imshow("original", img);
 	cvtColor(img, gray, COLOR_BGR2GRAY);
 	Point2f center = Point(img.cols/2, img.rows/2);
 	circle(mask, center, radius, 255, -1);
-
 	// imshow("mask", mask);
+
 	for(int i = 0; i < img.rows; i++)
 		for(int j = 0; j < img.cols; j++)
 			if(mask.at<uchar>(i,j) != 255)
 				gray.at<uchar>(i,j) = 0;
 
-	Mat grayT;
+
 	adaptiveThreshold(gray, grayT, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 3, 2);
 	//imshow("grayT", grayT);
 	//imshow("gray", gray);
-	//cout << img.rows << "," << img.cols << endl;
+
 	int numberOfBackgroundPixels = 4 * pow(radius, 2) - CV_PI * pow(radius, 2);
 	//cout << numberOfBackgroundPixels << endl;
 	const int channel[] = {0};
@@ -184,24 +192,20 @@ Category classificationBall(const Mat& img, double radius)
 	float range[] = {0, 255};
 	const float* histRange[] = {range};
 	calcHist(&gray, 1, channel, Mat(), hist, 1, &histSize, histRange, true, false);
-
 	hist.at<float>(0) -= numberOfBackgroundPixels;
 	// cout << hist << endl;
 
 	// first peak
-	Mat argmax;
 	reduceArgMax(hist, argmax, 0);
 	float val = hist.at<float>(argmax.at<int>(0));
 	hist.at<float>(argmax.at<int>(0)) = 0;
 
 	// second peak
-	Mat argmax2;
 	reduceArgMax(hist, argmax2, 0);
 	float val2 = hist.at<float>(argmax2.at<int>(0));
 	hist.at<float>(argmax2.at<int>(0)) = 0;
 
 	vector<double> mean, stddev;
-	Mat hsv;
 	cvtColor(img, hsv, COLOR_BGR2HSV);
 	meanStdDev(hsv, mean, stddev);
 	// cout << val << endl;
@@ -235,15 +239,20 @@ Category classificationBall(const Mat& img, double radius)
  * In order to do this it exploits the information in the class table. Uses a bilateral filter to remove
  * noise but maintain the edges. Cluster the image using kmeans, another bilateral filter and then hough circles.
  * To isolate the good circles exploit the information of the table.
- * @param frame image where there are the balls to be detected
- * @param table initialized object that contains the corner and the color
- * @param balls output vector of the balls detected
+ * @param frame image where there are the balls to be detected.
+ * @param table initialized object that contains the corner and the color.
+ * @param balls output vector of the balls detected.
+ * @throw invalid_argument if frame is empty.
  */
-void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls)
-{
+void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls){
+
+	if(frame.empty())
+		throw invalid_argument("Empty image in input");
+
 	//table properties
+	const int NUMBER_CORNERS = 4;
 	Vec2b colorTable = table.getColor();
-	Vec<Point2f, 4> tableCorners = table.getBoundaries();
+	Vec<Point2f, NUMBER_CORNERS> tableCorners = table.getBoundaries();
 
 	// const used during the function
 	const int MIN_RADIUS = 6;
@@ -280,7 +289,7 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls)
 
 	//poly to isolate the table
 	vector<Point> tableCornersInt;
-	for(int i = 0; i < 4; i++) // needed otherwise exception
+	for(int i = 0; i < NUMBER_CORNERS; i++) // needed otherwise exception
 		tableCornersInt.push_back(Point(static_cast<int>(tableCorners[i].x), static_cast<int>(tableCorners[i].y)));
 	fillConvexPoly(cropped, tableCornersInt, 255);
 	//imshow("Poly", cropped);
@@ -321,8 +330,8 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls)
 	vector<Vec3f> lines;
 	double meanRadius = 0;
 	int counter = 0;
-	for(size_t i = 0; i < circles.size(); i++ )
-	{
+	for(size_t i = 0; i < circles.size(); i++ ){
+
 		c = circles[i];
 	 	center = Point(c[0], c[1]);
 	 	radius = c[2];
@@ -332,15 +341,15 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls)
 			&& cropped.at<uchar>(center.y-radius, center.x) == 255
 	 		&& cropped.at<uchar>(center.y, center.x+radius) == 255
 	 		&& cropped.at<uchar>(center.y, center.x-radius) == 255
-	 		&& mask.at<uchar>(center.y, center.x) == 0)
-		{
+	 		&& mask.at<uchar>(center.y, center.x) == 0){
+
 			meanRadius+= radius;
 			counter++;
 		}
 	}
 	meanRadius /= counter;
-	for(size_t i = 0; i < circles.size(); i++ )
-	{
+	for(size_t i = 0; i < circles.size(); i++ ){
+
 		ballFound = true;
 		c = circles[i];
 	 	center = Point(c[0], c[1]);
@@ -353,12 +362,13 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls)
 	 		&& cropped.at<uchar>(center.y, center.x+radius) == 255
 	 		&& cropped.at<uchar>(center.y, center.x-radius) == 255
 	 		&& mask.at<uchar>(center.y, center.x) == 0)
-		{
+			{
 			subImg = frame.colRange(c[0]-radius, c[0]+radius).rowRange(c[1]-radius, c[1]+radius);
 			rect = Rect(center.x-c[2], center.y-c[2], 2*c[2], 2*c[2]);
 			category = classificationBall(subImg, radius);
-			switch(category)
-			{
+
+			switch(category){
+
 				case WHITE_BALL:
 						circle(frameCircle, center, radius, WHITE_BGR_COLOR, 1, LINE_AA);
 						rectangle(frameRect, rect, WHITE_BGR_COLOR, 1, LINE_AA);

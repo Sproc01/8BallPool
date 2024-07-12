@@ -159,7 +159,7 @@ void kMeansClustering(const Mat inputImage, const vector<Vec3b> &colors, Mat& cl
 
 	if(colors.size() == 0)
 		throw invalid_argument("Empty color vector");
-	if(input_image.empty())
+	if(inputImage.empty())
 		throw invalid_argument("Empty input image");
 
 

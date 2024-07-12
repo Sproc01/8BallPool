@@ -24,7 +24,7 @@ void detectTable(const cv::Mat &frame, cv::Vec<cv::Point2f, 4> &tableCorners, cv
  * @param img image that contains only one ball centered in the center of the ball.
  * @param radius radius of the circle that correspond to the ball.
  * @return Category class of the ball.
- * @throw invalid_argument if img is empty.
+ * @throw invalid_argument if img is empty or if the radius is <=0.
  */
 Category classificationBall(const cv::Mat& img, double radius);
 

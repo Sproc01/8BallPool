@@ -49,9 +49,11 @@ void createOutputImage(const cv::Mat& frame, const cv::Mat& minimap_with_balls, 
 /**
  * @brief do the clustering by using only color information on the input image.
  * @param inputImage image to be clustered.
- * @param clusterCount number of cluster in output.
+ * @param colors vector containing the different colors for the different clusters,
+ * the size of the vector is the number of output clusters.
  * @param clusteredImage output image: original image clustered.
+ * @throw invalid_argument if the input image is empty or if the colors is empty.
  */
-void kMeansClustering(const cv::Mat inputImage, int clusterCount, cv::Mat& clusteredImage);
+void kMeansClustering(const cv::Mat inputImage, const std::vector<cv::Vec3b> &colors, cv::Mat& clusteredImage);
 
 #endif //UTIL_H

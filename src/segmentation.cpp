@@ -27,7 +27,6 @@ void segmentTable(const Mat &frame, const Table& table, Mat& segmented){
 	if(frame.empty())
 		throw invalid_argument("Empty image in input");
 
-	const int NUMBER_CLUSTER = 2;
 	Mat polyImage = Mat::zeros(frame.size(), CV_8UC1);
 	vector<Point> tableCornersInt;
 
@@ -48,11 +47,15 @@ void segmentTable(const Mat &frame, const Table& table, Mat& segmented){
 	inRange(HSVimg, Scalar(colorTable[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
 				Scalar(colorTable[1], 255, 255), mask);
 	//imshow("mask", mask);
-	kMeansClustering(frame, NUMBER_CLUSTER, clustered);
+	vector<Vec3b> colors = {
+		Vec3b(0, 0, 0),
+		Vec3b(255, 255, 255)
+	};
+	kMeansClustering(frame, colors, clustered);
 	//imshow("cluster", clustered);
 	Vec3b color;// = clustered.at<Vec3b>(frame.rows/2, frame.cols/2);
-	for(int i = frame.rows/2; i < frame.rows; i++)
-		for(int j = frame.cols/2; j < frame.cols; j++)
+	for(int i = frame.rows/4; i < 3*frame.rows/4; i++)
+		for(int j = frame.cols/4; j < 3*frame.cols/4; j++)
 			if(polyImage.at<uchar>(i,j) == 255 && mask.at<uchar>(i,j) == 255){
 
 				color = clustered.at<Vec3b>(i, j);
@@ -79,19 +82,22 @@ void segmentTable(const Mat &frame, const Table& table, Mat& segmented){
  * @param frame input image
  * @param balls vector of the balls in the image
  * @param segmented output image where each category of the ball correspond to a different color
- * @throw invalid_argument if frame is empty
+ * @throw invalid_argument if frame is empty or if balls is empty.
  */
 void segmentBalls(const Mat &frame, const vector<Ball> &balls, Mat& segmented){
 
 	if(frame.empty())
 		throw invalid_argument("Empty image in input");
 
+	if(balls.size()==0)
+		throw invalid_argument("Empty vector of balls");
+
 	float radius;
 	Point center;
 	//segmented = frame.clone();
 	Scalar c = Scalar(0, 0, 0);
 	for (const Ball &ball : balls){
-		
+
 		if(ball.getCategory() == Category::BLACK_BALL)
 			c = BLACK_BGR_COLOR;
 		else if(ball.getCategory() == Category::WHITE_BALL)

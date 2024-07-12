@@ -150,16 +150,24 @@ void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res
  * It maps each pixel in the color space and then do clustering till the termination criteria is reached.
  * To initialize the centers it uses Kmeans++.
  * @param inputImage image to be clustered
- * @param clusterCount number of cluster in output
+ * @param colors vector containing the different colors for the different clusters,
+ * the size of the vector is the number of output clusters.
  * @param clusteredImage output image: original image clustered
+ * @throw invalid_argument if the input image is empty or if the colors is empty.
  */
-void kMeansClustering(const Mat inputImage, int clusterCount, Mat& clusteredImage){
+void kMeansClustering(const Mat inputImage, const vector<Vec3b> &colors, Mat& clusteredImage){
 
+	if(colors.size() == 0)
+		throw invalid_argument("Empty color vector");
+	if(input_image.empty())
+		throw invalid_argument("Empty input image");
+
+
+	int clusterCount = colors.size();
     Mat samples, labels;
 	int attempts = 10;
-    vector<Vec3b> colors;
-	for(int i = 0; i < clusterCount; i++)
-        colors.push_back(Vec3b(rand()%255, rand()%255, rand()%255));
+	// for(int i = 0; i < clusterCount; i++)
+    //     colors.push_back(Vec3b(rand()%255, rand()%255, rand()%255));
     samples = Mat(inputImage.total(), 3, CV_32F);
 
 

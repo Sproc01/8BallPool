@@ -1,0 +1,200 @@
+--------------
+/game1_clip1
+------ First frame -------
+cat: 0	iou: 0.990039
+cat: 1	iou: 0.784091
+cat: 2	iou: 0.504854
+cat: 3	iou: 0.530172
+cat: 4	iou: 0.349042
+cat: 5	iou: 0.98525
+mIoU: 0.690575
+mAP: 0.633333
+------ Last frame --------
+cat: 0	iou: 0.989661
+cat: 1	iou: 0.811321
+cat: 2	iou: 0.652381
+cat: 3	iou: 0.288017
+cat: 4	iou: 0.276404
+cat: 5	iou: 0.985285
+mIoU: 0.667178
+mAP: 0.511364
+--------------
+/game1_clip2
+------ First frame -------
+cat: 0	iou: 0.983656
+cat: 1	iou: 0.824607
+cat: 2	iou: 0.664884
+cat: 3	iou: 0.477855
+cat: 4	iou: 0.224624
+cat: 5	iou: 0.956025
+mIoU: 0.688609
+mAP: 0.598485
+------ Last frame --------
+cat: 0	iou: 0.983134
+cat: 1	iou: 0
+cat: 2	iou: 0.758836
+cat: 3	iou: 0.376183
+cat: 4	iou: 0.0951923
+cat: 5	iou: 0.956677
+mIoU: 0.528337
+mAP: 0.286364
+--------------
+/game1_clip3
+------ First frame -------
+cat: 0	iou: 0.982325
+cat: 1	iou: 0.857542
+cat: 2	iou: 0.81087
+cat: 3	iou: 0.191251
+cat: 4	iou: 0
+cat: 5	iou: 0.961358
+mIoU: 0.633891
+mAP: 0.5
+------ Last frame --------
+cat: 0	iou: 0.984205
+cat: 1	iou: 0.844075
+cat: 2	iou: 0.802419
+cat: 3	iou: 0.19209
+cat: 4	iou: 0
+cat: 5	iou: 0.964155
+mIoU: 0.631157
+mAP: 0.5
+--------------
+/game1_clip4
+------ First frame -------
+cat: 0	iou: 0.977656
+cat: 1	iou: 0.454054
+cat: 2	iou: 0.327083
+cat: 3	iou: 0.383471
+cat: 4	iou: 0
+cat: 5	iou: 0.950776
+mIoU: 0.515507
+mAP: 0.35303
+------ Last frame --------
+cat: 0	iou: 0.982869
+cat: 1	iou: 0.828625
+cat: 2	iou: 0.29668
+cat: 3	iou: 0.357569
+cat: 4	iou: 0
+cat: 5	iou: 0.958886
+mIoU: 0.570772
+mAP: 0.568182
+--------------
+/game2_clip1
+------ First frame -------
+cat: 0	iou: 0.967723
+cat: 1	iou: 0.709924
+cat: 2	iou: 0
+cat: 3	iou: 0
+cat: 4	iou: 0.127522
+cat: 5	iou: 0.959724
+mIoU: 0.460815
+mAP: 0.25
+------ Last frame --------
+cat: 0	iou: 0.96474
+cat: 1	iou: 0
+cat: 2	iou: 0.497638
+cat: 3	iou: 0.189698
+cat: 4	iou: 0
+cat: 5	iou: 0.95519
+mIoU: 0.434544
+mAP: 0.0681818
+--------------
+/game2_clip2
+------ First frame -------
+cat: 0	iou: 0.968604
+cat: 1	iou: 0.331599
+cat: 2	iou: 0
+cat: 3	iou: 0.225131
+cat: 4	iou: 0.135675
+cat: 5	iou: 0.956032
+mIoU: 0.436174
+mAP: 0.0340909
+------ Last frame --------
+cat: 0	iou: 0.969505
+cat: 1	iou: 0.256771
+cat: 2	iou: 0
+cat: 3	iou: 0.236624
+cat: 4	iou: 0.142534
+cat: 5	iou: 0.959033
+mIoU: 0.427411
+mAP: 0.318182
+--------------
+/game3_clip1
+------ First frame -------
+cat: 0	iou: 0.983144
+cat: 1	iou: 0.329352
+cat: 2	iou: 0.418605
+cat: 3	iou: 0.366854
+cat: 4	iou: 0.17281
+cat: 5	iou: 0.946324
+mIoU: 0.536181
+mAP: 0.0909091
+------ Last frame --------
+cat: 0	iou: 0.982883
+cat: 1	iou: 0.296326
+cat: 2	iou: 0.539785
+cat: 3	iou: 0.451918
+cat: 4	iou: 0
+cat: 5	iou: 0.940139
+mIoU: 0.535175
+mAP: 0.318182
+--------------
+/game3_clip2
+------ First frame -------
+cat: 0	iou: 0.983136
+cat: 1	iou: 0.394904
+cat: 2	iou: 0.353535
+cat: 3	iou: 0.169492
+cat: 4	iou: 0.149936
+cat: 5	iou: 0.941193
+mIoU: 0.498699
+mAP: 0.25
+------ Last frame --------
+cat: 0	iou: 0.980288
+cat: 1	iou: 0.355307
+cat: 2	iou: 0.505666
+cat: 3	iou: 0
+cat: 4	iou: 0.142422
+cat: 5	iou: 0.930773
+mIoU: 0.485743
+mAP: 0.25
+--------------
+/game4_clip1
+------ First frame -------
+cat: 0	iou: 0.980226
+cat: 1	iou: 0.281496
+cat: 2	iou: 0.563969
+cat: 3	iou: 0
+cat: 4	iou: 0.0834734
+cat: 5	iou: 0.957986
+mIoU: 0.477858
+mAP: 0.25
+------ Last frame --------
+cat: 0	iou: 0.98178
+cat: 1	iou: 0.356218
+cat: 2	iou: 0.32107
+cat: 3	iou: nan
+cat: 4	iou: 0.398934
+cat: 5	iou: 0.961663
+mIoU: nan
+mAP: 0.663507
+--------------
+/game4_clip2
+------ First frame -------
+cat: 0	iou: 0.974916
+cat: 1	iou: 0.205572
+cat: 2	iou: 0.725543
+cat: 3	iou: 0.360471
+cat: 4	iou: 0.377384
+cat: 5	iou: 0.950728
+mIoU: 0.599103
+mAP: 0.386364
+------ Last frame --------
+cat: 0	iou: 0.983062
+cat: 1	iou: 0.309912
+cat: 2	iou: 0.873156
+cat: 3	iou: 0.145485
+cat: 4	iou: 0.474645
+cat: 5	iou: 0.961136
+mIoU: 0.624566
+mAP: 0.545455

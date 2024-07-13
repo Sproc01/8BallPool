@@ -22,6 +22,9 @@ using namespace std::chrono;
 using namespace std;
 using namespace cv;
 
+/* 	Given a video it detects table and balls in the first frame and track the balls over different frame.
+	Using this information then it creates the output video with a minimap superimposed and then detect the balls
+	in the last frame. For the detection of the table and of the balls it computes also some performance metrics. */
 int main(int argc, char* argv[]){
 
 	//VARIABLES

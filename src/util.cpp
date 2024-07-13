@@ -29,8 +29,8 @@ Vec3b getColorFromCategory(Category category) {
 		case BACKGROUND: return BACKGROUND_BGR_COLOR; break;
 		case PLAYING_FIELD: return BACKGROUND_BGR_COLOR; break;
 		default:
-			//TODO: throw error if no correct category is found
-				break;
+			throw invalid_argument("Not correct category");
+		break;
 	}
 }
 
@@ -49,44 +49,59 @@ void rotateCornersClockwise(Vec<Point2f, 4> &corners) {
 	}
 }
 
-// Gives the equation of the line passing through two points in the form  ax + by + c = 0
+/**
+ * @brief Gives the equation of the line passing through two points in the form  ax + by + c = 0.
+ * @param x1 x-coordinate of the first point
+ * @param y1 y-coordinate of the first point
+ * @param x2 x-coordinate of the second point
+ * @param y2 y-coordinate of the second point
+ * @param a output parameter: coefficient a
+ * @param b output parameter: coefficient b
+ * @param c output parameter: coefficient c
+ */
 void equationFormula(float x1, float y1, float x2, float y2, float &a, float &b, float &c)
 {
-	if(x2==x1)
-	{
+	if(x2==x1){
 		b = 0;
 		a = -1;
 		c = x1;
 	}
-	else
-	{
+	else{
 		b = -1;
 		a = (y2 - y1) / (x2 - x1);
 		c = -a * x1 - b * y1;
 	}
 }
 
-// compute intersection of two lines if there is one
+/**
+ * @brief compute intersection of two lines if there is one.
+ * @param line1 first line
+ * @param line2 second line
+ * @param intersection output point that corresponds to the intersection if there is one
+ */
 void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point2f &intersection)
 {
 	float a1 = line1[0], b1 = line1[1], c1 = line1[2];
 	float a2 = line2[0], b2 = line2[1], c2 = line2[2];
 	float det = a1*b2 - a2*b1;
-	if(det != 0)
-	{
+	if(det != 0){
 		intersection.x = (b1*c2 - b2*c1) / det;
 		intersection.y = (a2*c1 - a1*c2) / det;
 	}
-	else
-	{
+	else{
 		intersection.x = -1;
 		intersection.y = -1;
 	}
 }
 
-// calculate the most frequent color in the image
-Vec2b mostFrequentHueColor(const Mat &img)
-{
+/**
+ * @brief calculate the most frequent value of Hue in the input image.
+ * Convert the image to HSv representation and then evaluate the histogram for the first channel.
+ * @param img input image in BGR format
+ * @return Vec2b the color interval corresponding to the most frequent Hue
+ */
+Vec2b mostFrequentHueColor(const Mat &img){
+
 	Mat thisImg, hist;
 	Mat argmax;
 
@@ -106,9 +121,15 @@ Vec2b mostFrequentHueColor(const Mat &img)
 	return Vec2b(start, start + diameter);
 }
 
-// create the output image with frame and minimap
-void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res)
-{
+/**
+ * @brief Create a Output Image object
+ * @param frame input image
+ * @param minimap_with_balls minimap that must be superimposed onto the input image
+ * @param res output image containing the input image with superimposition of the minimap
+ * @throw runtime_error if the input image is too small
+ */
+void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res){
+
 	const int offset = 408;
 	const float scaling_factor = 0.3;
 
@@ -116,29 +137,43 @@ void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res
 	res = frame.clone();
 	resize(minimap_with_balls, resized, Size(), scaling_factor, scaling_factor, INTER_LINEAR);
 	for(int i = 0; i < resized.rows; i++)
-		for(int j = 0; j < resized.cols; j++)
-		{
+		for(int j = 0; j < resized.cols; j++){
+
 			if(i+offset > res.rows)
 				throw runtime_error("Offset too big for the specified input image");
 			res.at<Vec3b>(i+offset,j) = resized.at<Vec3b>(i,j);
 		}
 }
 
-void kMeansClustering(const Mat inputImage, int clusterCount, Mat& clusteredImage)
-{
+/**
+ * @brief do the clustering by using only color information on the input image.
+ * It maps each pixel in the color space and then do clustering till the termination criteria is reached.
+ * To initialize the centers it uses Kmeans++.
+ * @param inputImage image to be clustered
+ * @param colors vector containing the different colors for the different clusters,
+ * the size of the vector is the number of output clusters.
+ * @param clusteredImage output image: original image clustered
+ * @throw invalid_argument if the input image is empty or if the colors is empty.
+ */
+void kMeansClustering(const Mat inputImage, const vector<Vec3b> &colors, Mat& clusteredImage){
+
+	if(colors.size() == 0)
+		throw invalid_argument("Empty color vector");
+	if(inputImage.empty())
+		throw invalid_argument("Empty input image");
+
+	int clusterCount = colors.size();
     Mat samples, labels;
 	int attempts = 10;
-    vector<Vec3b> colors;
-	for(int i = 0; i < clusterCount; i++)
-        colors.push_back(Vec3b(rand()%255, rand()%255, rand()%255));
+	// for(int i = 0; i < clusterCount; i++)
+    //     colors.push_back(Vec3b(rand()%255, rand()%255, rand()%255));
     samples = Mat(inputImage.total(), 3, CV_32F);
 
 
     int index = 0;
-    for(int i = 0; i < inputImage.rows; i++)
-    {
-        for(int j = 0; j < inputImage.cols; j++)
-        {
+    for(int i = 0; i < inputImage.rows; i++){
+
+        for(int j = 0; j < inputImage.cols; j++){
             samples.at<float>(index, 0) = inputImage.at<Vec3b>(i, j)[0];
             samples.at<float>(index, 1) = inputImage.at<Vec3b>(i, j)[1];
             samples.at<float>(index, 2) = inputImage.at<Vec3b>(i, j)[2];
@@ -151,10 +186,10 @@ void kMeansClustering(const Mat inputImage, int clusterCount, Mat& clusteredImag
     clusteredImage = Mat(inputImage.size(), CV_8UC3);
 
 	int cluster_idx = -1;
-    for(int i = 0; i < inputImage.rows; i++)
-    {
-        for(int j = 0; j < inputImage.cols; j++)
-        {
+    for(int i = 0; i < inputImage.rows; i++){
+
+        for(int j = 0; j < inputImage.cols; j++){
+
             cluster_idx = labels.at<int>(i * inputImage.cols + j);
             clusteredImage.at<Vec3b>(i, j) = colors[cluster_idx];
         }

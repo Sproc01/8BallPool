@@ -29,8 +29,8 @@ Vec3b getColorFromCategory(Category category) {
 		case BACKGROUND: return BACKGROUND_BGR_COLOR; break;
 		case PLAYING_FIELD: return BACKGROUND_BGR_COLOR; break;
 		default:
-			//TODO: throw error if no correct category is found
-				break;
+			throw invalid_argument("Not correct category");
+		break;
 	}
 }
 

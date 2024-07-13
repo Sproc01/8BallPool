@@ -163,11 +163,11 @@ Category classificationBall(const Mat& img, double radius){
 	// const to classify the ball
 	const int MEAN_WHITE_CHANNEL2 = 130;
 	const int MEAN_WHITE_CHANNEL3 = 150;
-	const int MEAN_BLACK_CHANNEL3 = 115;
+	const int MEAN_BLACK_CHANNEL3 = 110;
 	const int NUMBER_OF_BINS_WHITE = 3;
 	const int NUMBER_OF_BINS_BLACK = 5;
-	const float THRESHOLD_STRIPED_MAX = 0.5;
-	const float THRESHOLD_STRIPED_NPIXELS = 0.35;
+	const float THRESHOLD_STRIPED_MAX = 0.6;
+	const float THRESHOLD_STRIPED_NPIXELS = 0.33;
 
 	Mat hist, gray, mask, grayT, hsv, argmax, argmax2;
 
@@ -263,8 +263,8 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls){
 	// const used during the function
 	const int MIN_RADIUS = 6;
 	const int MAX_RADIUS = 14;
-	const int HOUGH_PARAM1 = 90;
-	const int HOUGH_PARAM2 = 7;
+	const int HOUGH_PARAM1 = 200;
+	const int HOUGH_PARAM2 = 8;
 	const float INVERSE_ACCUMULATOR_RESOLUTION = 0.1;
 	const int MIN_DISTANCE = 19;
 	const int SIZE_BILATERAL = 3;
@@ -325,7 +325,10 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls){
 	kMeansClustering(smooth, colors, resClustering);
 	bilateralFilter(resClustering, resClusteringSmooth, SIZE_BILATERAL, SIGMA_COLOR, SIGMA_SPACE);
 	cvtColor(resClusteringSmooth, gray, COLOR_BGR2GRAY);
+	imshow("Kmeans", resClusteringSmooth);
 	// adaptiveThreshold(gray, gray, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 3, 2);
+	// kernel = getStructuringElement(MORPH_ELLIPSE, Size(2, 2));
+	// morphologyEx(mask, mask, MORPH_CLOSE, kernel, Point(-1,1), 2);
 	imshow("Kmeans gray", gray);
 
 	// Hough transform

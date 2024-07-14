@@ -32,6 +32,8 @@ int main(int argc, char* argv[]){
 							"/game4_clip2"};
 
 	for(int i = 0; i < name.size(); i++){
+		// if(i!=8 && i!=9)
+		// 	continue;
 		segmented = Mat::zeros(frame.size(), CV_8UC3);
 		balls.clear();
 		VideoCapture vid = VideoCapture("../Dataset"+name[i]+name[i]+".mp4");
@@ -45,13 +47,13 @@ int main(int argc, char* argv[]){
 		table.addBalls(balls);
 		segmentTable(frame, table, segmented);
 		segmentBalls(frame, balls, segmented);
-		imshow("seg", segmented);
+		//imshow("seg", segmented);
 		compareMetrics(table, segmented, "../Dataset"+name[i], FIRST);
 		waitKey(0);
 		previousFrame = frame.clone();
 		ret = vid.read(frame);
 		while (vid.isOpened() && ret){
-			
+
 			previousFrame = frame.clone();
 			ret = vid.read(frame);
 		}
@@ -62,7 +64,7 @@ int main(int argc, char* argv[]){
 		table.addBalls(balls);
 		segmentTable(previousFrame, table, segmented);
 		segmentBalls(segmented, balls, segmented);
-		imshow("seg", segmented);
+		//imshow("seg", segmented);
 		compareMetrics(table, segmented, "../Dataset"+name[i], LAST);
 		waitKey(0);
 	}

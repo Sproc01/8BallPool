@@ -168,7 +168,8 @@ void kMeansClustering(const Mat inputImage, const vector<Vec3b> &colors, Mat& cl
 	// for(int i = 0; i < clusterCount; i++)
     //     colors.push_back(Vec3b(rand()%255, rand()%255, rand()%255));
     samples = Mat(inputImage.total(), 3, CV_32F);
-
+	theRNG().state = 123456789;
+	//cout << theRNG().state << endl;
 
     int index = 0;
     for(int i = 0; i < inputImage.rows; i++){

@@ -45,7 +45,7 @@ int main(int argc, char* argv[]){
 		videoPath = filesystem::path(argv[1]);
 	}
 	else if (argc == 1) { //TODO: remove at the end
-		videoPath = filesystem::path("../Dataset/game3_clip2/game3_clip2.mp4");
+		videoPath = filesystem::path("../Dataset/game1_clip1/game1_clip1.mp4");
 	}
 	else {
 		cout << "Error of number of parameters: insert one parameter" << endl;
@@ -71,7 +71,7 @@ int main(int argc, char* argv[]){
 	//TODO: remove the video if some error occour, or if the execution is closed before end (it is corrupted)
 	vidOutput.open(pathOutput, codec, fps, frame.size(), true);
 
-	// //DETECT AND SEGMENT TABLE
+	//DETECT AND SEGMENT TABLE
 	detectTable(frame, tableCorners, colorTable);
 	table = Table(tableCorners, colorTable);
 	segmentTable(frame, table, segmented);

@@ -75,9 +75,10 @@ void equationFormula(float x1, float y1, float x2, float y2, float &a, float &b,
 
 /**
  * @brief compute intersection of two lines if there is one.
- * @param line1 first line
- * @param line2 second line
- * @param intersection output point that corresponds to the intersection if there is one
+ * @param line1 first line.
+ * @param line2 second line.
+ * @param intersection output point that corresponds to the intersection if there is one otherwise
+ * 						it contains Point(-1,-1).
  */
 void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point2f &intersection)
 {
@@ -97,8 +98,8 @@ void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point2f &inters
 /**
  * @brief calculate the most frequent value of Hue in the input image.
  * Convert the image to HSv representation and then evaluate the histogram for the first channel.
- * @param img input image in BGR format
- * @return Vec2b the color interval corresponding to the most frequent Hue
+ * @param img input image in BGR format.
+ * @return Vec2b the color interval corresponding to the most frequent Hue.
  */
 Vec2b mostFrequentHueColor(const Mat &img){
 
@@ -122,11 +123,11 @@ Vec2b mostFrequentHueColor(const Mat &img){
 }
 
 /**
- * @brief Create a Output Image object
- * @param frame input image
- * @param minimap_with_balls minimap that must be superimposed onto the input image
- * @param res output image containing the input image with superimposition of the minimap
- * @throw runtime_error if the input image is too small
+ * @brief Create a Output Image object.
+ * @param frame input image.
+ * @param minimap_with_balls minimap that must be superimposed onto the input image.
+ * @param res output image containing the input image with superimposition of the minimap.
+ * @throw runtime_error if the input image is too small.
  */
 void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res){
 
@@ -149,11 +150,12 @@ void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res
  * @brief do the clustering by using only color information on the input image.
  * It maps each pixel in the color space and then do clustering till the termination criteria is reached.
  * To initialize the centers it uses Kmeans++.
- * @param inputImage image to be clustered
+ * @param inputImage image to be clustered.
  * @param colors vector containing the different colors for the different clusters,
  * the size of the vector is the number of output clusters.
  * @param clusteredImage output image: original image clustered
- * @throw invalid_argument if the input image is empty or if the colors is empty.
+ * @throw invalid_argument if the input image is empty or if colors is empty
+ * 						   	or if inputImage has a number of channels different from 3.
  */
 void kMeansClustering(const Mat inputImage, const vector<Vec3b> &colors, Mat& clusteredImage){
 
@@ -161,6 +163,8 @@ void kMeansClustering(const Mat inputImage, const vector<Vec3b> &colors, Mat& cl
 		throw invalid_argument("Empty color vector");
 	if(inputImage.empty())
 		throw invalid_argument("Empty input image");
+	if(inputImage.channels() != 3)
+		throw invalid_argument("Invalid number of channels for the input image");
 
 	int clusterCount = colors.size();
     Mat samples, labels;
@@ -169,7 +173,6 @@ void kMeansClustering(const Mat inputImage, const vector<Vec3b> &colors, Mat& cl
     //     colors.push_back(Vec3b(rand()%255, rand()%255, rand()%255));
     samples = Mat(inputImage.total(), 3, CV_32F);
 	theRNG().state = 123456789;
-	//cout << theRNG().state << endl;
 
     int index = 0;
     for(int i = 0; i < inputImage.rows; i++){

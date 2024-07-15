@@ -19,18 +19,22 @@ using namespace std;
  * Create a mask using the most common color in the image central area, then evaluates the edge with the Canny
  * algorithm and then it uses Hough lines to detect the lines. To select the intersections, it computes them
  * and then merge the closest in order to have the four different corners.
- * @param frame image where there is a table to be detected.
+ * @param frame image where there is a table to be detected, BGR format requested.
  * @param corners output vector containing the 4 corners found.
  * @param colorRange output vector containing a range for the table colors.
  * @throw runtime_error if it does not find enough lines.
  * @throw runtime_error if it does not find enough interceptions.
  * @throw runtime_error if too many interceptions.
- * @throw invalid_argument if frame is empty.
+ * @throw invalid_argument if frame is empty or if frame has a number of channels different from 3.
  */
 void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
 
 	if(frame.empty())
 		throw invalid_argument("Empty image in input");
+
+	if(frame.channels() != 3)
+		throw invalid_argument("Invalid number of channels for the input image");
+
 
 	// const used during the function
 	const int DIM_STRUCTURING_ELEMENT = 4;
@@ -152,15 +156,18 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
  * @brief classify the ball inside the image passed as argument
  * It mask the image using a circle of the specified radius centered in the center of the image, it evaluates
  * the histogram and compute the two max values, using some conditions then it determines the class.
- * @param img image that contains only one ball centered in the center of the ball.
+ * @param img image that contains only one ball centered in the center of the ball, BGR format requested.
  * @param radius radius of the circle that correspond to the ball.
  * @return Category class of the ball.
- * @throw invalid_argument if img is empty or if the radius is <=0.
+ * @throw invalid_argument if img is empty or if the radius is <=0 or if frame has a number of channels different from 3.
  */
 Category classificationBall(const Mat& img, double radius){
 
 	if(img.empty())
 		throw invalid_argument("Empty image in input");
+
+	if(img.channels() != 3)
+		throw invalid_argument("Invalid number of channels for the input image");
 
 	if(radius <= 0)
 		throw invalid_argument("Radius negative or equal to zero");
@@ -174,13 +181,15 @@ Category classificationBall(const Mat& img, double radius){
 	const float THRESHOLD_STRIPED_MAX = 0.3;
 	const float THRESHOLD_DEV_STRIPED = 55;
 
+	// imshow("original", img);
+
 	Mat hist, gray, mask, hsv, argmax, argmax2;
+	Point2f center;
 
 
 	mask = Mat::zeros(img.size(), CV_8U);
-	// imshow("original", img);
 	cvtColor(img, gray, COLOR_BGR2GRAY);
-	Point2f center = Point(img.cols/2, img.rows/2);
+	center = Point(img.cols/2, img.rows/2);
 	circle(mask, center, radius, 255, -1);
 	// imshow("mask", mask);
 
@@ -234,7 +243,6 @@ Category classificationBall(const Mat& img, double radius){
 			return STRIPED_BALL;
 
 	return SOLID_BALL;
-
 }
 
 /**
@@ -242,15 +250,18 @@ Category classificationBall(const Mat& img, double radius){
  * In order to do this it exploits the information in the class table. Uses a bilateral filter to remove
  * noise but maintain the edges. Cluster the image using kmeans, another bilateral filter and then hough circles.
  * To isolate the good circles exploit the information of the table.
- * @param frame image where there are the balls to be detected.
+ * @param frame image where there are the balls to be detected, BGR format requested.
  * @param table initialized object that contains the corner and the color.
  * @param balls output vector of the balls detected.
- * @throw invalid_argument if frame is empty.
+ * @throw invalid_argument if frame is empty or if frame has a number of channels different from 3.
  */
 void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls){
 
 	if(frame.empty())
 		throw invalid_argument("Empty image in input");
+
+	if(frame.channels() != 3)
+		throw invalid_argument("Invalid number of channels for the input image");
 
 	//table properties
 	const int NUMBER_CORNERS = 4;

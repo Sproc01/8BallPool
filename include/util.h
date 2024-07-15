@@ -21,7 +21,8 @@ cv::Vec2b mostFrequentHueColor(const cv::Mat &img);
  * @brief compute intersection of two lines if there is one.
  * @param line1 first line.
  * @param line2 second line.
- * @param intersection output point that corresponds to the intersection if there is one.
+ * @param intersection output point that corresponds to the intersection if there is one otherwise
+ * 						it contains Point(-1,-1).
  */
 void computeIntersection(const cv::Vec3f &line1, const cv::Vec3f &line2, cv::Point2f &intersection);
 
@@ -52,7 +53,8 @@ void createOutputImage(const cv::Mat& frame, const cv::Mat& minimap_with_balls, 
  * @param colors vector containing the different colors for the different clusters,
  * the size of the vector is the number of output clusters.
  * @param clusteredImage output image: original image clustered.
- * @throw invalid_argument if the input image is empty or if the colors is empty.
+ * @throw invalid_argument if the input image is empty or if colors is empty
+ * 							or if inputImage has a number of channels different from 3.
  */
 void kMeansClustering(const cv::Mat inputImage, const std::vector<cv::Vec3b> &colors, cv::Mat& clusteredImage);
 

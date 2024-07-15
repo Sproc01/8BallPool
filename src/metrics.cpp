@@ -152,12 +152,7 @@ double APCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect
 
 	vector<double> precisionVec(tp.size());
 	for (int i = 0; i<tp.size(); i++){
-		if (cumTP[i] + cumFP[i] == 0){
-			precisionVec[i] = 0;
-		}
-		else{
-			precisionVec[i] = cumTP[i] / (cumTP[i] + cumFP[i]);
-		}
+		precisionVec[i] = (cumTP[i] + cumFP[i] != 0) ? cumTP[i] / (cumTP[i] + cumFP[i]) : 0;
 	}
 
 
@@ -258,19 +253,13 @@ double mIoUSegmentation(const Mat &segmentedImage, const string& groundTruthMask
 double IoU(const Rect &rect1, const Rect &rect2){
 	Rect i = rect1 & rect2;
 	Rect u = rect1 | rect2;
-	if (u.area() == 0 && i.area() == 0){
-		return 1;
-	}
-	return static_cast<double>(i.area()) / static_cast<double>(u.area());
+	return (u.area() != 0) ? static_cast<double>(i.area()) / static_cast<double>(u.area()) : 1.0;
 }
 
 double IoU(const Mat &mask1, const Mat &mask2){
 	Mat i = mask1 & mask2;
 	Mat u = mask1 | mask2;
-	if (countNonZero(u) == 0 && countNonZero(i) == 0){
-		return 1;
-	}
-	return static_cast<double>(countNonZero(i)) / static_cast<double>(countNonZero(u));
+	return (countNonZero(u) != 0) ? static_cast<double>(countNonZero(i)) / static_cast<double>(countNonZero(u)) : 1.0;
 }
 
 

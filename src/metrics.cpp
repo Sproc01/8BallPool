@@ -44,6 +44,8 @@ void compareMetrics(Table &table, Mat &segmentedImage, const string &folderPath,
 	cout << "mIoU: " << mIoU << endl;
 	double mAP = mAPDetection(table.ballsPtr(), groundTruthBboxPath.string(), MAP_IOU_THRESHOLD);
 	cout << "mAP: " << mAP << endl;
+	// if(mAP < 0.5)
+	// 	waitKey(0);
 }
 
 
@@ -259,9 +261,6 @@ double IoU(const Rect &rect1, const Rect &rect2){
 	if (u.area() == 0 && i.area() == 0){
 		return 1;
 	}
-	else if(u.area() == 0 && i.area() != 0){
-		return 0;
-	}
 	return static_cast<double>(i.area()) / static_cast<double>(u.area());
 }
 
@@ -270,9 +269,6 @@ double IoU(const Mat &mask1, const Mat &mask2){
 	Mat u = mask1 | mask2;
 	if (countNonZero(u) == 0 && countNonZero(i) == 0){
 		return 1;
-	}
-	else if(countNonZero(u) == 0 && countNonZero(i) != 0){
-		return 0;
 	}
 	return static_cast<double>(countNonZero(i)) / static_cast<double>(countNonZero(u));
 }

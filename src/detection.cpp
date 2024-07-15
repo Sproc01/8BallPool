@@ -128,6 +128,11 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
 			return false;
 	});
 
+	// if(intersectionsGood.size() != 4)
+	// {
+	// 	imshow("Line", imgLine);
+	// 	waitKey(0);
+	// }
 	if(intersectionsGood.size() < 4) // 4 corners of the table
 		throw runtime_error("Not enough unique intersections found");
 	else if(intersectionsGood.size() > 4)
@@ -140,7 +145,7 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
 	for(size_t i = 0; i < 4; i++)
 		corners[i] = intersectionsGood[i];
 
-	//imshow("Line", imgLine);
+	imshow("Line", imgLine);
 }
 
 /**
@@ -161,15 +166,15 @@ Category classificationBall(const Mat& img, double radius){
 		throw invalid_argument("Radius negative or equal to zero");
 
 	// const to classify the ball
-	const int MEAN_WHITE_CHANNEL2 = 140;
-	const int MEAN_WHITE_CHANNEL3 = 150;
-	const int MEAN_BLACK_CHANNEL3 = 130;
+	const int MEAN_WHITE_CHANNEL2 = 100;
+	const int MEAN_WHITE_CHANNEL3 = 165;
+	const int MEAN_BLACK_CHANNEL3 = 115;
 	const int NUMBER_OF_BINS_WHITE = 3;
 	const int NUMBER_OF_BINS_BLACK = 2;
 	const float THRESHOLD_STRIPED_MAX = 0.3;
-	const float THRESHOLD_STRIPED_NPIXELS = 0.33;
+	const float THRESHOLD_DEV_STRIPED = 55;
 
-	Mat hist, gray, mask, grayT, hsv, argmax, argmax2;
+	Mat hist, gray, mask, hsv, argmax, argmax2;
 
 
 	mask = Mat::zeros(img.size(), CV_8U);
@@ -184,9 +189,6 @@ Category classificationBall(const Mat& img, double radius){
 			if(mask.at<uchar>(i,j) != 255)
 				gray.at<uchar>(i,j) = 0;
 
-
-	adaptiveThreshold(gray, grayT, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 3, 2);
-	// imshow("grayT", grayT);
 	// imshow("gray", gray);
 
 	int numberOfBackgroundPixels = 4 * pow(radius, 2) - CV_PI * pow(radius, 2);
@@ -211,30 +213,25 @@ Category classificationBall(const Mat& img, double radius){
 
 	vector<double> mean, stddev;
 	cvtColor(img, hsv, COLOR_BGR2HSV);
-	meanStdDev(hsv, mean, stddev);
+	meanStdDev(hsv, mean, stddev, mask);
 	// cout << val << endl;
 	// cout << argmax << endl;
 	// cout << val2 << endl;
 	// cout << argmax2 << endl;
 	// waitKey(0);
-	int count = 0;
-	int numberOfPixels = grayT.rows * grayT.cols;
-	for(int i = 0; i < grayT.rows; i++)
-		for(int j = 0; j < grayT.rows; j++)
-			if(grayT.at<uchar>(i,j) == 0)
-				count++;
 
-	if(argmax.at<int>(0) < NUMBER_OF_BINS_BLACK && mean[2] < MEAN_BLACK_CHANNEL3)
+	if(argmax.at<int>(0) < NUMBER_OF_BINS_BLACK
+		&& mean[2] < MEAN_BLACK_CHANNEL3)
 		return BLACK_BALL;
 
-	if(val2 > THRESHOLD_STRIPED_MAX * val
-		&& (argmax2.at<int>(0) >= NUMBER_OF_BINS_WHITE || argmax.at<int>(0) >= NUMBER_OF_BINS_WHITE))
-			if (count > THRESHOLD_STRIPED_NPIXELS * numberOfPixels)
-				return STRIPED_BALL;
-
-	if((argmax.at<int>(0) >= NUMBER_OF_BINS_WHITE)
-		 && mean[1] < MEAN_WHITE_CHANNEL2 && mean[2] > MEAN_WHITE_CHANNEL3)
+	if((argmax.at<int>(0) > NUMBER_OF_BINS_WHITE)
+		 && mean[1] < MEAN_WHITE_CHANNEL2
+		 && mean[2] > MEAN_WHITE_CHANNEL3)
 		return WHITE_BALL;
+
+	if(val2 > THRESHOLD_STRIPED_MAX * val
+		&& stddev[1] > THRESHOLD_DEV_STRIPED)
+			return STRIPED_BALL;
 
 	return SOLID_BALL;
 
@@ -358,6 +355,17 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls){
 		}
 	}
 	meanRadius /= counter;
+	// sort(circles.begin(), circles.end(), [&HSVImg](Vec3f a, Vec3f b) -> bool {
+	// 	Mat subImg1 = HSVImg.colRange(a[0]-a[2], a[0]+a[2]).rowRange(a[1]-a[2], a[1]+a[2]);
+	// 	Mat subImg2 = HSVImg.colRange(b[0]-b[2], b[0]+b[2]).rowRange(b[1]-b[2], b[1]+b[2]);
+	// 	vector<double> mean1;
+	// 	vector<double> mean2;
+	// 	mean(subImg1, mean1);
+	// 	mean(subImg2, mean2);
+	// 	return mean1[1] > mean2[1];
+	// });
+
+	//int countWhite = 0;
 	for(size_t i = 0; i < circles.size(); i++ ){
 
 		ballFound = true;
@@ -376,12 +384,12 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls){
 			subImg = frame.colRange(c[0]-radius, c[0]+radius).rowRange(c[1]-radius, c[1]+radius);
 			rect = Rect(center.x-c[2], center.y-c[2], 2*c[2], 2*c[2]);
 			category = classificationBall(subImg, radius);
-
 			switch(category){
 
 				case WHITE_BALL:
 						circle(frameCircle, center, radius, WHITE_BGR_COLOR, 1, LINE_AA);
 						rectangle(frameRect, rect, WHITE_BGR_COLOR, 1, LINE_AA);
+						//countWhite++;
 					break;
 				case BLACK_BALL:
 						circle(frameCircle, center, radius, BLACK_BGR_COLOR, 1, LINE_AA);

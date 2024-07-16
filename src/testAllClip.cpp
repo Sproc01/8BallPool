@@ -14,9 +14,11 @@
 using namespace std;
 using namespace cv;
 
-/* simple main to test the detection of the table and the detection of the balls in all the first and last clip
+/* simple main to test in all videos the detection of the table in all the first frames
+ and the detection of the balls in all the first and last frames
  and compute the performance */
 int main(int argc, char* argv[]){
+	
 	Mat frame;
 	Vec2b colorTable;
 	Table table;

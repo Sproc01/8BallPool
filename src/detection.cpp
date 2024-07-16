@@ -53,7 +53,7 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
 	vector<Point2f> intersections;
 	vector<Vec3f> coefficients;
 
-	// get the color range
+	// get the color range for the table
 	colorRange = mostFrequentHueColor(frame.colRange(colsover4, 3*colsover4));
 
 	// mask the image
@@ -88,7 +88,7 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
 		equationFormula(pt1.x, pt1.y, pt2.x, pt2.y, aLine, bLine, cLine);
 		coefficients.push_back(Vec3f(aLine, bLine, cLine));
 	}
-	if(lines.size() < 4) // 4 lines needed to find 4 points
+	if(lines.size() < 4) // at least 4 lines needed to find 4 points
 		throw runtime_error("Not enough lines found");
 
 	// find intersections
@@ -117,8 +117,6 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
 	for(vector<Point2f>::iterator it = intersections.begin(); it != end2; it++)
 		intersectionsGood.push_back(*it);
 
-	//cout << intersectionsGood.size() << endl;
-
 	// clockwise order
 	sort(intersectionsGood.begin(), intersectionsGood.end(), [&center](Point a, Point b) -> bool {
 
@@ -137,7 +135,8 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
 	// 	imshow("Line", imgLine);
 	// 	waitKey(0);
 	// }
-	if(intersectionsGood.size() < 4) // 4 corners of the table
+	// exactly 4 corners of the table
+	if(intersectionsGood.size() < 4)
 		throw runtime_error("Not enough unique intersections found");
 	else if(intersectionsGood.size() > 4)
 		throw runtime_error("Too many unique intersections found"); // TODO decide
@@ -186,13 +185,12 @@ Category classificationBall(const Mat& img, double radius){
 	Mat hist, gray, mask, hsv, argmax, argmax2;
 	Point2f center;
 
-
+	// mask the image
 	mask = Mat::zeros(img.size(), CV_8U);
 	cvtColor(img, gray, COLOR_BGR2GRAY);
 	center = Point(img.cols/2, img.rows/2);
 	circle(mask, center, radius, 255, -1);
 	// imshow("mask", mask);
-
 	for(int i = 0; i < img.rows; i++)
 		for(int j = 0; j < img.cols; j++)
 			if(mask.at<uchar>(i,j) != 255)
@@ -200,15 +198,14 @@ Category classificationBall(const Mat& img, double radius){
 
 	// imshow("gray", gray);
 
+	// compute the histogram
 	int numberOfBackgroundPixels = 4 * pow(radius, 2) - CV_PI * pow(radius, 2);
-	//cout << numberOfBackgroundPixels << endl;
 	const int channel[] = {0};
 	int histSize = 10;
 	float range[] = {0, 255};
 	const float* histRange[] = {range};
 	calcHist(&gray, 1, channel, Mat(), hist, 1, &histSize, histRange, true, false);
 	hist.at<float>(0) -= numberOfBackgroundPixels;
-	// cout << hist << endl;
 
 	// first peak
 	reduceArgMax(hist, argmax, 0);
@@ -229,6 +226,7 @@ Category classificationBall(const Mat& img, double radius){
 	// cout << argmax2 << endl;
 	// waitKey(0);
 
+	// classification
 	if(argmax.at<int>(0) < NUMBER_OF_BINS_BLACK
 		&& mean[2] < MEAN_BLACK_CHANNEL3)
 		return BLACK_BALL;
@@ -278,10 +276,19 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls){
 	const int SIZE_BILATERAL = 3;
 	const int SIGMA_COLOR = 15;
 	const int SIGMA_SPACE = 70;
+
+
 	Scalar border_color = Scalar(0, 255, 255);
+		vector<Vec3b> colors = {
+		Vec3b(0, 0, 255),
+		Vec3b(0, 255, 0),
+		Vec3b(255, 0, 0),
+		Vec3b(255, 255, 0),
+		Vec3b(0, 255, 255),
+	}; // needed as input for the clustering
 
 	// variables
-	Mat gray, HSVImg, mask, smooth, kernel;
+	Mat gray, HSVImg, mask, smooth, kernelMorphological, resClustering, resClusteringSmooth;
 	Mat frameRect = frame.clone();
 	Mat frameCircle = frame.clone();
 	Mat poly = Mat::zeros(frame.size(), CV_8UC1);
@@ -290,26 +297,25 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls){
 	//creation of the mask
 	cvtColor(frame, HSVImg, COLOR_BGR2HSV);
 	// imshow("HSV", HSVImg);
-
 	inRange(HSVImg, Scalar(colorTable[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
 			Scalar(colorTable[1], 255, 255), mask);
-	kernel = getStructuringElement(MORPH_ELLIPSE, Size(3, 3));
-	morphologyEx(mask, mask, MORPH_DILATE, kernel, Point(-1,-1), 1);
+	kernelMorphological = getStructuringElement(MORPH_ELLIPSE, Size(3, 3));
+	morphologyEx(mask, mask, MORPH_DILATE, kernelMorphological, Point(-1,-1), 1);
 	imshow("mask dilate", mask);
 
 	// smoothing
 	bilateralFilter(frame, smooth, SIZE_BILATERAL, SIGMA_COLOR, SIGMA_SPACE);
 	// imshow("smoothed", smooth);
 
-	//poly to isolate the table
+	// poly to isolate the table
 	vector<Point> tableCornersInt;
 	for(int i = 0; i < NUMBER_CORNERS; i++) // needed otherwise exception
 		tableCornersInt.push_back(Point(static_cast<int>(tableCorners[i].x), static_cast<int>(tableCorners[i].y)));
 	fillConvexPoly(poly, tableCornersInt, 255);
 	for(int i = 0; i < tableCornersInt.size(); i++)
 		circle(poly, tableCornersInt[i], 20, 0, FILLED, 8, 0);
-	kernel = getStructuringElement(MORPH_ELLIPSE, Size(5, 5));
-	morphologyEx(poly, poly, MORPH_ERODE, kernel, Point(-1,-1), 7);
+	kernelMorphological = getStructuringElement(MORPH_ELLIPSE, Size(5, 5));
+	morphologyEx(poly, poly, MORPH_ERODE, kernelMorphological, Point(-1,-1), 7);
 	imshow("Poly eroded", poly);
 
 	// mask the smooth image
@@ -319,15 +325,6 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls){
 				smooth.at<Vec3b>(i,j) = Vec3b(0, 0, 0);
 
 	// clustering
-	Mat resClustering;
-	Mat resClusteringSmooth;
-	vector<Vec3b> colors = {
-		Vec3b(0, 0, 255),
-		Vec3b(0, 255, 0),
-		Vec3b(255, 0, 0),
-		Vec3b(255, 255, 0),
-		Vec3b(0, 255, 255),
-	};
 	kMeansClustering(smooth, colors, resClustering);
 	cvtColor(resClustering, gray, COLOR_BGR2GRAY);
 	imshow("Kmeans gray", gray);
@@ -337,7 +334,8 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls){
 	HoughCircles(gray, circles, HOUGH_GRADIENT, INVERSE_ACCUMULATOR_RESOLUTION,
 					MIN_DISTANCE, HOUGH_PARAM1, HOUGH_PARAM2, MIN_RADIUS, MAX_RADIUS);
 
-	// circles classification
+
+	// compute the mean of good circles
 	Category category;
 	Point center;
 	int radius;
@@ -366,17 +364,7 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls){
 		}
 	}
 	meanRadius /= counter;
-	// sort(circles.begin(), circles.end(), [&HSVImg](Vec3f a, Vec3f b) -> bool {
-	// 	Mat subImg1 = HSVImg.colRange(a[0]-a[2], a[0]+a[2]).rowRange(a[1]-a[2], a[1]+a[2]);
-	// 	Mat subImg2 = HSVImg.colRange(b[0]-b[2], b[0]+b[2]).rowRange(b[1]-b[2], b[1]+b[2]);
-	// 	vector<double> mean1;
-	// 	vector<double> mean2;
-	// 	mean(subImg1, mean1);
-	// 	mean(subImg2, mean2);
-	// 	return mean1[1] > mean2[1];
-	// });
 
-	//int countWhite = 0;
 	for(size_t i = 0; i < circles.size(); i++ ){
 
 		ballFound = true;
@@ -400,7 +388,6 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls){
 				case WHITE_BALL:
 						circle(frameCircle, center, radius, WHITE_BGR_COLOR, 1, LINE_AA);
 						rectangle(frameRect, rect, WHITE_BGR_COLOR, 1, LINE_AA);
-						//countWhite++;
 					break;
 				case BLACK_BALL:
 						circle(frameCircle, center, radius, BLACK_BGR_COLOR, 1, LINE_AA);

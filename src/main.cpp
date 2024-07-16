@@ -4,8 +4,9 @@
 #include <opencv2/videoio.hpp>
 #include <iostream>
 #include <filesystem>
-//#include "../img/minimap.h"
+#include <chrono>
 
+//#include "../img/minimap.h"
 #include "ball.h"
 #include "table.h"
 #include "detection.h"
@@ -16,11 +17,9 @@
 #include "metrics.h"
 #include "util.h"
 
-#include <chrono>
-using namespace std::chrono;
-
 using namespace std;
 using namespace cv;
+using namespace chrono;
 
 /* 	Given a video it detects table and balls in the first frame and track the balls over different frame.
 	Using this information then it creates the output video with a minimap superimposed and then detect the balls
@@ -55,7 +54,7 @@ int main(int argc, char* argv[]){
 
 	//START THE VIDEO
 	VideoCapture vid = VideoCapture(videoPath.string());
-	// TODO work on first frame
+	// work on first frame
 	if (!vid.isOpened() || !vid.read(frame)){
 		cout << "Error opening video file" << endl;
 		return -1;

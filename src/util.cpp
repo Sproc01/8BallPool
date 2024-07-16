@@ -140,7 +140,7 @@ void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res
 	for(int i = 0; i < resized.rows; i++)
 		for(int j = 0; j < resized.cols; j++){
 
-			if(i+offset > res.rows)
+			if(i+offset > res.rows) //to prevent errors but the const are specified for the dataset
 				throw runtime_error("Offset too big for the specified input image");
 			res.at<Vec3b>(i+offset,j) = resized.at<Vec3b>(i,j);
 		}
@@ -169,10 +169,8 @@ void kMeansClustering(const Mat inputImage, const vector<Vec3b> &colors, Mat& cl
 	int clusterCount = colors.size();
     Mat samples, labels;
 	int attempts = 10;
-	// for(int i = 0; i < clusterCount; i++)
-    //     colors.push_back(Vec3b(rand()%255, rand()%255, rand()%255));
     samples = Mat(inputImage.total(), 3, CV_32F);
-	theRNG().state = 123456789;
+	theRNG().state = 123456789; //fixed random state to have centers used to tune the rest of the program
 
     int index = 0;
     for(int i = 0; i < inputImage.rows; i++){

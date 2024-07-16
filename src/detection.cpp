@@ -99,7 +99,8 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
 
 			computeIntersection(coefficients[i], coefficients[j], intersection);
 			// if valid it is maintened
-			if (intersection.x >= 0 && intersection.x < frame.cols && intersection.y >= 0 && intersection.y < frame.rows)
+			if (intersection.x >= 0 && intersection.x < frame.cols
+					&& intersection.y >= 0 && intersection.y < frame.rows)
 				intersections.push_back(intersection);
 		}
 	}
@@ -276,6 +277,7 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls){
 	const int SIZE_BILATERAL = 3;
 	const int SIGMA_COLOR = 15;
 	const int SIGMA_SPACE = 70;
+	const float RANGE_RADIUS = 0.3;
 
 
 	Scalar border_color = Scalar(0, 255, 255);
@@ -372,7 +374,7 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls){
 	 	center = Point(c[0], c[1]);
 	 	radius = c[2];
 		// inside the table and with a color different from the table color, not too big and not too small
-		if(radius > 0.6 * meanRadius && radius < 1.4 * meanRadius
+		if(radius > (1 - RANGE_RADIUS) * meanRadius && radius <  (1 + RANGE_RADIUS) * meanRadius
 			&& poly.at<uchar>(center.y, center.x) == 255
 	 		&& poly.at<uchar>(center.y+radius, center.x) == 255
 			&& poly.at<uchar>(center.y-radius, center.x) == 255

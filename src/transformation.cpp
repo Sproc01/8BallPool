@@ -69,21 +69,25 @@ Mat drawMinimap(Mat &minimap_with_track, Mat transform, vector<Ball> balls) {
     vector<Point2f> map_prec_balls_pos;
     perspectiveTransform(img_prec_balls_pos, map_prec_balls_pos, transform);
 
-    //TODO: check if you want to draw someway to an outside point
+    Vec<Point2f, 4> map_corners = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
+
     //draw tracking lines
     for(int i = 0; i < balls.size(); i++) {
         //check if a precedent ball exists, otherwise do not draw a line
         if(img_prec_balls_pos[i].x != -1 && img_prec_balls_pos[i].y != -1) {
-            line(minimap_with_track, map_prec_balls_pos[i], map_balls_pos[i], Vec3d(0, 0, 0), 2);
+            if(pointPolygonTest	(map_corners, map_balls_pos[i], false) >= 0
+                && pointPolygonTest	(map_corners, map_prec_balls_pos[i], false) >= 0)
+                line(minimap_with_track, map_prec_balls_pos[i], map_balls_pos[i], Vec3d(0, 0, 0), 2);
         }
     }
 
     //draw balls in the returned minimap
     Mat minimap_with_balls = minimap_with_track.clone();
     for(int i = 0; i < balls.size(); i++) {
-        circle(minimap_with_balls, map_balls_pos[i], MAP_BALL_RADIUS, ball_colors[i], -1);
-        circle(minimap_with_balls, map_balls_pos[i], MAP_BALL_RADIUS, Vec3d(0, 0, 0), 2);
+        if(pointPolygonTest	(map_corners, map_balls_pos[i], false) >= 0) {
+            circle(minimap_with_balls, map_balls_pos[i], MAP_BALL_RADIUS, ball_colors[i], -1);
+            circle(minimap_with_balls, map_balls_pos[i], MAP_BALL_RADIUS, Vec3d(0, 0, 0), 2);
+        }
     }
-
 	return minimap_with_balls;
 }

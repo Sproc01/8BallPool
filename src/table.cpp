@@ -17,20 +17,18 @@ Vec<Point2f, 4> Table::getBoundaries() const {
 }
 
 Vec2b Table::getColor() const {
-	if (colorRange_ == Vec2b(0, 0))   // black(0,0,0) = uninitialized
+	if (colorRange_ == Vec2b(0, 0))   // black for both boundaries = uninitialized
 		throw std::runtime_error("color is uninitialized");
 
 	return colorRange_;
 }
 
-bool Table::getTransform(Mat &transformMatrix) const {
+Mat Table::getTransform() const {
 	if (!norm(transform_, Mat::eye(3, 3, CV_64F), NORM_L1))
-		return false;
-//		throw std::runtime_error("transform is uninitialized");
+		// return false;
+		throw std::runtime_error("transform is uninitialized");
 
-	transformMatrix = transform_;
-
-	return true;
+	return transform_;
 }
 
 /*

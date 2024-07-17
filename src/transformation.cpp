@@ -74,6 +74,7 @@ Mat drawMinimap(Mat &minimap_with_track, Mat transform, vector<Ball> balls) {
     //draw tracking lines
     for(int i = 0; i < balls.size(); i++) {
         //check if a precedent ball exists, otherwise do not draw a line
+        // TODO set visible to false if the ball is not visible; balls must not be copied!!!
         if(img_prec_balls_pos[i].x != -1 && img_prec_balls_pos[i].y != -1) {
             if(pointPolygonTest	(map_corners, map_balls_pos[i], false) >= 0
                 && pointPolygonTest	(map_corners, map_prec_balls_pos[i], false) >= 0)

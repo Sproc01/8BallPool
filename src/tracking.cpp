@@ -35,7 +35,7 @@ Rect BallTracker::trackOne(unsigned short ballIndex, const Mat &frame, bool call
 	ballsVec_->at(ballIndex).setBbox_prec(bbox);
 
 	bool isBboxUpdated = false;
-
+	// TODO check if ball is visible
 	if (callInit) {
 		enlargeRect(bbox, 10);  // enlarge bbox to enhance tracking performance
 		ballTrackers_[ballIndex]->init(frame, bbox);

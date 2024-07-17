@@ -27,7 +27,7 @@ public:
 
 	cv::Vec<cv::Point2f, 4> getBoundaries() const;
 	cv::Vec2b getColor() const;
-	bool getTransform(cv::Mat &transformMatrix) const;
+	cv::Mat getTransform() const;
 	cv::Ptr<std::vector<Ball>> ballsPtr();
 
 	void setBoundaries(const cv::Vec<cv::Point2f, 4> &boundaries);

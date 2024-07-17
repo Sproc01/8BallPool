@@ -39,6 +39,7 @@ int main(int argc, char* argv[]){
 	Mat res;
 
 	//INPUT
+	// TODO rotate image if vertical; resize to be inscribed in current sizes, centered in the Mat; use this to calculate minimap; write to video file the original unrotated, unscaled image with the calculated image superimposed
 	if (argc == 2){
 		videoPath = filesystem::path(argv[1]);
 	}
@@ -98,8 +99,7 @@ int main(int argc, char* argv[]){
 	// Mat minimap = imread(MINIMAP_PATH);
 	// imshow("minimap", minimap);
 
-	Mat transform;
-	table.getTransform(transform); //TODO: getTranform(transform)?
+	Mat transform =  table.getTransform(); //TODO: change and return value (check if working)
 	minimap_with_balls = drawMinimap(minimap_with_track, transform, *table.ballsPtr());
 	//imshow("Minimap with balls", minimap_with_balls);
 	createOutputImage(frame, minimap_with_balls, res);
@@ -146,7 +146,7 @@ int main(int argc, char* argv[]){
 	segmentBalls(segmented, table.ballsPtr(), segmented);
 	imshow("segmentedBalls", segmented);
 	cout << "Metrics last frame:" << endl;
-	compareMetrics(table, segmented, videoPath.parent_path(), LAST);
+	compareMetrics(table, segmented, videoPath.parent_path().string(), LAST);
 	waitKey(0);
 	return 0;
 

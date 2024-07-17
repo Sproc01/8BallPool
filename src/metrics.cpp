@@ -177,6 +177,7 @@ double mAPDetection(const Ptr<vector<Ball>> &detectedBalls, const string &ground
 
 	double mAP = 0;
 	for (Category cat=Category::WHITE_BALL; cat<=Category::STRIPED_BALL; cat=static_cast<Category>(cat+1)){
+		std::cout<<"here"<<std::endl;
 		mAP += APCategory(detectedBalls, groundTruthBboxes, cat, iouThreshold);
 	}
 

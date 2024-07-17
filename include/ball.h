@@ -12,6 +12,7 @@ class Ball {
 	cv::Rect bbox_;
 	Category category_;
 	cv::Rect bbox_prec_;
+	bool visible;	//TODO: add function to get/set if visible
 
 	public:
 		Ball(cv::Rect bbox, Category category, cv::Rect bbox_prec) : bbox_(bbox), category_(category),

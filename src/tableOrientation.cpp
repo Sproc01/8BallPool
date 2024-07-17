@@ -75,11 +75,11 @@ bool checkHorizontalTable(Mat table_img){
     //loghest edge table = 250 cm (about)
     //pool diameter = 15 cm (about)
     //pool/edge = 15/250 (about)
-    const int rect_width = (15.0/250.0)*table_img.cols;
-    const int rect_height = (15.0/250.0)*table_img.cols;
+    const int RECT_WIDTH = (15.0/250.0)*table_img.cols;
+    const int RECT_HEIGHT = (15.0/250.0)*table_img.cols;
 
     for(int i = 0; i < 4; i++) {
-        edges[i].center_rect = Rect(edges[i].center.x - rect_width/2, edges[i].center.y - rect_height/2, rect_width, rect_height);
+        edges[i].center_rect = Rect(edges[i].center.x - RECT_WIDTH/2, edges[i].center.y - RECT_HEIGHT/2, RECT_WIDTH, RECT_HEIGHT);
     }
 
     //print the rectangles on the pools
@@ -142,15 +142,4 @@ bool checkHorizontalTable(Mat table_img){
         else
             return false;
     }
-
-    //
-    /* old method
-    if(edges[0].background_percentile + edges[2].background_percentile <  edges[1].background_percentile + edges[3].background_percentile) {
-        //edges[0] and edges[2] contain pools
-        return true;
-    }
-    else {
-        return false;
-    }
-    */
 }

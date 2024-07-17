@@ -17,6 +17,7 @@ class Ball {
 		Ball(cv::Rect bbox, Category category, cv::Rect bbox_prec) : bbox_(bbox), category_(category),
 		                                                             bbox_prec_(bbox_prec) {
 		}
+		//TODO: bbox_prec_ empty? add function to check -1, -1?
 		Ball(cv::Rect bbox, Category category) : bbox_(bbox), category_(category), bbox_prec_(cv::Rect(-1, -1, 0, 0)) {
 		}
 

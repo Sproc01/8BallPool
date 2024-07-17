@@ -17,7 +17,7 @@ Mat imgTransformedCropped(const Mat &img, const Mat &transform) {
     //img transformed with perspective
     Mat img_transformed;
     warpPerspective(img, img_transformed, transform,
-        Size(967, 560)); //TODO: constants
+        Size(MINIMAP_IMG_WIDTH, MINIMAP_IMG_HEIGHT));
 
     //img transformed cropped
     Mat img_transformed_cropped = img_transformed.rowRange(map_corners[0].y, map_corners[3].y)

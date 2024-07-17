@@ -44,7 +44,7 @@ int main(int argc, char* argv[]){
 		videoPath = filesystem::path(argv[1]);
 	}
 	else if (argc == 1) { //TODO: remove at the end
-		videoPath = filesystem::path("../Dataset/game1_clip1/game1_clip1.mp4");
+		videoPath = filesystem::path("../Dataset/game3_clip2/game3_clip2.mp4");
 	}
 	else {
 		cout << "Error of number of parameters: insert one parameter" << endl;
@@ -83,7 +83,7 @@ int main(int argc, char* argv[]){
 	segmentBalls(segmented, balls, segmented);
 	// imshow("segmentedBalls", segmented);
 	cout << "Metrics first frame:" << endl;
-	compareMetrics(table, segmented, videoPath.parent_path(), FIRST);
+	//compareMetrics(table, segmented, videoPath.parent_path().string(), FIRST);
 
 
 	//TRANSFORMATION
@@ -150,7 +150,9 @@ int main(int argc, char* argv[]){
 	segmentBalls(segmented, balls, segmented);
 	imshow("segmentedBalls", segmented);
 	cout << "Metrics last frame:" << endl;
-	compareMetrics(table, segmented, videoPath.parent_path(), LAST);
+	//compareMetrics(table, segmented, videoPath.parent_path().string(), LAST);
 	waitKey(0);
 	return 0;
+
+	//TODO: remove videos added
 }

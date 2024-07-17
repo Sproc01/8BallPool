@@ -17,7 +17,6 @@ class Ball {
 		Ball(cv::Rect bbox, Category category, cv::Rect bbox_prec) : bbox_(bbox), category_(category),
 		                                                             bbox_prec_(bbox_prec) {
 		}
-		//TODO: bbox_prec = -1, -1 for first frame?
 		Ball(cv::Rect bbox, Category category) : bbox_(bbox), category_(category), bbox_prec_(cv::Rect(-1, -1, 0, 0)) {
 		}
 

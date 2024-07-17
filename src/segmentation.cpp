@@ -84,19 +84,18 @@ void segmentTable(const Mat &frame, const Table& table, Mat& segmented){
  * @param segmented output image where each category of the ball correspond to a different color
  * @throw invalid_argument if frame is empty or if balls is empty.
  */
-void segmentBalls(const Mat &frame, const vector<Ball> &balls, Mat& segmented){
+void segmentBalls(const Mat &frame, const Ptr<vector<Ball>> balls, Mat& segmented){
 
 	if(frame.empty())
 		throw invalid_argument("Empty image in input");
 
-	if(balls.size()==0)
+	if(balls->size()==0)
 		throw invalid_argument("Empty vector of balls");
 
 	float radius;
 	Point center;
-	//segmented = frame.clone();
 	Scalar c = Scalar(0, 0, 0);
-	for (const Ball &ball : balls){
+	for (const Ball &ball : *balls){
 
 		if(ball.getCategory() == Category::BLACK_BALL)
 			c = BLACK_BGR_COLOR;

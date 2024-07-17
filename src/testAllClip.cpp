@@ -18,11 +18,10 @@ using namespace cv;
  and the detection of the balls in all the first and last frames
  and compute the performance */
 int main(int argc, char* argv[]){
-	
+
 	Mat frame;
 	Vec2b colorTable;
 	Table table;
-	vector<Ball> balls;
 	Vec<Point2f, 4> tableCorners;
 	Mat segmented;
 	Mat previousFrame;
@@ -34,10 +33,7 @@ int main(int argc, char* argv[]){
 							"/game4_clip2"};
 
 	for(int i = 0; i < name.size(); i++){
-		// if(i!=8 && i!=9)
-		// 	continue;
 		segmented = Mat::zeros(frame.size(), CV_8UC3);
-		balls.clear();
 		VideoCapture vid = VideoCapture("../Dataset"+name[i]+name[i]+".mp4");
 		vid.read(frame);
 		detectTable(frame, tableCorners, colorTable);
@@ -45,10 +41,9 @@ int main(int argc, char* argv[]){
 		cout << "--------------" << endl;
 		cout << name[i] << endl;
 		cout << "------ First frame -------" << endl;
-		detectBalls(frame, table, balls);
-		table.addBalls(balls);
+		detectBalls(frame, table);
 		segmentTable(frame, table, segmented);
-		segmentBalls(frame, balls, segmented);
+		segmentBalls(frame, table.ballsPtr(), segmented);
 		//imshow("seg", segmented);
 		compareMetrics(table, segmented, "../Dataset"+name[i], FIRST);
 		waitKey(0);
@@ -60,12 +55,10 @@ int main(int argc, char* argv[]){
 			ret = vid.read(frame);
 		}
 		cout << "------ Last frame --------" << endl;
-		balls.clear();
 		table.clearBalls();
-		detectBalls(previousFrame, table, balls);
-		table.addBalls(balls);
+		detectBalls(previousFrame, table);
 		segmentTable(previousFrame, table, segmented);
-		segmentBalls(segmented, balls, segmented);
+		segmentBalls(segmented, table.ballsPtr(), segmented);
 		//imshow("seg", segmented);
 		compareMetrics(table, segmented, "../Dataset"+name[i], LAST);
 		waitKey(0);

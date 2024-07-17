@@ -20,21 +20,11 @@
 void detectTable(const cv::Mat &frame, cv::Vec<cv::Point2f, 4> &tableCorners, cv::Vec2b &colorTable);
 
 /**
- * @brief classify the ball inside the image passed as argument.
- * @param img image that contains only one ball centered in the center of the ball, BGR format requested.
- * @param radius radius of the circle that correspond to the ball.
- * @return Category class of the ball.
- * @throw invalid_argument if img is empty or if the radius is <=0 or if frame has a number of channels different from 3.
- */
-Category classificationBall(const cv::Mat& img, double radius);
-
-/**
  * @brief detect balls in an image given some information about the table.
  * @param frame image where there are the balls to be detected, BGR format requested.
- * @param table initialized object that contains the corner and the color.
- * @param balls output vector of the balls detected.
+ * @param table initialized object that contains the corner and the color, the balls are added in this function.
  * @throw invalid_argument if frame is empty or if frame has a number of channels different from 3.
  */
-void detectBalls(const cv::Mat &frame, const Table &table, std::vector<Ball> &balls);
+void detectBalls(const cv::Mat &frame, Table &table);
 
 #endif // DETECTION_H

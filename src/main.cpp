@@ -32,7 +32,6 @@ int main(int argc, char* argv[]){
 	Mat frame;
 	Vec2b colorTable;
 	Table table;
-	vector<Ball> balls;
 	Vec<Point2f, 4> tableCorners;
 	Mat segmented;
 	int frameCount = 0;
@@ -44,7 +43,7 @@ int main(int argc, char* argv[]){
 		videoPath = filesystem::path(argv[1]);
 	}
 	else if (argc == 1) { //TODO: remove at the end
-		videoPath = filesystem::path("../Dataset/game3_clip2/game3_clip2.mp4");
+		videoPath = filesystem::path("../Dataset/game1_clip1/game1_clip1.mp4");
 	}
 	else {
 		cout << "Error of number of parameters: insert one parameter" << endl;
@@ -77,13 +76,12 @@ int main(int argc, char* argv[]){
 	// imshow("segmentedTable", segmented);
 
 	//DETECT AND SEGMENT BALLS
-	detectBalls(frame, table, balls);
-	// TODO better manage using table.ballsPtr()
-	table.addBalls(balls);
-	segmentBalls(segmented, balls, segmented);
+	detectBalls(frame, table);
+
+	segmentBalls(segmented, table.ballsPtr(), segmented);
 	// imshow("segmentedBalls", segmented);
 	cout << "Metrics first frame:" << endl;
-	//compareMetrics(table, segmented, videoPath.parent_path().string(), FIRST);
+	compareMetrics(table, segmented, videoPath.parent_path(), FIRST);
 
 
 	//TRANSFORMATION
@@ -142,15 +140,13 @@ int main(int argc, char* argv[]){
 	vidOutput.release();
 
 	// work on last frame
-	balls.clear();
 	table.clearBalls();
-	detectBalls(previousFrame, table, balls);
-	table.addBalls(balls);
+	detectBalls(previousFrame, table);
 	segmentTable(previousFrame, table, segmented);
-	segmentBalls(segmented, balls, segmented);
+	segmentBalls(segmented, table.ballsPtr(), segmented);
 	imshow("segmentedBalls", segmented);
 	cout << "Metrics last frame:" << endl;
-	//compareMetrics(table, segmented, videoPath.parent_path().string(), LAST);
+	compareMetrics(table, segmented, videoPath.parent_path(), LAST);
 	waitKey(0);
 	return 0;
 

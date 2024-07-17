@@ -250,11 +250,10 @@ Category classificationBall(const Mat& img, double radius){
  * noise but maintain the edges. Cluster the image using kmeans, another bilateral filter and then hough circles.
  * To isolate the good circles exploit the information of the table.
  * @param frame image where there are the balls to be detected, BGR format requested.
- * @param table initialized object that contains the corner and the color.
- * @param balls output vector of the balls detected.
+ * @param table initialized object that contains the corner and the color, the balls are added in this function.
  * @throw invalid_argument if frame is empty or if frame has a number of channels different from 3.
  */
-void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls){
+void detectBalls(const Mat &frame, Table &table){
 
 	if(frame.empty())
 		throw invalid_argument("Empty image in input");
@@ -266,6 +265,7 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls){
 	const int NUMBER_CORNERS = 4;
 	Vec2b colorTable = table.getColor();
 	Vec<Point2f, NUMBER_CORNERS> tableCorners = table.getBoundaries();
+	Ptr<vector<Ball>> balls = table.ballsPtr();
 
 	// const used during the function
 	const int MIN_RADIUS = 6;
@@ -408,7 +408,7 @@ void detectBalls(const Mat &frame, const Table &table, vector<Ball> &balls){
 					break;
 			}
 			if(ballFound)
-				balls.push_back(Ball(rect, category));
+				balls->push_back(Ball(rect, category));
 		}
 		for(int i = 0; i < tableCornersInt.size()-1; i++)
 			line(frameRect, tableCornersInt[i], tableCornersInt[i+1], border_color, 2, LINE_AA);

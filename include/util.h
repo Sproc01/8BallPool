@@ -44,7 +44,7 @@ void equationFormula(float x1, float y1, float x2, float y2, float &a, float &b,
  * @param frame input image.
  * @param minimap_with_balls minimap that must be superimposed onto the input image.
  * @param res output image containing the input image with superimposition of the minimap.
- * @throw invalid_argument if frame or minimap_with_balls are empty.
+ * @throw invalid_argument if frame or minimap_with_balls are empty or if the two images have different number of channels.
  */
 void createOutputImage(const cv::Mat& frame, const cv::Mat& minimap_with_balls, cv::Mat& res);
 

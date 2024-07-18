@@ -20,12 +20,15 @@ using namespace std;
  * @param frame input image.
  * @param table initialized object containing information about the table in the input image.
  * @param segmented output image where the table is green.
- * @throw invalid_argument if frame is empty.
+ * @throw invalid_argument if frame is empty or if frame has less than 3 channels.
  */
 void segmentTable(const Mat &frame, const Table& table, Mat& segmented){
 
 	if(frame.empty())
 		throw invalid_argument("Empty image in input");
+
+	if(frame.channels() != 3)
+		throw invalid_argument("Invalid number of channels for the input image");
 
 	Mat polyImage = Mat::zeros(frame.size(), CV_8UC1);
 	vector<Point> tableCornersInt;
@@ -82,12 +85,18 @@ void segmentTable(const Mat &frame, const Table& table, Mat& segmented){
  * @param frame input image
  * @param balls vector of the balls in the image
  * @param segmented output image where each category of the ball correspond to a different color
- * @throw invalid_argument if frame is empty or if balls is empty.
+ * @throw invalid_argument if frame is empty, if frame has less than 3 channels, if balls is nullptr, if balls point to an empty vector.
  */
 void segmentBalls(const Mat &frame, const Ptr<vector<Ball>> balls, Mat& segmented){
 
+	if(balls == nullptr)
+		throw invalid_argument("Null pointer");
+
 	if(frame.empty())
 		throw invalid_argument("Empty image in input");
+
+	if(frame.channels() != 3)
+		throw invalid_argument("Invalid number of channels for the input image");
 
 	if(balls->size()==0)
 		throw invalid_argument("Empty vector of balls");

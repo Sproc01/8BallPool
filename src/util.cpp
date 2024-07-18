@@ -100,8 +100,15 @@ void computeIntersection(const Vec3f &line1, const Vec3f &line2, Point2f &inters
  * Convert the image to HSv representation and then evaluate the histogram for the first channel.
  * @param img input image in BGR format.
  * @return Vec2b the color interval corresponding to the most frequent Hue.
+ * @throw invalid_argument if img is empty or if img has less than 3 channels.
  */
 Vec2b mostFrequentHueColor(const Mat &img){
+
+	if(img.empty())
+		throw invalid_argument("Empty input image");
+
+	if(img.channels() != 3)
+		throw invalid_argument("Invalid number of channels for the input image");
 
 	Mat thisImg, hist;
 	Mat argmax;
@@ -127,23 +134,26 @@ Vec2b mostFrequentHueColor(const Mat &img){
  * @param frame input image.
  * @param minimap_with_balls minimap that must be superimposed onto the input image.
  * @param res output image containing the input image with superimposition of the minimap.
- * @throw runtime_error if the input image is too small.
+ * @throw invalid_argument if frame or minimap_with_balls are empty or if the two images have different number of channels.
  */
 void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res){
 
-	const int offset = 408;
-	const float scaling_factor = 0.3;
+	if(frame.empty() || minimap_with_balls.empty())
+		throw invalid_argument("Empty frame or minimap in input");
+
+	if(frame.channels() != minimap_with_balls.channels())
+		throw invalid_argument("Different number of channels between the images");
+
+	float scaling_factor = 0.3 * frame.cols / minimap_with_balls.cols;
+	float percentage = (frame.rows - scaling_factor * minimap_with_balls.rows) / frame.rows;
+	int offset = static_cast<int>(percentage * frame.rows);
 
 	Mat resized;
 	res = frame.clone();
 	resize(minimap_with_balls, resized, Size(), scaling_factor, scaling_factor, INTER_LINEAR);
 	for(int i = 0; i < resized.rows; i++)
-		for(int j = 0; j < resized.cols; j++){
-
-			if(i+offset > res.rows) //to prevent errors but the const are specified for the dataset
-				throw runtime_error("Offset too big for the specified input image");
+		for(int j = 0; j < resized.cols; j++)
 			res.at<Vec3b>(i+offset,j) = resized.at<Vec3b>(i,j);
-		}
 }
 
 /**

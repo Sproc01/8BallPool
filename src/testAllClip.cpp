@@ -32,9 +32,13 @@ int main(int argc, char* argv[]){
 							"/game3_clip1", "/game3_clip2", "/game4_clip1",
 							"/game4_clip2"};
 
+	// vector<string> nameOther = {"video1_768_580.mp4", "video1_1024_576.mp4", "video1_1726_1080.mp4",
+	//  							"video2_1024_576.mp4", "video2_1920_1080.mp4"};
+
 	for(int i = 0; i < name.size(); i++){
 		segmented = Mat::zeros(frame.size(), CV_8UC3);
 		VideoCapture vid = VideoCapture("../Dataset"+name[i]+name[i]+".mp4");
+		//VideoCapture vid = VideoCapture("../Dataset/other_videos_not_deliver/" + nameOther[i]);
 		vid.read(frame);
 		detectTable(frame, tableCorners, colorTable);
 		table = Table(tableCorners, colorTable);
@@ -46,7 +50,7 @@ int main(int argc, char* argv[]){
 		segmentBalls(frame, table.ballsPtr(), segmented);
 		//imshow("seg", segmented);
 		compareMetrics(table, segmented, "../Dataset"+name[i], FIRST);
-		waitKey(0);
+		//waitKey(0);
 		previousFrame = frame.clone();
 		ret = vid.read(frame);
 		while (vid.isOpened() && ret){

@@ -49,7 +49,7 @@ void compareMetrics(Table &table, Mat &segmentedImage, const string &folderPath,
 }
 
 
-double APCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect, Category>> &groundTruthBboxes, Category cat, float iouThreshold){
+double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect, Category>> &groundTruthBboxes, Category cat, float iouThreshold){
 	// Create a vector of bounding boxes only for the detected balls of the chosen category
 	vector<Rect> detectedBallsBboxesCat;
 	for (const Ball &ball : *detectedBalls){
@@ -73,33 +73,41 @@ double APCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect
 	if(detectedBallsBboxesCat.size() == 0 && groundTruthBboxesCat.size() != 0)
 		return 0; // if there are no balls with that category in detected but not in gt return 0
 
-	vector<double> IoUs(groundTruthBboxesCat.size(), 0);  // if 0, the ground truth ball has not been assigned to any detected ball
+	vector<bool> assignedGroundTruths(groundTruthBboxesCat.size(), false);
 
-	vector<unsigned short> tp(detectedBallsBboxesCat.size(), 0);
-	vector<unsigned short> fp(detectedBallsBboxesCat.size(), 0);
+	// IoUs, tp and fp vectors share the same indexing
+	vector<double> IoUs;  // if 0, the ground truth ball has not been assigned to any detected ball
+
+	vector<unsigned short> tp;
+	vector<unsigned short> fp;
 
 	// Couple each detected ball with the ground truth ball using the highest IoU
+	// cout<<detectedBallsBboxesCat.size()<<endl;
+	// cout<<groundTruthBboxesCat.size()<<endl;
 	for (int i = 0; i < detectedBallsBboxesCat.size(); i++){
 		double maxIoU = 0;
 		int maxIoUIndex = -1;
-		for (int j = 0; j < groundTruthBboxesCat.size(); j++){
+		for (int j = 0; j < groundTruthBboxesCat.size(); j++){	// if there are more ground truths than detected balls, the unassigned ones will be false negatives
 			double iou = IoU(detectedBallsBboxesCat[i], groundTruthBboxesCat[j]);
 			if (iou > maxIoU){
 				maxIoU = iou;
 				maxIoUIndex = j;
 			}
 		}
-		if (maxIoU > iouThreshold && IoUs[maxIoUIndex] <= 0){
-			tp[i] = 1;
-			IoUs[maxIoUIndex] = maxIoU;
+		if ((maxIoUIndex != -1 && !assignedGroundTruths[maxIoUIndex]) && maxIoU > iouThreshold){	// if there is a ground truth which is not already assigned and true positive
+			assignedGroundTruths[maxIoUIndex] = true;
+			tp.push_back(1);
+			fp.push_back(0);
 		}
 		else{
-			fp[i] = 1;
+			tp.push_back(0);
+			fp.push_back(1);
 		}
+		IoUs.push_back(maxIoU);
 	}
 
-	// TODO: check if sorting by IoU is correct
-	// Sort the detections by decreasing IoU
+	// TODO: check if sorting by IoU is reasonable
+	// Sort the detections by decreasing IoU using a index vector
 	vector<int> indices(IoUs.size());
 	for (int i = 0; i < IoUs.size(); i++){
 		indices[i] = i;
@@ -113,20 +121,22 @@ double APCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect
 	// cout << tp.size() << endl;
 	// cout << fp.size() << endl;
 	// cout << indices.size() << endl;
-	// segmentation fault because indices and tp not the same size because some IoU can be 0
+	// TODO REMOVE THIS LINE segmentation fault because indices and tp not the same size because some IoU can be 0
 	vector<unsigned short> tpSorted(tp.size());
 	for (int i = 0; i<indices.size(); i++){
-		if(IoUs[i] != 0)
-			tpSorted[i] = tp[indices[i]];
+		tpSorted[i] = tp[indices[i]];
 	}
 	tp = tpSorted;
+
 	vector<unsigned short> fpSorted(fp.size());
 	for (int i = 0; i<indices.size(); i++){
-		if(IoUs[i] != 0)
-			fpSorted[i] = fp[indices[i]];
+		fpSorted[i] = fp[indices[i]];
 	}
 	fp = fpSorted;
 	//sort(IoUs.begin(), IoUs.end(), greater<>()); // TODO necessary?
+
+	// cout<<tpSorted.size()<<endl;
+	// cout<<fpSorted.size()<<endl;
 
 //	double recall = sum(tp)[0] / groundTruthBboxesCat.size();
 //	double precision = sum(tp)[0] / (sum(tp)[0] + sum(fp)[0]);
@@ -145,14 +155,14 @@ double APCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect
 	}
 
 	// Compute the precision and recall for each detection
-	vector<double> recallVec(tp.size());
-	for (int i = 0; i < tp.size(); i++){
-		recallVec[i] = cumTP[i] / groundTruthBboxesCat.size();
-	}
-
 	vector<double> precisionVec(tp.size());
 	for (int i = 0; i<tp.size(); i++){
 		precisionVec[i] = (cumTP[i] + cumFP[i] != 0) ? cumTP[i] / (cumTP[i] + cumFP[i]) : 0;
+	}
+
+	vector<double> recallVec(tp.size());
+	for (int i = 0; i < tp.size(); i++){
+		recallVec[i] = (groundTruthBboxesCat.size() != 0) ? cumTP[i] / groundTruthBboxesCat.size() : 1;
 	}
 
 
@@ -160,7 +170,7 @@ double APCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect
 	double AP = 0;
 	for (int t = 0; t <= 10; t++){
 		double maxPrecision = 0;
-		for (int i = 0; i < tp.size(); i++){
+		for (int i = 0; i < tp.size(); i++){	// pick the maximum precision for each recall step
 			if (recallVec[i] >= static_cast<double>(t) / 10.0 && precisionVec[i] > maxPrecision){
 				maxPrecision = precisionVec[i];
 			}
@@ -177,8 +187,8 @@ double mAPDetection(const Ptr<vector<Ball>> &detectedBalls, const string &ground
 
 	double mAP = 0;
 	for (Category cat=Category::WHITE_BALL; cat<=Category::STRIPED_BALL; cat=static_cast<Category>(cat+1)){
-		std::cout<<"here"<<std::endl;
-		mAP += APCategory(detectedBalls, groundTruthBboxes, cat, iouThreshold);
+		//std::cout<<"here"<<std::endl;
+		mAP += APBallCategory(detectedBalls, groundTruthBboxes, cat, iouThreshold);
 	}
 
 	return mAP / static_cast<double>(Category::STRIPED_BALL - Category::WHITE_BALL + 1);

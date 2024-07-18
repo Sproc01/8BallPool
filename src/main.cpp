@@ -151,9 +151,9 @@ int main(int argc, char* argv[]){
 	cout << "Metrics last frame:" << endl;
 	compareMetrics(table, segmented, videoPath.parent_path().string(), LAST);
 	waitKey(0);
-	// TODO write to a temp file first, then rename to the final name
+	// write to a temp file first, then rename to the final name
 	filesystem::rename(tempOutputPath, outputPath);
+	// TODO: mac not necessary because does not remove anything, windows?
+	filesystem::remove(tempOutputPath); // remove temp file
 	return 0;
-
-	//TODO: remove videos added
 }

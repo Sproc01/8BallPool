@@ -12,7 +12,7 @@ class Ball {
 	cv::Rect bbox_;
 	Category category_;
 	cv::Rect bbox_prec_;
-	bool visible;	//TODO: add function to get/set if visible
+	bool visible_;
 
 	public:
 		Ball(cv::Rect bbox, Category category, cv::Rect bbox_prec) : bbox_(bbox), category_(category),
@@ -27,10 +27,12 @@ class Ball {
 		cv::Rect getBbox_prec() const;
 		cv::Point2f getBBoxCenter() const;
 		cv::Point2f getBboxCenter_prec() const;
+		bool getVisibility() const;
 
 		void setBbox(cv::Rect bbox);
 		void setCategory(Category category);
 		void setBbox_prec(cv::Rect bbox_prec);
+		void setVisibility(bool visible);
 };
 
 #endif // BALL_H

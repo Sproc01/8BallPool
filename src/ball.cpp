@@ -29,6 +29,18 @@ Rect Ball::getBbox_prec() const {
 	return bbox_prec_;
 }
 
+Point2f Ball::getBBoxCenter() const {
+	return Point(bbox_.x + bbox_.width / 2, bbox_.y + bbox_.height / 2);
+}
+
+Point2f Ball::getBboxCenter_prec() const {
+	return Point(bbox_prec_.x + bbox_prec_.width / 2, bbox_prec_.y + bbox_prec_.height / 2);
+}
+
+bool Ball::getVisibility() const {
+	return visible_;
+}
+
 void Ball::setBbox(Rect bbox) {
 	bbox_ = bbox;
 }
@@ -41,10 +53,6 @@ void Ball::setBbox_prec(Rect bbox_prec) {
 	bbox_prec_ = bbox_prec;
 }
 
-Point2f Ball::getBBoxCenter() const {
-	return Point(bbox_.x + bbox_.width / 2, bbox_.y + bbox_.height / 2);
-}
-
-Point2f Ball::getBboxCenter_prec() const {
-	return Point(bbox_prec_.x + bbox_prec_.width / 2, bbox_prec_.y + bbox_prec_.height / 2);
+void Ball::setVisibility(bool visible) {
+	visible_ = visible;
 }

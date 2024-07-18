@@ -75,19 +75,27 @@ Mat drawMinimap(Mat &minimap_with_track, Mat transform, vector<Ball> balls) {
     for(int i = 0; i < balls.size(); i++) {
         //check if a precedent ball exists, otherwise do not draw a line
         // TODO set visible to false if the ball is not visible; balls must not be copied!!!
-        if(img_prec_balls_pos[i].x != -1 && img_prec_balls_pos[i].y != -1) {
+        if(img_prec_balls_pos[i].x != -1 && img_prec_balls_pos[i].y != -1 && balls[i].getVisibility()) {
             if(pointPolygonTest	(map_corners, map_balls_pos[i], false) >= 0
-                && pointPolygonTest	(map_corners, map_prec_balls_pos[i], false) >= 0)
+                && pointPolygonTest	(map_corners, map_prec_balls_pos[i], false) >= 0) {
                 line(minimap_with_track, map_prec_balls_pos[i], map_balls_pos[i], Vec3d(0, 0, 0), 2);
+            }
+            else {
+                balls[i].setVisibility(false);
+            }
         }
     }
 
     //draw balls in the returned minimap
     Mat minimap_with_balls = minimap_with_track.clone();
     for(int i = 0; i < balls.size(); i++) {
-        if(pointPolygonTest	(map_corners, map_balls_pos[i], false) >= 0) {
-            circle(minimap_with_balls, map_balls_pos[i], MAP_BALL_RADIUS, ball_colors[i], -1);
-            circle(minimap_with_balls, map_balls_pos[i], MAP_BALL_RADIUS, Vec3d(0, 0, 0), 2);
+        if(balls[i].getVisibility()) {
+            if(pointPolygonTest	(map_corners, map_balls_pos[i], false) >= 0) {
+                circle(minimap_with_balls, map_balls_pos[i], MAP_BALL_RADIUS, ball_colors[i], -1);
+                circle(minimap_with_balls, map_balls_pos[i], MAP_BALL_RADIUS, Vec3d(0, 0, 0), 2);
+            }
+            else
+                balls[i].setVisibility(false);
         }
     }
 	return minimap_with_balls;

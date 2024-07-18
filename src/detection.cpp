@@ -313,8 +313,17 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
 	for(vector<Point2f>::iterator it = intersections.begin(); it != end2; it++)
 		intersectionsGood.push_back(*it);
 
+	// at least 4 corners of the table
+	if(intersectionsGood.size() < 4)
+		throw runtime_error("Not enough unique intersections found");
+
+	if(intersectionsGood.size() > 4) // if more take the 4 nearest the center
+		sort(intersectionsGood.begin(), intersectionsGood.end(), [&center](Point a, Point b) -> bool {
+			return norm(a - center) < norm(b - center);
+		});
+
 	// clockwise order
-	sort(intersectionsGood.begin(), intersectionsGood.end(), [&center](Point a, Point b) -> bool {
+	sort(intersectionsGood.begin(), intersectionsGood.begin()+4, [&center](Point a, Point b) -> bool {
 
 		if (a.x < center.x && b.x < center.x)
 			return a.y > b.y;
@@ -325,17 +334,6 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
 		else
 			return false;
 	});
-
-	// if(intersectionsGood.size() != 4)
-	// {
-	// 	imshow("Line", imgLine);
-	// 	waitKey(0);
-	// }
-	// exactly 4 corners of the table
-	if(intersectionsGood.size() < 4)
-		throw runtime_error("Not enough unique intersections found");
-	else if(intersectionsGood.size() > 4)
-		throw runtime_error("Too many unique intersections found"); // TODO decide
 
 	vector<Scalar> colors = {Scalar(255, 0, 0), Scalar(0, 255, 0), Scalar(0, 0, 255), Scalar(255, 255, 0)};
 	for(size_t i = 0; i < 4; i++)

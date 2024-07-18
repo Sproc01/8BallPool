@@ -33,7 +33,7 @@ int main(int argc, char* argv[]){
 							"/game4_clip2"};
 
 	// vector<string> nameOther = {"video1_768_580.mp4", "video1_1024_576.mp4", "video1_1726_1080.mp4",
-	// 							"video2_1024_576.mp4", "video2_1920_1080.mp4"};
+	//  							"video2_1024_576.mp4", "video2_1920_1080.mp4"};
 
 	for(int i = 0; i < name.size(); i++){
 		segmented = Mat::zeros(frame.size(), CV_8UC3);

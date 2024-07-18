@@ -138,8 +138,8 @@ void nonMaximaSuppressionWhiteBlack(const Mat &img, const Ptr<vector<Ball>> ball
 		else if((balls->at(i)).getCategory() == BLACK_BALL)
 			blackFound.push_back(i);
 	}
-	cout << "white" << whiteFound.size() << endl;
-	cout << "black" << blackFound.size() << endl;
+	// cout << "white: " << whiteFound.size() << endl;
+	// cout << "black: " << blackFound.size() << endl;
 
 	if(whiteFound.size() > 1){
 		sort(whiteFound.begin(), whiteFound.end(), [&balls, &img](int a, int b) -> bool {
@@ -164,12 +164,12 @@ void nonMaximaSuppressionWhiteBlack(const Mat &img, const Ptr<vector<Ball>> ball
 			meanStdDev(subImgB, meanB, stddevB, maskB);
 			return meanA[1] < meanB[1];
 		});
-		int c = 0;
+		//int c = 0;
 		for(int i = 1; i < whiteFound.size(); i++){
-			c++;
+			//c++;
 			(balls->at(whiteFound[i])).setCategory(STRIPED_BALL);
 		}
-		cout << "changed white: " << c << endl;
+		//cout << "changed white: " << c << endl;
 	}
 
 	if(blackFound.size() > 1){
@@ -199,13 +199,13 @@ void nonMaximaSuppressionWhiteBlack(const Mat &img, const Ptr<vector<Ball>> ball
 			// so we need an higher standard deviation in the third channle
 			return meanA[2] < meanB[2] && stddevA[2] > stddevB[2];
 		});
-		int c = 0;
+		//int c = 0;
 		for(int i = 1; i < blackFound.size(); i++)
 		{
-			c++;
+			//c++;
 			(balls->at(blackFound[i])).setCategory(SOLID_BALL);
 		}
-		cout << "changed black: " << c << endl;
+		//cout << "changed black: " << c << endl;
 	}
 }
 

@@ -82,8 +82,8 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
 	vector<unsigned short> fp;
 
 	// Couple each detected ball with the ground truth ball using the highest IoU
-	cout<<detectedBallsBboxesCat.size()<<endl;
-	cout<<groundTruthBboxesCat.size()<<endl;
+	// cout<<detectedBallsBboxesCat.size()<<endl;
+	// cout<<groundTruthBboxesCat.size()<<endl;
 	for (int i = 0; i < detectedBallsBboxesCat.size(); i++){
 		double maxIoU = 0;
 		int maxIoUIndex = -1;
@@ -118,9 +118,9 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
 	});
 
 	// sort tp and fp according to the sorted indices "in place"
-	cout << tp.size() << endl;
-	cout << fp.size() << endl;
-	cout << indices.size() << endl;
+	// cout << tp.size() << endl;
+	// cout << fp.size() << endl;
+	// cout << indices.size() << endl;
 	// TODO REMOVE THIS LINE segmentation fault because indices and tp not the same size because some IoU can be 0
 	vector<unsigned short> tpSorted(tp.size());
 	for (int i = 0; i<indices.size(); i++){
@@ -135,8 +135,8 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
 	fp = fpSorted;
 	//sort(IoUs.begin(), IoUs.end(), greater<>()); // TODO necessary?
 
-	cout<<tpSorted.size()<<endl;
-	cout<<fpSorted.size()<<endl;
+	// cout<<tpSorted.size()<<endl;
+	// cout<<fpSorted.size()<<endl;
 
 //	double recall = sum(tp)[0] / groundTruthBboxesCat.size();
 //	double precision = sum(tp)[0] / (sum(tp)[0] + sum(fp)[0]);
@@ -187,7 +187,7 @@ double mAPDetection(const Ptr<vector<Ball>> &detectedBalls, const string &ground
 
 	double mAP = 0;
 	for (Category cat=Category::WHITE_BALL; cat<=Category::STRIPED_BALL; cat=static_cast<Category>(cat+1)){
-		std::cout<<"here"<<std::endl;
+		//std::cout<<"here"<<std::endl;
 		mAP += APBallCategory(detectedBalls, groundTruthBboxes, cat, iouThreshold);
 	}
 

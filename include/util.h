@@ -14,6 +14,7 @@ void rotateCornersClockwise(cv::Vec<cv::Point2f, 4> &corners);
  * @brief calculate the most frequent value of Hue in the input image.
  * @param img input image in BGR format.
  * @return Vec2b the color interval corresponding to the most frequent Hue.
+ * @throw invalid_argument if img is empty.
  */
 cv::Vec2b mostFrequentHueColor(const cv::Mat &img);
 
@@ -43,7 +44,7 @@ void equationFormula(float x1, float y1, float x2, float y2, float &a, float &b,
  * @param frame input image.
  * @param minimap_with_balls minimap that must be superimposed onto the input image.
  * @param res output image containing the input image with superimposition of the minimap.
- * @throw runtime_error if the input image is too small.
+ * @throw invalid_argument if frame or minimap_with_balls are empty.
  */
 void createOutputImage(const cv::Mat& frame, const cv::Mat& minimap_with_balls, cv::Mat& res);
 

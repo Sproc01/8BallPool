@@ -82,7 +82,7 @@ int main(int argc, char* argv[]){
 	segmentBalls(segmented, table.ballsPtr(), segmented);
 	// imshow("segmentedBalls", segmented);
 	cout << "Metrics first frame:" << endl;
-	compareMetrics(table, segmented, videoPath.parent_path(), FIRST);
+	compareMetrics(table, segmented, videoPath.parent_path().string(), FIRST);
 
 
 	//TRANSFORMATION
@@ -150,5 +150,6 @@ int main(int argc, char* argv[]){
 	waitKey(0);
 	return 0;
 
+	// TODO write to a temp file first, then rename to the final name
 	//TODO: remove videos added
 }

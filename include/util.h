@@ -9,6 +9,7 @@
 cv::Point2f getCenter(const cv::Point2f &p1, const cv::Point2f &p2);
 cv::Vec3b getColorFromCategory(Category category);
 void rotateCornersClockwise(cv::Vec<cv::Point2f, 4> &corners);
+void radiusInterval(float &min_radius, float &max_radius, const cv::Vec<cv::Point2f, 4>  &img_corners);
 
 /**
  * @brief calculate the most frequent value of Hue in the input image.

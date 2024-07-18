@@ -49,6 +49,44 @@ void rotateCornersClockwise(Vec<Point2f, 4> &corners) {
 	}
 }
 
+void radiusInterval(float &min_radius, float &max_radius, const Vec<Point2f, 4>  &img_corners) {
+
+	float RADIUS_CM = 2.86;
+	float DIAGONAL_CM = 215;
+
+	float diag1_px = norm(img_corners[0] - img_corners[2]);
+	float diag2_px = norm(img_corners[1] - img_corners[3]);
+	float long_diag_px;
+	if (diag1_px > diag2_px)
+		long_diag_px = diag1_px;
+	else
+		long_diag_px = diag2_px;
+
+	float angle1 = atan2(img_corners[0].y - img_corners[1].y, img_corners[0].x - img_corners[1].x);
+	angle1 = angle1 >= 0 ? angle1 : abs(angle1) - CV_PI;
+	float angle2 = atan2(img_corners[1].y - img_corners[2].y, img_corners[1].x - img_corners[2].x);
+	angle2 = angle2 >= 0 ? angle2 : abs(abs(angle2) - CV_PI);
+	float min_angle = abs(angle1 - angle2);
+	if(min_angle > (CV_PI/2))
+		min_angle = CV_PI - min_angle;
+
+	float percentage_slope = 1 - (min_angle/(CV_PI/2));
+
+	//percentage_slope = 1 -> the camera is parallel to the table (ideally radius from 0 to infinite)
+	//percentage_slope = 0.5 -> the camera is 45° to the table (radius can change)
+	//percentage_slope = 0 -> the camera is perpendicular to the table (ideally radius always mean_radius)
+
+	float mean_radius = (RADIUS_CM/DIAGONAL_CM) * long_diag_px;
+	//mean_radius = mean_radius - (mean_radius/15)*(1 - percentage_slope);
+
+	const float PRECISION = 3;
+
+	min_radius = mean_radius - (mean_radius*percentage_slope) - PRECISION;
+	max_radius = mean_radius + (mean_radius*percentage_slope) + PRECISION;
+
+	cout << "RADIUS: min: " << min_radius << ", medium: " << mean_radius << ", max: " << max_radius << endl;
+}
+
 /**
  * @brief Gives the equation of the line passing through two points in the form  ax + by + c = 0.
  * @param x1 x-coordinate of the first point

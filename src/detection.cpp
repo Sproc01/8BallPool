@@ -342,7 +342,7 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
 	for(size_t i = 0; i < 4; i++)
 		corners[i] = intersectionsGood[i];
 
-	imshow("Line", imgLine);
+	//imshow("Line", imgLine);
 }
 
 /**
@@ -403,7 +403,7 @@ void detectBalls(const Mat &frame, Table &table){
 			Scalar(colorTable[1], 255, 255), mask);
 	kernelMorphological = getStructuringElement(MORPH_ELLIPSE, Size(2, 2));
 	morphologyEx(mask, mask, MORPH_DILATE, kernelMorphological);
-	imshow("mask dilate", mask);
+	//imshow("mask dilate", mask);
 
 	// smoothing
 	bilateralFilter(frame, smooth, SIZE_BILATERAL, SIGMA_COLOR, SIGMA_SPACE);
@@ -418,7 +418,7 @@ void detectBalls(const Mat &frame, Table &table){
 		circle(poly, tableCornersInt[i], 20, 0, FILLED, 8, 0);
 	kernelMorphological = getStructuringElement(MORPH_ELLIPSE, Size(5, 5));
 	morphologyEx(poly, poly, MORPH_ERODE, kernelMorphological, Point(-1,-1), 7);
-	imshow("Poly eroded", poly);
+	//imshow("Poly eroded", poly);
 
 	// mask the smooth image
 	for(int i = 0; i < poly.rows; i++)
@@ -429,9 +429,13 @@ void detectBalls(const Mat &frame, Table &table){
 	// clustering
 	kMeansClustering(smooth, colors, resClustering);
 	cvtColor(resClustering, gray, COLOR_BGR2GRAY);
-	imshow("Kmeans gray", gray);
-	imshow("Kmeans", resClustering);
+	//imshow("Kmeans gray", gray);
+	//imshow("Kmeans", resClustering);
 
+	/*
+	float min_radius, max_radius;
+	radiusInterval(min_temp, max_temp, tableCorners);
+	*/
 	// Hough transform
 	HoughCircles(gray, circles, HOUGH_GRADIENT, INVERSE_ACCUMULATOR_RESOLUTION,
 					MIN_DISTANCE, HOUGH_PARAM1, HOUGH_PARAM2, MIN_RADIUS, MAX_RADIUS);

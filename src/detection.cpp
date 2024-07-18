@@ -122,13 +122,13 @@ void nonMaximaSuppressionWhiteBlack(const Mat &img, const Ptr<vector<Ball>> ball
 {
 	if(img.empty())
 		throw invalid_argument("Empty input image");
-	if(img.channels != 3)
+	if(img.channels() != 3)
 		throw invalid_argument("Wrong number of channels");
 	if(balls == nullptr)
 		throw invalid_argument("Null pointer");
 	if(balls->size() == 0)
 		throw invalid_argument("Empty vector of balls");
-	
+
 	vector<int> whiteFound;
 	vector<int> blackFound;
 	for(int i = 0; i < balls->size(); i++){

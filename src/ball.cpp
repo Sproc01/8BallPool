@@ -3,7 +3,6 @@
 #include "ball.h"
 
 #include <stdexcept>
-#include <utility>
 #include <opencv2/opencv.hpp>
 
 using namespace cv;

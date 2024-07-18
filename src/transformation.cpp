@@ -5,13 +5,18 @@
 #include "minimapConstants.h"
 #include "tableOrientation.h"
 #include "util.h"
-#include "segmentation.h"
 
 using namespace cv;
 using namespace std;
 
 //compute the image transformed cropped
 Mat imgTransformedCropped(const Mat &img, const Mat &transform) {
+    if(img.empty())
+        throw invalid_argument("Empty image in input");
+
+    if(transform.empty())
+        throw invalid_argument("Empty transformation matrix in input");
+
     Vec<Point2f, 4> map_corners = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
 
     //img transformed with perspective
@@ -27,14 +32,18 @@ Mat imgTransformedCropped(const Mat &img, const Mat &transform) {
 }
 
 //compute the transformation matrix using perspective transform
-Mat computeTransformation(const Mat& img, const Mat& segmented, Vec<Point2f, 4>  &img_corners) {
+Mat computeTransformation(const Mat& img, Vec<Point2f, 4>  &img_corners) {
+    if(img.empty())
+        throw invalid_argument("Empty image in input");
+
+    //TODO: map corners as arguments?
     Vec<Point2f, 4> map_corners = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
 
     //compute perspective transform
     Mat transform = getPerspectiveTransform(img_corners, map_corners);
 
     //apply transformation considering corners such as top-left is the first one, followed by a long table side
-    Mat tableSegmentedTransformed = imgTransformedCropped(segmented, transform);
+    Mat tableSegmentedTransformed = imgTransformedCropped(img, transform);
     //imshow("Img transformed cropped", imgTransformed);
 
     //check if the transformation produces the table oriented correctly (in horizontal direction)
@@ -52,7 +61,16 @@ Mat computeTransformation(const Mat& img, const Mat& segmented, Vec<Point2f, 4> 
     return transform;
 }
 
-Mat drawMinimap(Mat &minimap_with_track, Mat transform, vector<Ball> balls) {
+Mat drawMinimap(Mat &minimap_with_track, const Mat &transform, vector<Ball> &balls) {
+    if(minimap_with_track.empty())
+        throw invalid_argument("Empty image in input");
+
+    if(transform.empty())
+        throw invalid_argument("Empty transformation matrix in input");
+
+    if(balls.empty() || balls.size() == 0) //TODO: if there are no balls the minimap is returned with nothing?
+        return minimap_with_track;
+
     //compute balls and prec balls positions in the image
     vector<Point2f> img_balls_pos (balls.size());
     vector<Point2f> img_prec_balls_pos (balls.size());
@@ -74,7 +92,6 @@ Mat drawMinimap(Mat &minimap_with_track, Mat transform, vector<Ball> balls) {
     //draw tracking lines
     for(int i = 0; i < balls.size(); i++) {
         //check if a precedent ball exists, otherwise do not draw a line
-        // TODO set visible to false if the ball is not visible; balls must not be copied!!!
         if(img_prec_balls_pos[i].x != -1 && img_prec_balls_pos[i].y != -1 && balls[i].getVisibility()) {
             if(pointPolygonTest	(map_corners, map_balls_pos[i], false) >= 0
                 && pointPolygonTest	(map_corners, map_prec_balls_pos[i], false) >= 0) {

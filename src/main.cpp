@@ -87,7 +87,7 @@ int main(int argc, char* argv[]){
 
 	//TRANSFORMATION
 	Vec<Point2f, 4>  img_corners = table.getBoundaries();
-	table.setTransform(computeTransformation(frame, segmented, img_corners));
+	table.setTransform(computeTransformation(segmented, img_corners));
 	table.setBoundaries(img_corners);
 
 	//MINIMAP

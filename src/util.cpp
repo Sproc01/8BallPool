@@ -7,7 +7,7 @@ using namespace std;
 using namespace cv;
 
 //return center between two points
-Point2f getCenter(Point2f p1, Point2f p2) {
+Point2f getCenter(const Point2f &p1, const Point2f &p2) {
     Point2f center;
     int dx_half = abs(p1.x - p2.x)/2;
     int dy_half = abs(p1.y - p2.y)/2;

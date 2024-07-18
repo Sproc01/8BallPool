@@ -8,7 +8,7 @@
 #include "ball.h"
 #include "table.h"
 
-cv::Mat drawMinimap(cv::Mat &minimap_with_track, cv::Mat transform, std::vector<Ball> balls);
-cv::Mat computeTransformation(const cv::Mat& img, const cv::Mat& segmented, cv::Vec<cv::Point2f, 4>  &img_corners);
+cv::Mat computeTransformation(const cv::Mat& img, cv::Vec<cv::Point2f, 4>  &img_corners);
+cv::Mat drawMinimap(cv::Mat &minimap_with_track, const cv::Mat &transform, std::vector<Ball> &balls);
 
 #endif //TRANSFORMATION_H

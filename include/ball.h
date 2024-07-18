@@ -4,8 +4,6 @@
 #define BALL_H
 
 #include <opencv2/core/types.hpp>
-#include <opencv2/core/matx.hpp>
-#include <opencv2/core/mat.hpp>
 #include "category.h"
 
 class Ball {
@@ -15,11 +13,12 @@ class Ball {
 	bool visible_;
 
 	public:
-		Ball(cv::Rect bbox, Category category, cv::Rect bbox_prec) : bbox_(bbox), category_(category),
-		                                                             bbox_prec_(bbox_prec) {
+		Ball(cv::Rect bbox, Category category, cv::Rect bbox_prec, bool visible = true) : bbox_(bbox), category_(category),
+		                                                             bbox_prec_(bbox_prec), visible_(visible) {
 		}
 		//TODO: bbox_prec_ empty? add function to check -1, -1?
-		Ball(cv::Rect bbox, Category category) : bbox_(bbox), category_(category), bbox_prec_(cv::Rect(-1, -1, 0, 0)) {
+		Ball(cv::Rect bbox, Category category, bool visible = true) : bbox_(bbox), category_(category),
+								bbox_prec_(cv::Rect(-1, -1, 0, 0)), visible_(visible) {
 		}
 
 		cv::Rect getBbox() const;

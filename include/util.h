@@ -6,7 +6,7 @@
 #include <opencv2/opencv.hpp>
 #include "category.h"
 
-cv::Point2f getCenter(cv::Point2f p1, cv::Point2f p2);
+cv::Point2f getCenter(const cv::Point2f &p1, const cv::Point2f &p2);
 cv::Vec3b getColorFromCategory(Category category);
 void rotateCornersClockwise(cv::Vec<cv::Point2f, 4> &corners);
 

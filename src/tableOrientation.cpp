@@ -20,11 +20,18 @@ struct Edge{
 //compare two edges by their percentile of background color
 bool compareByPercentile(const Edge &e1, const Edge &e2)
 {
+    //TODO: can be empty?
     return e1.background_percentile < e2.background_percentile;
 }
 
 //Return the percentile of pixels in the color_range within the rectangle in the image
-double computeTablePercentile(Mat &mask_img, Rect rect) {
+double computeTablePercentile(const Mat &mask_img, const Rect &rect) {
+    if(mask_img.empty())
+        throw invalid_argument("Empty image in input");
+
+    if(rect.empty())
+        throw invalid_argument("Empty rect in input");
+
     double count = 0;
     double count_tot = 0;
     for(int x = rect.x; x < rect.x + rect.width; x++) {
@@ -40,7 +47,8 @@ double computeTablePercentile(Mat &mask_img, Rect rect) {
     return count/count_tot;
 }
 
-bool oppositeEdges(Edge e1, Edge e2) {
+bool oppositeEdges(const Edge &e1, const Edge &e2) {
+    //TODO: can be empty?
     if((e1.corner1 == e2.corner2)||
         e1.corner2 == e2.corner1 ||
         e1.corner1 == e2.corner1 ||
@@ -49,7 +57,11 @@ bool oppositeEdges(Edge e1, Edge e2) {
     return true;
 }
 
-bool checkHorizontalTable(Mat table_img){
+bool checkHorizontalTable(const Mat &table_img){
+    if(table_img.empty())
+        throw invalid_argument("Empty image in input");
+
+    //TODO: corners as argument?
     Vec<Point2f, 4> corners =  {Point2f(0, 0),
                                 Point2f(table_img.cols, 0),
                                 Point2f(table_img.cols, table_img.rows),
@@ -75,6 +87,7 @@ bool checkHorizontalTable(Mat table_img){
     //loghest edge table = 250 cm (about)
     //pool diameter = 15 cm (about)
     //pool/edge = 15/250 (about)
+    //TODO: set table dimensions in const file to use it somewhere else
     const int RECT_WIDTH = (15.0/250.0)*table_img.cols;
     const int RECT_HEIGHT = (15.0/250.0)*table_img.cols;
 
@@ -88,7 +101,6 @@ bool checkHorizontalTable(Mat table_img){
         rectangle(img_pools_rectangles, edges[i].center_rect, Scalar(0, 0, 255), 1, LINE_AA);
     }
     //imshow("Rectangles on pools", img_pools_rectangles);
-    //waitKey(0);
 
     // mask the image
     Mat mask_img;
@@ -106,7 +118,6 @@ bool checkHorizontalTable(Mat table_img){
         rectangle(mask_img_rectangles, edges[i].center_rect, Scalar(0, 0, 255), 1, LINE_AA);
     }
     //imshow("Rectangles on pools (mask)", mask_img_rectangles);
-    //waitKey(0);
     */
 
     //compute the rects with and without the pools
@@ -120,7 +131,6 @@ bool checkHorizontalTable(Mat table_img){
     copy(edges.begin(), edges.end(), back_inserter(ordered_edges));
     sort(ordered_edges.begin(), ordered_edges.end(), compareByPercentile);
 
-    //waitKey(0);
     if(oppositeEdges(ordered_edges[0], ordered_edges[1])) {
         //the one with "more pool" are opposite edges -> they are the longest edges
         if(ordered_edges[0].center == edges[0].center || ordered_edges[1].center == edges[0].center)

@@ -28,7 +28,7 @@ int main(int argc, char* argv[]){
 
 	//VARIABLES
 	filesystem::path videoPath;
-	string pathOutput;
+	filesystem::path outputPath = "../Output";
 	Mat frame;
 	Vec2b colorTable;
 	Table table;
@@ -60,15 +60,18 @@ int main(int argc, char* argv[]){
 		return -1;
 	}
 	string videoName = videoPath.stem().string();
-	pathOutput = "../Output/" + videoName + "_output.mp4";
+	string outputVideoName = videoName + "_output.mp4";
+	outputPath = outputPath / outputVideoName;
 	++frameCount;
 	//TODO: check output in frame when the resolution is bigger (it is cropped)
 	//imshow("First frame", frame);
+	//TODO use minimap.h
+	filesystem::path tempOutputPath = filesystem::temp_directory_path() / outputVideoName;
 	int codec = VideoWriter::fourcc('m', 'p', '4', 'v');
 	VideoWriter vidOutput = VideoWriter();
 	double fps = vid.get(CAP_PROP_FPS);
 	//TODO: remove the video if some error occour, or if the execution is closed before end (it is corrupted)
-	vidOutput.open(pathOutput, codec, fps, frame.size(), true);
+	vidOutput.open(tempOutputPath.string(), codec, fps, frame.size(), true);
 
 	//DETECT AND SEGMENT TABLE
 	detectTable(frame, tableCorners, colorTable);
@@ -148,8 +151,9 @@ int main(int argc, char* argv[]){
 	cout << "Metrics last frame:" << endl;
 	compareMetrics(table, segmented, videoPath.parent_path().string(), LAST);
 	waitKey(0);
+	// TODO write to a temp file first, then rename to the final name
+	filesystem::rename(tempOutputPath, outputPath);
 	return 0;
 
-	// TODO write to a temp file first, then rename to the final name
 	//TODO: remove videos added
 }

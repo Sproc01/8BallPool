@@ -37,7 +37,7 @@ int main(int argc, char* argv[]){
 	//  							"video2_1024_576.mp4", "video2_1920_1080.mp4"};
 
 	for(int i = 0; i < name.size(); i++){
-		segmented = Mat::zeros(frame.size(), CV_8UC3);
+		
 		VideoCapture vid = VideoCapture("../Dataset"+name[i]+name[i]+".mp4");
 		//VideoCapture vid = VideoCapture("../Dataset/other_videos_not_deliver/" + nameOther[i]);
 		vid.read(frame);

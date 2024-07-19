@@ -9,6 +9,7 @@
 #include <utility>
 #include "table.h"
 #include "category.h"
+#include "ball.h"
 
 enum FrameN {
   FIRST = 0,
@@ -27,5 +28,8 @@ double mIoUSegmentation(const cv::Mat &segmentedImage, const std::string& ground
 
 double IoU(const cv::Rect &rect1, const cv::Rect &rect2);
 double IoU(const cv::Mat &mask1, const cv::Mat &mask2);
+
+double APBallCategory(const cv::Ptr<std::vector<Ball>> &detectedBalls, const std::vector<std::pair<cv::Rect, Category>> &groundTruthBboxes, Category cat, float iouThreshold);
+double mIoUCategory(const cv::Mat &segmentedImage, const cv::Mat &groundTruthMask, Category cat);
 
 #endif //METRICS_H

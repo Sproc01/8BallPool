@@ -17,21 +17,33 @@ struct Edge{
     double background_percentile;
 };
 
-//compare two edges by their percentile of background color
+/**
+ * @brief compare two edges by their percentile of background color.
+ * Compare two edges by their percentile of background in the center pool.
+ * @param e1 first edge to compare.
+ * @param e2 second edge to compare.
+ * @return true if e1 has less background color than e2, false otherwise.
+ */
 bool compareByPercentile(const Edge &e1, const Edge &e2)
 {
     //TODO: can be empty?
     return e1.background_percentile < e2.background_percentile;
 }
 
-//Return the percentile of pixels in the color_range within the rectangle in the image
-double computeTablePercentile(const Mat &mask_img, const Rect &rect) {
-    if(mask_img.empty())
+/**
+ * @brief compute the percentile of white pixels in the rectangle inside the mask image
+ * Count the number of pixels of the rect inside the image and the number of pixels which color is
+ * white in the mask (which correspond to the table)
+ * @param mask_img image with the table masked
+ * @param rect rectangle in which compute the percentile
+ * @return percentile of white pixels in the rect
+ */
+double computeTablePercentile(Mat &mask_img, Rect rect) {
+	if(mask_img.empty())
         throw invalid_argument("Empty image in input");
 
     if(rect.empty())
         throw invalid_argument("Empty rect in input");
-
     double count = 0;
     double count_tot = 0;
     for(int x = rect.x; x < rect.x + rect.width; x++) {
@@ -47,6 +59,13 @@ double computeTablePercentile(const Mat &mask_img, const Rect &rect) {
     return count/count_tot;
 }
 
+/**
+ * @brief check if two edges are opposite to each other.
+ * Check if two edges are opposite to each other by using the value of their corners
+ * @param e1 first edge.
+ * @param e2 second edge.
+ * @return true if e1 and e2 are opposite to each other, false otherwise
+ */
 bool oppositeEdges(const Edge &e1, const Edge &e2) {
     //TODO: can be empty?
     if((e1.corner1 == e2.corner2)||
@@ -57,8 +76,16 @@ bool oppositeEdges(const Edge &e1, const Edge &e2) {
     return true;
 }
 
-bool checkHorizontalTable(const Mat &table_img){
-    if(table_img.empty())
+/**
+ * @brief check if the table image (transformed and cropped) is correctly horizontal
+ * Compute the edges of the image and for each of them compute: the center, the rect around the center,
+ * the percentile of background in the rect. Verify which of the four centers are the pools of the longest
+ * table edges, using the background percentile.
+ * @param table_img image of the table transformed and cropped to the minimap dimension
+ * @return true if the image is horizontal, false otherwise
+ */
+bool checkHorizontalTable(Mat table_img){
+	if(table_img.empty())
         throw invalid_argument("Empty image in input");
 
     //TODO: corners as argument?

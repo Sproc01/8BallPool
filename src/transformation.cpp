@@ -9,8 +9,18 @@
 using namespace cv;
 using namespace std;
 
-//compute the image transformed cropped
+//TODO: error if img/transform empty?
+
+/**
+ * @brief compute the original image transformed and cropped to the table.
+ * Apply the transformation (warpPerspective) to the image in input and crop it in the minimap
+ * table coordinates.
+ * @param img original image to transform.
+ * @param transform transformation to apply to the image.
+ * @return image with the dimension of the minimap image transformed and cropped.
+ */
 Mat imgTransformedCropped(const Mat &img, const Mat &transform) {
+    //TODO: pass corners per parameter?
     if(img.empty())
         throw invalid_argument("Empty image in input");
 
@@ -31,6 +41,15 @@ Mat imgTransformedCropped(const Mat &img, const Mat &transform) {
     return img_transformed_cropped;
 }
 
+/**
+ * @brief compute the transformation matrix.
+ * Compute the transformation matrix using the corners of the table and the corners of the table
+ * in the minimap image. After the firts computation the correctness of the table orientation is
+ * checked, if it is not correct, the transformation is recomputed.
+ * @param segmented original image used to check the orientation of the table. //TODO: segmented?
+ * @param img_corners corners of the table in the original image.
+ * @return transformation matrix.
+ */
 //compute the transformation matrix using perspective transform
 Mat computeTransformation(const Mat& img, Vec<Point2f, 4>  &img_corners) {
     if(img.empty())
@@ -61,6 +80,16 @@ Mat computeTransformation(const Mat& img, Vec<Point2f, 4>  &img_corners) {
     return transform;
 }
 
+/**
+ * @brief draw the balls and their tracking on the minimap.
+ * Firs compute the current and previous positions of the balls using the transformation matrix.
+ * Draw the tracking lines in the image that will be reused in the next frames. Use a copy of the
+ * previous image to draw the balls with their correct colors.
+ * @param minimap_with_track minimap image in which the tracking lines are kept.
+ * @param transform transformation matrix.
+ * @param balls vector of balls containing the positions in the original image
+ * @return minimap image with tracking lines and balls.
+ */
 //TODO: const ptr?
 Mat drawMinimap(Mat &minimap_with_track, const Mat &transform, Ptr<vector<Ball>> balls) {
     if(minimap_with_track.empty())

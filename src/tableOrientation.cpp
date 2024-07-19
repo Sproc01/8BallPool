@@ -10,6 +10,8 @@
 using namespace cv;
 using namespace std;
 
+/* edge that contains the corners, its center, a rect centered in its center and the
+ * percentile of background in the rectangle*/
 struct Edge{
     Point2f corner1;
     Point2f corner2;
@@ -81,7 +83,7 @@ bool oppositeEdges(const Edge &e1, const Edge &e2) {
 }
 
 /**
- * @brief check if the table image (transformed and cropped) is correctly horizontal
+ * @brief check if the table image (transformed and cropped) is horizontal
  * Compute the edges of the image and for each of them compute: the center, the rect around the center,
  * the percentile of background in the rect. Verify which of the four centers are the pools of the longest
  * table edges, using the background percentile.

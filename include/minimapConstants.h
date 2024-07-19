@@ -15,9 +15,9 @@ const cv::Point2f TOP_LEFT_MAP_CORNER = cv::Point2f(65, 63);
 const cv::Point2f TOP_RIGHT_MAP_CORNER = cv::Point2f(901, 63);
 const cv::Point2f BOTTOM_RIGHT_MAP_CORNER = cv::Point2f(901, 496);
 const cv::Point2f BOTTOM_LEFT_MAP_CORNER = cv::Point2f(65, 496);
-
 const cv::Vec<cv::Point2f, 4> map_corners = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
 
+//information about the minimap image
 const int MINIMAP_IMG_WIDTH = 967;
 const int MINIMAP_IMG_HEIGHT = 560;
 

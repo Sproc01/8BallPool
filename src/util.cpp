@@ -6,7 +6,12 @@
 using namespace std;
 using namespace cv;
 
-//return center between two points
+/**
+ * @brief compute the center between two points.
+ * @param p1 first point.
+ * @param p2 second point.
+ * @return the point which is the center of p1 and p2.
+ */
 Point2f getCenter(const Point2f &p1, const Point2f &p2) {
     Point2f center;
     int dx_half = abs(p1.x - p2.x)/2;
@@ -19,7 +24,11 @@ Point2f getCenter(const Point2f &p1, const Point2f &p2) {
     return center;
 }
 
-//return the color of a specific category
+/**
+ * @brief compute the color of a specific category.
+ * @param category element of type Category.
+ * @return the color associated to the category in input.
+ */
 Vec3b getColorFromCategory(Category category) {
 	switch (category) {
 		case BLACK_BALL: return BLACK_BGR_COLOR; break;
@@ -34,7 +43,12 @@ Vec3b getColorFromCategory(Category category) {
 	}
 }
 
-//rotate the corners of the table clockwise
+/**
+ * @brief rotate the corners of the table clockwise.
+ * In each position i, the corner in position i+1 is stored. And in the last position the first corner is stored.
+ * In this way all the corners are rotated clockwise.
+ * @param corners vector of four corners.
+ */
 void rotateCornersClockwise(Vec<Point2f, 4> &corners) {
 	Vec<Point2f, 4> img_vertices_temp = corners;
 	for(int i = 0; i < 4; i++) {
@@ -49,6 +63,19 @@ void rotateCornersClockwise(Vec<Point2f, 4> &corners) {
 	}
 }
 
+/**
+ * @brief compute an interval min/max for the radius with respect to the distance and the perspecdtive of the table
+ * To compute the interval, first a mean value is computed by using a proportion between the diagonal of the table in
+ * pixel and the dimensions of the diagonal of the table and the balls in centimeters. Then, a percentage of slope
+ * between the camera direction and the table is computed, by using one of the angle that the detected table creates;
+ * this angle is compared with the PI/2 angle, and a value between 0 and 1 is computed. If the value is 1, then the
+ * camera is parallel to the table, if it is 0, then the camera is perpendicular to it. To compute the final interval, the
+ * minimum and the maximum value are computed by subtracting and incrementing a value, which increases with the percentage
+ * of slope (more the slope, more the variance), and a precision value is added due to some other variables in the images.
+ * @param min_radius parameter that will store the minimum radius.
+ * @param max_radius parameter that will store the maximum radius.
+ * @param img_corners corners of the table in the frame
+ */
 void radiusInterval(float &min_radius, float &max_radius, const Vec<Point2f, 4>  &img_corners) {
 	float diag1_px = norm(img_corners[0] - img_corners[2]);
 	float diag2_px = norm(img_corners[1] - img_corners[3]);

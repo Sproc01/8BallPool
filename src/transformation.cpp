@@ -20,14 +20,11 @@ using namespace std;
  * @throw invalid_argument if the transformation matrix in input is empty
  */
 Mat imgTransformedCropped(const Mat &img, const Mat &transform) {
-    //TODO: pass corners per parameter?
     if(img.empty())
         throw invalid_argument("Empty image in input");
 
     if(transform.empty())
         throw invalid_argument("Empty transformation matrix in input");
-
-    Vec<Point2f, 4> map_corners = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
 
     //img transformed with perspective
     Mat img_transformed;

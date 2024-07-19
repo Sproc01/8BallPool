@@ -433,7 +433,6 @@ void detectBalls(const Mat &frame, Table &table){
 	//imshow("Kmeans", resClustering);
 
 	/*
-	//TODO: try relative radius
 	float min_radius, max_radius;
 	radiusInterval(min_temp, max_temp, tableCorners);
 	*/

@@ -117,7 +117,6 @@ bool checkHorizontalTable(const Mat &table_img){
     }
 
     //compute the rects around the centers
-    //TODO: set table dimensions in const file to use it somewhere else
     const int RECT_WIDTH = (POOL_DIAMETER_CM/TABLE_LONGEST_EDGE_CM)*table_img.cols;
     const int RECT_HEIGHT = (POOL_DIAMETER_CM/TABLE_LONGEST_EDGE_CM)*table_img.cols;
 

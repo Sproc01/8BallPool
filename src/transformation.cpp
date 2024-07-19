@@ -61,24 +61,28 @@ Mat computeTransformation(const Mat& img, Vec<Point2f, 4>  &img_corners) {
     return transform;
 }
 
-Mat drawMinimap(Mat &minimap_with_track, const Mat &transform, vector<Ball> &balls) {
+//TODO: const ptr?
+Mat drawMinimap(Mat &minimap_with_track, const Mat &transform, Ptr<vector<Ball>> balls) {
     if(minimap_with_track.empty())
         throw invalid_argument("Empty image in input");
 
     if(transform.empty())
         throw invalid_argument("Empty transformation matrix in input");
 
-    if(balls.empty() || balls.size() == 0) //TODO: if there are no balls the minimap is returned with nothing?
+    if(balls == nullptr)
+        throw invalid_argument("Null pointer");
+
+    if(balls->size() == 0 || balls.empty()) //TODO: if there are no balls the minimap is returned with nothing?
         return minimap_with_track;
 
     //compute balls and prec balls positions in the image
-    vector<Point2f> img_balls_pos (balls.size());
-    vector<Point2f> img_prec_balls_pos (balls.size());
-    vector<Vec3b> ball_colors (balls.size());
-    for(int i = 0; i < balls.size(); i++) {
-        img_balls_pos[i] = balls[i].getBBoxCenter();
-        ball_colors[i] = getColorFromCategory(balls[i].getCategory());
-        img_prec_balls_pos[i] = balls[i].getBboxCenter_prec();
+    vector<Point2f> img_balls_pos (balls->size());
+    vector<Point2f> img_prec_balls_pos (balls->size());
+    vector<Vec3b> ball_colors (balls->size());
+    for(int i = 0; i < balls->size(); i++) {
+        img_balls_pos[i] = (balls->at(i)).getBBoxCenter();
+        ball_colors[i] = getColorFromCategory((balls->at(i)).getCategory());
+        img_prec_balls_pos[i] = (balls->at(i)).getBboxCenter_prec();
     }
 
     //compute balls and prec balls positions in the map
@@ -90,29 +94,29 @@ Mat drawMinimap(Mat &minimap_with_track, const Mat &transform, vector<Ball> &bal
     Vec<Point2f, 4> map_corners = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
 
     //draw tracking lines
-    for(int i = 0; i < balls.size(); i++) {
+    for(int i = 0; i < balls->size(); i++) {
         //check if a precedent ball exists, otherwise do not draw a line
-        if(img_prec_balls_pos[i].x != -1 && img_prec_balls_pos[i].y != -1 && balls[i].getVisibility()) {
+        if(img_prec_balls_pos[i].x != -1 && img_prec_balls_pos[i].y != -1 && (balls->at(i)).getVisibility()) {
             if(pointPolygonTest	(map_corners, map_balls_pos[i], false) >= 0
                 && pointPolygonTest	(map_corners, map_prec_balls_pos[i], false) >= 0) {
                 line(minimap_with_track, map_prec_balls_pos[i], map_balls_pos[i], Vec3d(0, 0, 0), 2);
             }
             else {
-                balls[i].setVisibility(false);
+                (balls->at(i)).setVisibility(false);
             }
         }
     }
 
     //draw balls in the returned minimap
     Mat minimap_with_balls = minimap_with_track.clone();
-    for(int i = 0; i < balls.size(); i++) {
-        if(balls[i].getVisibility()) {
+    for(int i = 0; i < balls->size(); i++) {
+        if((balls->at(i)).getVisibility()) {
             if(pointPolygonTest	(map_corners, map_balls_pos[i], false) >= 0) {
                 circle(minimap_with_balls, map_balls_pos[i], MAP_BALL_RADIUS, ball_colors[i], -1);
                 circle(minimap_with_balls, map_balls_pos[i], MAP_BALL_RADIUS, Vec3d(0, 0, 0), 2);
             }
             else
-                balls[i].setVisibility(false);
+                (balls->at(i)).setVisibility(false);
         }
     }
 	return minimap_with_balls;

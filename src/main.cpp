@@ -44,7 +44,7 @@ int main(int argc, char* argv[]){
 		videoPath = filesystem::path(argv[1]);
 	}
 	else if (argc == 1) { //TODO: remove at the end
-		videoPath = filesystem::path("../Dataset/game1_clip1/game1_clip1.mp4");
+		videoPath = filesystem::path("../Dataset/game2_clip1/game2_clip1.mp4");
 	}
 	else {
 		cout << "Error of number of parameters: insert one parameter" << endl;
@@ -77,13 +77,13 @@ int main(int argc, char* argv[]){
 	detectTable(frame, tableCorners, colorTable);
 	table = Table(tableCorners, colorTable);
 	segmentTable(frame, table, segmented);
-	// imshow("segmentedTable", segmented);
+	imshow("segmentedTable", segmented);
 
 	//DETECT AND SEGMENT BALLS
 	detectBalls(frame, table);
 
 	segmentBalls(segmented, table.ballsPtr(), segmented);
-	// imshow("segmentedBalls", segmented);
+	imshow("segmentedBalls", segmented);
 	cout << "Metrics first frame:" << endl;
 	compareMetrics(table, segmented, videoPath.parent_path().string(), FIRST);
 
@@ -103,7 +103,7 @@ int main(int argc, char* argv[]){
 	// imshow("minimap", minimap);
 
 	Mat transform =  table.getTransform(); //TODO: change and return value (check if working)
-	minimap_with_balls = drawMinimap(minimap_with_track, transform, *table.ballsPtr());
+	minimap_with_balls = drawMinimap(minimap_with_track, transform, table.ballsPtr());
 	//imshow("Minimap with balls", minimap_with_balls);
 	createOutputImage(frame, minimap_with_balls, res);
 	//imshow("result", res);
@@ -121,7 +121,7 @@ int main(int argc, char* argv[]){
 
  		//VIDEO WITH MINIMAP
 		tracker.trackAll(frame);
-		minimap_with_balls = drawMinimap(minimap_with_track, transform, *table.ballsPtr());
+		minimap_with_balls = drawMinimap(minimap_with_track, transform, table.ballsPtr());
 		createOutputImage(frame, minimap_with_balls, res);
 		//imshow("result", res);
 		vidOutput.write(res);
@@ -138,7 +138,7 @@ int main(int argc, char* argv[]){
 		ret = vid.read(frame);
 	}
 	time_point stop = high_resolution_clock::now();
-	chrono::minutes duration = duration_cast<minutes>(stop - start);
+	minutes duration = duration_cast<minutes>(stop - start);
 	cout << "Time to create the video: " << duration.count() <<" minutes" << endl;
 	vidOutput.release();
 

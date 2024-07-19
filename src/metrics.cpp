@@ -44,8 +44,6 @@ void compareMetrics(Table &table, Mat &segmentedImage, const string &folderPath,
 	cout << "mIoU: " << mIoU << endl;
 	double mAP = mAPDetection(table.ballsPtr(), groundTruthBboxPath.string(), MAP_IOU_THRESHOLD);
 	cout << "mAP: " << mAP << endl;
-	// if(mAP < 0.5)
-	// 	waitKey(0);
 }
 
 
@@ -202,7 +200,7 @@ double mIoUCategory(const Mat &segmentedImage, const Mat &groundTruthMask, Categ
 	// imshow("groundTruthMaskCat", groundTruthMaskCat);
 	//waitKey();
 	double iou = IoU(segmentedImageCat, groundTruthMaskCat);
-	cout<< "cat: " << cat << '\t' << "iou: " << iou << endl;
+	//cout<< "cat: " << cat << '\t' << "iou: " << iou << endl;
 	return iou;
 }
 

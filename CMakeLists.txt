@@ -50,8 +50,19 @@ target_link_libraries(ShowSegmentationColored
     Metrics
 )
 
-add_executable(TestAllClip src/TestAllClip.cpp)
+add_executable(TestAllClip src/testAllClip.cpp)
 target_link_libraries(TestAllClip
+    ${OpenCV_LIBS}
+    Ball
+    Table
+    Detection
+    Segmentation
+    Utils
+    Metrics
+)
+
+add_executable(ComputePerformance src/computePerformance.cpp)
+target_link_libraries(ComputePerformance
     ${OpenCV_LIBS}
     Ball
     Table

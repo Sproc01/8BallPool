@@ -50,10 +50,6 @@ void rotateCornersClockwise(Vec<Point2f, 4> &corners) {
 }
 
 void radiusInterval(float &min_radius, float &max_radius, const Vec<Point2f, 4>  &img_corners) {
-
-	float RADIUS_CM = 2.86;
-	float DIAGONAL_CM = 215;
-
 	float diag1_px = norm(img_corners[0] - img_corners[2]);
 	float diag2_px = norm(img_corners[1] - img_corners[3]);
 	float long_diag_px;
@@ -76,7 +72,7 @@ void radiusInterval(float &min_radius, float &max_radius, const Vec<Point2f, 4> 
 	//percentage_slope = 0.5 -> the camera is 45° to the table (radius can change)
 	//percentage_slope = 0 -> the camera is perpendicular to the table (ideally radius always mean_radius)
 
-	float mean_radius = (RADIUS_CM/DIAGONAL_CM) * long_diag_px;
+	float mean_radius = (BALL_RADIUS_CM/TABLE_DIAMETER_CM) * long_diag_px;
 	//mean_radius = mean_radius - (mean_radius/15)*(1 - percentage_slope);
 
 	const float PRECISION = 1;

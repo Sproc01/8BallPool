@@ -24,6 +24,12 @@ const int MINIMAP_IMG_HEIGHT = 560;
 //radius of the balls on the minimap
 const double MAP_BALL_RADIUS = 12.6;
 
+//some real table dimensions (approximates)
+const float POOL_DIAMETER_CM = 15;
+const float TABLE_LONGEST_EDGE_CM = 250;
+const float BALL_RADIUS_CM = 2.86;
+const float TABLE_DIAMETER_CM = 215;
+
 //colors for the balls in the minimap
 const cv::Vec3b BACKGROUND_BGR_COLOR = cv::Vec3b(0, 0, 0);      // black
 const cv::Vec3b WHITE_BGR_COLOR = cv::Vec3b(255, 255, 255);		// white

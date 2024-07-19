@@ -2,6 +2,7 @@
 
 #include <opencv2/opencv.hpp>
 #include "tableOrientation.h"
+#include "minimapConstants.h"
 #include "util.h"
 
 #include "detection.h"
@@ -31,14 +32,17 @@ bool compareByPercentile(const Edge &e1, const Edge &e2)
 }
 
 /**
- * @brief compute the percentile of white pixels in the rectangle inside the mask image
+ * @brief compute the percentile of white pixels in the rectangle
  * Count the number of pixels of the rect inside the image and the number of pixels which color is
  * white in the mask (which correspond to the table)
  * @param mask_img image with the table masked
  * @param rect rectangle in which compute the percentile
  * @return percentile of white pixels in the rect
+ * @throw invalid_argument if the image in input is empty
+ * @throw invalid_argument if the rect in input is empty
  */
-double computeTablePercentile(Mat &mask_img, Rect rect) {
+double computeTablePercentile(const Mat &mask_img, const Rect &rect) {
+    //TODO: check mask_img and colors
 	if(mask_img.empty())
         throw invalid_argument("Empty image in input");
 
@@ -60,7 +64,7 @@ double computeTablePercentile(Mat &mask_img, Rect rect) {
 }
 
 /**
- * @brief check if two edges are opposite to each other.
+ * @brief check if two edges are opposite to each other in a quadrangle.
  * Check if two edges are opposite to each other by using the value of their corners
  * @param e1 first edge.
  * @param e2 second edge.
@@ -83,12 +87,12 @@ bool oppositeEdges(const Edge &e1, const Edge &e2) {
  * table edges, using the background percentile.
  * @param table_img image of the table transformed and cropped to the minimap dimension
  * @return true if the image is horizontal, false otherwise
+ * @throw invalid_argument if the image in input is empty
  */
 bool checkHorizontalTable(const Mat &table_img){
 	if(table_img.empty())
         throw invalid_argument("Empty image in input");
 
-    //TODO: corners as argument?
     Vec<Point2f, 4> corners =  {Point2f(0, 0),
                                 Point2f(table_img.cols, 0),
                                 Point2f(table_img.cols, table_img.rows),
@@ -111,12 +115,9 @@ bool checkHorizontalTable(const Mat &table_img){
     }
 
     //compute the rects around the centers
-    //loghest edge table = 250 cm (about)
-    //pool diameter = 15 cm (about)
-    //pool/edge = 15/250 (about)
     //TODO: set table dimensions in const file to use it somewhere else
-    const int RECT_WIDTH = (15.0/250.0)*table_img.cols;
-    const int RECT_HEIGHT = (15.0/250.0)*table_img.cols;
+    const int RECT_WIDTH = (POOL_DIAMETER_CM/TABLE_LONGEST_EDGE_CM)*table_img.cols;
+    const int RECT_HEIGHT = (POOL_DIAMETER_CM/TABLE_LONGEST_EDGE_CM)*table_img.cols;
 
     for(int i = 0; i < 4; i++) {
         edges[i].center_rect = Rect(edges[i].center.x - RECT_WIDTH/2, edges[i].center.y - RECT_HEIGHT/2, RECT_WIDTH, RECT_HEIGHT);

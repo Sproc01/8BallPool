@@ -17,7 +17,9 @@ using namespace std;
  * table coordinates.
  * @param img original image to transform.
  * @param transform transformation to apply to the image.
- * @return image with the dimension of the minimap image transformed and cropped.
+ * @return image with the dimension of the minimap image, transformed and cropped.
+ * @throw invalid_argument if the image in input is empty
+ * @throw invalid_argument if the transformation matrix in input is empty
  */
 Mat imgTransformedCropped(const Mat &img, const Mat &transform) {
     //TODO: pass corners per parameter?
@@ -43,14 +45,14 @@ Mat imgTransformedCropped(const Mat &img, const Mat &transform) {
 
 /**
  * @brief compute the transformation matrix.
- * Compute the transformation matrix using the corners of the table and the corners of the table
- * in the minimap image. After the firts computation the correctness of the table orientation is
- * checked, if it is not correct, the transformation is recomputed.
- * @param segmented original image used to check the orientation of the table. //TODO: segmented?
+ * Compute the transformation matrix using the corners of the table in the original image and the corners of the table
+ * in the minimap image and with that compute the corrispondent perspective transform. After the first computation,
+ * the correctness of the table orientation is checked, if it is not correct, the transformation is recomputed.
+ * @param img original image used to check the orientation of the table.
  * @param img_corners corners of the table in the original image.
  * @return transformation matrix.
+ * @throw invalid_argument if the image in input is empty
  */
-//compute the transformation matrix using perspective transform
 Mat computeTransformation(const Mat& img, Vec<Point2f, 4>  &img_corners) {
     if(img.empty())
         throw invalid_argument("Empty image in input");
@@ -82,13 +84,16 @@ Mat computeTransformation(const Mat& img, Vec<Point2f, 4>  &img_corners) {
 
 /**
  * @brief draw the balls and their tracking on the minimap.
- * Firs compute the current and previous positions of the balls using the transformation matrix.
+ * First compute the current and previous positions of the balls using the transformation matrix.
  * Draw the tracking lines in the image that will be reused in the next frames. Use a copy of the
  * previous image to draw the balls with their correct colors.
  * @param minimap_with_track minimap image in which the tracking lines are kept.
  * @param transform transformation matrix.
- * @param balls vector of balls containing the positions in the original image
+ * @param balls vector of balls containing their positions in the original image.
  * @return minimap image with tracking lines and balls.
+ * @throw invalid_argument if the image in input is empty
+ * @throw invalid_argument if the transformation matrix in input is empty
+ * @throw invalid_argument if the balls pointer is a null pointer
  */
 //TODO: const ptr?
 Mat drawMinimap(Mat &minimap_with_track, const Mat &transform, Ptr<vector<Ball>> balls) {

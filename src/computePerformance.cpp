@@ -33,13 +33,9 @@ int main(){
 	vector<pair<Rect, Category>> groundTruthBboxBlack;
 	vector<pair<Rect, Category>> groundTruthBboxSolid;
 	vector<pair<Rect, Category>> groundTruthBboxStriped;
-
-
 	vector<pair<Rect, Category>> gt;
 
 
-	vector<Mat> segmentedFound;
-	vector<Mat> segmentedGT;
 	double IoU_white = 0;
 	double IoU_black = 0;
 	double IoU_solid = 0;
@@ -47,6 +43,8 @@ int main(){
 	double IoU_playingField = 0;
 	double IoU_background = 0;
 	double mIoU = 0;
+
+	vector<double> metricsIoU;
 
 	vector<string> filename ={"/game1_clip1", "/game1_clip2", "/game1_clip3",
 								"/game1_clip4", "/game2_clip1", "/game2_clip2",
@@ -63,31 +61,6 @@ int main(){
 		detectBalls(frame, table, detected);
 		segmentTable(frame, table, segmented);
 		segmentBalls(frame, table.ballsPtr(), segmented);
-		segmentedImageGray = Mat::zeros(segmented.size(), CV_8UC1);
-
-		// save result mIOU
-		for (int j = 0; j < segmented.cols; j++){
-			if (segmented.at<Vec3b>(i,j) == BACKGROUND_BGR_COLOR){
-				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::BACKGROUND);
-			}
-			else if (segmented.at<Vec3b>(i,j) == WHITE_BGR_COLOR){
-				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::WHITE_BALL);
-			}
-			else if (segmented.at<Vec3b>(i,j) == BLACK_BGR_COLOR){
-				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::BLACK_BALL);
-			}
-			else if (segmented.at<Vec3b>(i,j) == SOLID_BGR_COLOR){
-				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::SOLID_BALL);
-			}
-			else if (segmented.at<Vec3b>(i,j) == STRIPED_BGR_COLOR){
-				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::STRIPED_BALL);
-			}
-			else if (segmented.at<Vec3b>(i,j) == PLAYING_FIELD_BGR_COLOR){
-				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::PLAYING_FIELD);
-			}
-		}
-		segmentedFound.push_back(segmentedImageGray);
-		segmentedGT.push_back(imread("../Dataset"+filename[i]+"/masks/frame_first.png", IMREAD_GRAYSCALE));
 
 		// save the results mAP
 		for(int i = 0; i < table.ballsPtr()->size(); i++){
@@ -121,6 +94,16 @@ int main(){
 			}
 		}
 
+		// save result mIOU
+		metricsIoU = compareMetricsIoU(segmented, "../Dataset"+filename[i], FIRST);
+		IoU_background += metricsIoU[0];
+		IoU_white += metricsIoU[1];
+		IoU_black += metricsIoU[2];
+		IoU_solid += metricsIoU[3];
+		IoU_striped += metricsIoU[4];
+		IoU_playingField += metricsIoU[5];
+
+
 		// rest of the video
 		previousFrame = frame.clone();
 		bool ret = vid.read(frame);
@@ -134,30 +117,6 @@ int main(){
 		detectBalls(previousFrame, table, detected);
 		segmentTable(previousFrame, table, segmented);
 		segmentBalls(segmented, table.ballsPtr(), segmented);
-		segmentedImageGray = Mat::zeros(segmented.size(), CV_8UC1);
-		// save result mIOU
-		for (int j = 0; j < segmented.cols; j++){
-			if (segmented.at<Vec3b>(i,j) == BACKGROUND_BGR_COLOR){
-				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::BACKGROUND);
-			}
-			else if (segmented.at<Vec3b>(i,j) == WHITE_BGR_COLOR){
-				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::WHITE_BALL);
-			}
-			else if (segmented.at<Vec3b>(i,j) == BLACK_BGR_COLOR){
-				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::BLACK_BALL);
-			}
-			else if (segmented.at<Vec3b>(i,j) == SOLID_BGR_COLOR){
-				segmented.at<uchar>(i, j) = static_cast<uchar>(Category::SOLID_BALL);
-			}
-			else if (segmented.at<Vec3b>(i,j) == STRIPED_BGR_COLOR){
-				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::STRIPED_BALL);
-			}
-			else if (segmented.at<Vec3b>(i,j) == PLAYING_FIELD_BGR_COLOR){
-				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::PLAYING_FIELD);
-			}
-		}
-		segmentedFound.push_back(segmentedImageGray);
-		segmentedGT.push_back(imread("../Dataset"+filename[i]+"/masks/frame_last.png", IMREAD_GRAYSCALE));
 
 		// save the results mAP
 		for(int i = 0; i < table.ballsPtr()->size(); i++){
@@ -190,6 +149,15 @@ int main(){
 				groundTruthBboxStriped.push_back(gt[i]);
 			}
 		}
+
+		// save result mIOU
+		metricsIoU = compareMetricsIoU(segmented, "../Dataset"+filename[i], LAST);
+		IoU_background += metricsIoU[0];
+		IoU_white += metricsIoU[1];
+		IoU_black += metricsIoU[2];
+		IoU_solid += metricsIoU[3];
+		IoU_striped += metricsIoU[4];
+		IoU_playingField += metricsIoU[5];
 	}
 
 	// compute the mAP
@@ -205,27 +173,14 @@ int main(){
 	mAP /= 4;
 	cout << "mAP: " << mAP << endl;
 
+
 	// compute the mIoU
-	for(int i = 0; i < segmentedFound.size(); i++){
-		IoU_white += mIoUCategory(segmentedFound[i], segmentedGT[i], WHITE_BALL);
-		IoU_black += mIoUCategory(segmentedFound[i], segmentedGT[i], BLACK_BALL);
-		IoU_solid += mIoUCategory(segmentedFound[i], segmentedGT[i], SOLID_BALL);
-		IoU_striped += mIoUCategory(segmentedFound[i], segmentedGT[i], STRIPED_BALL);
-		IoU_playingField += mIoUCategory(segmentedFound[i], segmentedGT[i], PLAYING_FIELD);
-		IoU_background += mIoUCategory(segmentedFound[i], segmentedGT[i], BACKGROUND);
-	}
-	cout << "IoU white: " << IoU_white << endl;
-	cout << "IoU black: " << IoU_black << endl;
-	cout << "IoU solid: " << IoU_solid << endl;
-	cout << "IoU striped: " << IoU_striped << endl;
-	cout << "IoU playing field: " << IoU_playingField << endl;
-	cout << "IoU background: " << IoU_background << endl;
-	IoU_white /= segmentedFound.size();
-	IoU_black /= segmentedFound.size();
-	IoU_solid /= segmentedFound.size();
-	IoU_striped /= segmentedFound.size();
-	IoU_playingField /= segmentedFound.size();
-	IoU_background /= segmentedFound.size();
+	IoU_white /= 20;
+	IoU_black /= 20;
+	IoU_solid /= 20;
+	IoU_striped /= 20;
+	IoU_playingField /= 20;
+	IoU_background /= 20;
 	cout << "IoU white: " << IoU_white << endl;
 	cout << "IoU black: " << IoU_black << endl;
 	cout << "IoU solid: " << IoU_solid << endl;

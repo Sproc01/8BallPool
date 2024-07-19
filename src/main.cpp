@@ -38,6 +38,8 @@ int main(int argc, char* argv[]){
 	Mat previousFrame;
 	Mat detected;
 	Mat res;
+	vector<double> metricsAP;
+	vector<double> metricsIoU;
 
 	//INPUT
 	// TODO rotate image if vertical; resize to be inscribed in current sizes, centered in the Mat; use this to calculate minimap; write to video file the original unrotated, unscaled image with the calculated image superimposed
@@ -87,7 +89,13 @@ int main(int argc, char* argv[]){
 	segmentBalls(segmented, table.ballsPtr(), segmented);
 	imshow("segmentedBalls", segmented);
 	cout << "Metrics first frame:" << endl;
-	compareMetrics(table, segmented, videoPath.parent_path().string(), FIRST);
+	metricsAP = compareMetricsAP(table, videoPath.parent_path().string(), FIRST);
+	metricsIoU = compareMetricsIoU(segmented, videoPath.parent_path().string(), FIRST);
+	for(int i = 0; i < metricsAP.size(); i++)
+		cout << "AP for category " << i+1 << ": " << metricsAP[i] << endl;
+
+	for(int i = 0; i < metricsIoU.size(); i++)
+		cout << "IoU for category " << i << ": " << metricsIoU[i] << endl;
 
 
 	//TRANSFORMATION
@@ -152,7 +160,14 @@ int main(int argc, char* argv[]){
 	segmentBalls(segmented, table.ballsPtr(), segmented);
 	imshow("segmentedBalls", segmented);
 	cout << "Metrics last frame:" << endl;
-	compareMetrics(table, segmented, videoPath.parent_path().string(), LAST);
+	metricsAP = compareMetricsAP(table, videoPath.parent_path().string(), LAST);
+	metricsIoU = compareMetricsIoU(segmented, videoPath.parent_path().string(), LAST);
+
+	for(int i = 0; i < metricsAP.size(); i++)
+		cout << "AP for category " << static_cast<Category>(i+1) << ": " << metricsAP[i] << endl;
+
+	for(int i = 0; i < metricsIoU.size(); i++)
+		cout << "IoU for category " << static_cast<Category>(i) << ": " << metricsIoU[i] << endl;
 	waitKey(0);
 	// write to a temp file first, then rename to the final name
 	filesystem::rename(tempOutputPath, outputPath);

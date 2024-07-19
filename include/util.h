@@ -77,7 +77,7 @@ void createOutputImage(const cv::Mat &frame, const cv::Mat &minimap_with_balls, 
  * @brief do the clustering by using only color information on the input image.
  * @param inputImage image to be clustered.
  * @param colors vector containing the different colors for the different clusters,
- * the size of the vector is the number of output clusters.
+ *               the size of the vector is the number of output clusters.
  * @param clusteredImage output image: original image clustered.
  * @throw invalid_argument if the input image is empty or if colors is empty
  * 							or if inputImage has a number of channels different from 3.

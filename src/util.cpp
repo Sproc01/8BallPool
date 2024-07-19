@@ -265,9 +265,7 @@ void kMeansClustering(const Mat &inputImage, const vector<Vec3b> &colors, Mat &c
 
 	int cluster_idx = -1;
     for(int i = 0; i < inputImage.rows; i++){
-
         for(int j = 0; j < inputImage.cols; j++){
-
             cluster_idx = labels.at<int>(i * inputImage.cols + j);
             clusteredImage.at<Vec3b>(i, j) = colors[cluster_idx];
         }

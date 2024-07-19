@@ -25,6 +25,7 @@ int main(int argc, char* argv[]){
 	Vec<Point2f, 4> tableCorners;
 	Mat segmented;
 	Mat previousFrame;
+	Mat detected;
 	bool ret;
 
 	vector<string> name ={"/game1_clip1", "/game1_clip2", "/game1_clip3",
@@ -45,9 +46,12 @@ int main(int argc, char* argv[]){
 		cout << "--------------" << endl;
 		cout << name[i] << endl;
 		cout << "------ First frame -------" << endl;
-		detectBalls(frame, table);
+		detectBalls(frame, table, detected);
+		//imshow("detected balls", detected);
+		imwrite("../Output/Detection"+name[i]+"_detected_balls_first_frame.jpg", detected);
 		segmentTable(frame, table, segmented);
 		segmentBalls(frame, table.ballsPtr(), segmented);
+		imwrite("../Output/Segmentation"+name[i]+"_segmented_balls_first_frame.jpg", segmented);
 		//imshow("seg", segmented);
 		compareMetrics(table, segmented, "../Dataset"+name[i], FIRST);
 		//waitKey(0);
@@ -60,12 +64,15 @@ int main(int argc, char* argv[]){
 		}
 		cout << "------ Last frame --------" << endl;
 		table.clearBalls();
-		detectBalls(previousFrame, table);
+		detectBalls(previousFrame, table, detected);
+		//imshow("detected balls", detected);
+		imwrite("../Output/Detection"+name[i]+"_detected_balls_last_frame.jpg", detected);
 		segmentTable(previousFrame, table, segmented);
 		segmentBalls(segmented, table.ballsPtr(), segmented);
+		imwrite("../Output/Segmentation"+name[i]+"_segmented_balls_last_frame.jpg", segmented);
 		//imshow("seg", segmented);
 		compareMetrics(table, segmented, "../Dataset"+name[i], LAST);
-		waitKey(0);
+		//waitKey(0);
 	}
 	return 0;
 }

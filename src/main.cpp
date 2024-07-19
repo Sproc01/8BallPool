@@ -36,6 +36,7 @@ int main(int argc, char* argv[]){
 	Mat segmented;
 	int frameCount = 0;
 	Mat previousFrame;
+	Mat detected;
 	Mat res;
 
 	//INPUT
@@ -80,7 +81,8 @@ int main(int argc, char* argv[]){
 	// imshow("segmentedTable", segmented);
 
 	//DETECT AND SEGMENT BALLS
-	detectBalls(frame, table);
+	detectBalls(frame, table, detected);
+	imshow("detected balls", detected);
 
 	segmentBalls(segmented, table.ballsPtr(), segmented);
 	// imshow("segmentedBalls", segmented);
@@ -144,7 +146,8 @@ int main(int argc, char* argv[]){
 
 	// work on last frame
 	table.clearBalls();
-	detectBalls(previousFrame, table);
+	detectBalls(previousFrame, table, detected);
+	imshow("detected balls", detected);
 	segmentTable(previousFrame, table, segmented);
 	segmentBalls(segmented, table.ballsPtr(), segmented);
 	imshow("segmentedBalls", segmented);

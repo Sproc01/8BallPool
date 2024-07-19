@@ -100,12 +100,23 @@ Category classificationBall(const Mat& img, double radius){
 		 && mean[2] > MEAN_WHITE_CHANNEL3)
 		return WHITE_BALL;
 
+	// skin color tested, thresholds found on the web and adjusted to the dataset
+	const int LOWER_MEAN_HUE = 0;
+	const int UPPER_MEAN_HUE = 50;
+	const int LOWER_MEAN_SATURATION = 80;
+	const int UPPER_MEAN_SATURATION = 100;
+	const int LOWER_MEAN_VALUE = 140;
+	const int UPPER_MEAN_VALUE = 250;
+	if(mean[0] > LOWER_MEAN_HUE && mean[0] < UPPER_MEAN_HUE
+		&& mean[1] > LOWER_MEAN_SATURATION && mean[1] < UPPER_MEAN_SATURATION
+		&& mean[2] > LOWER_MEAN_VALUE && mean[2] < UPPER_MEAN_VALUE)
+		return BACKGROUND;
+
 	if(val2 > THRESHOLD_STRIPED_MAX * val
 		&& stddev[1] > THRESHOLD_DEV_STRIPED)
 			return STRIPED_BALL;
 
-	// if(mean[0] > 0 && mean[0] < 50 && mean[1] > 50 && mean[1] < 150 && mean[2] > 120 && mean[2] < 255)
-	// 	return BACKGROUND;
+
 
 	return SOLID_BALL;
 }
@@ -114,7 +125,7 @@ Category classificationBall(const Mat& img, double radius){
  * @brief Change the category of the balls in order to have only one white ball
  * and only one black ball in the vector.
  * @param img image where there is the ball, HSV format requested.
- * @param balls pointer to a vector of balls where to do non-Maxima-suppression.
+ * @param balls pointer to a vector of balls where to do non-maxima suppression.
  * @throw invalid_argument if the img is empty, if the image has less than 3 channels,
  *  		if the vector pointed by balls is empty or if balls is nullptr
  */
@@ -138,8 +149,6 @@ void nonMaximaSuppressionWhiteBlack(const Mat &img, const Ptr<vector<Ball>> ball
 		else if((balls->at(i)).getCategory() == BLACK_BALL)
 			blackFound.push_back(i);
 	}
-	// cout << "white: " << whiteFound.size() << endl;
-	// cout << "black: " << blackFound.size() << endl;
 
 	if(whiteFound.size() > 1){
 		sort(whiteFound.begin(), whiteFound.end(), [&balls, &img](int a, int b) -> bool {
@@ -164,12 +173,10 @@ void nonMaximaSuppressionWhiteBlack(const Mat &img, const Ptr<vector<Ball>> ball
 			meanStdDev(subImgB, meanB, stddevB, maskB);
 			return meanA[1] < meanB[1];
 		});
-		//int c = 0;
-		for(int i = 1; i < whiteFound.size(); i++){
-			//c++;
+
+		for(int i = 1; i < whiteFound.size(); i++)
 			(balls->at(whiteFound[i])).setCategory(STRIPED_BALL);
-		}
-		//cout << "changed white: " << c << endl;
+
 	}
 
 	if(blackFound.size() > 1){
@@ -199,13 +206,9 @@ void nonMaximaSuppressionWhiteBlack(const Mat &img, const Ptr<vector<Ball>> ball
 			// so we need an higher standard deviation in the third channle
 			return meanA[2] < meanB[2] && stddevA[2] > stddevB[2];
 		});
-		//int c = 0;
 		for(int i = 1; i < blackFound.size(); i++)
-		{
-			//c++;
 			(balls->at(blackFound[i])).setCategory(SOLID_BALL);
-		}
-		//cout << "changed black: " << c << endl;
+
 	}
 }
 
@@ -217,9 +220,7 @@ void nonMaximaSuppressionWhiteBlack(const Mat &img, const Ptr<vector<Ball>> ball
  * @param frame image where there is a table to be detected, BGR format requested.
  * @param corners output vector containing the 4 corners found.
  * @param colorRange output vector containing a range for the table colors.
- * @throw runtime_error if it does not find enough lines.
- * @throw runtime_error if it does not find enough interceptions.
- * @throw runtime_error if too many interceptions.
+ * @throw runtime_error if it does not find enough lines or if it does not find enough interceptions.
  * @throw invalid_argument if frame is empty or if frame has a number of channels different from 3.
  */
 void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
@@ -352,9 +353,10 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
  * To isolate the good circles exploit the information of the table.
  * @param frame image where there are the balls to be detected, BGR format requested.
  * @param table initialized object that contains the corner and the color, the balls are added in this function.
+ * @param frameRect output image containing the input image with the rectangles superimposed.
  * @throw invalid_argument if frame is empty or if frame has a number of channels different from 3.
  */
-void detectBalls(const Mat &frame, Table &table){
+void detectBalls(const Mat &frame, Table &table, Mat &frameRect){
 
 	if(frame.empty())
 		throw invalid_argument("Empty image in input");
@@ -381,8 +383,8 @@ void detectBalls(const Mat &frame, Table &table){
 	const float RANGE_RADIUS = 0.3;
 
 
-	Scalar border_color = Scalar(0, 255, 255);
-		vector<Vec3b> colors = {
+	Scalar border_color = Scalar(0, 255, 255); // color of the borders of the table
+	vector<Vec3b> colors = {
 		Vec3b(0, 0, 255),
 		Vec3b(0, 255, 0),
 		Vec3b(255, 0, 0),
@@ -392,7 +394,7 @@ void detectBalls(const Mat &frame, Table &table){
 
 	// variables
 	Mat gray, HSVImg, mask, smooth, kernelMorphological, resClustering, resClusteringSmooth;
-	Mat frameRect = frame.clone();
+	frameRect = frame.clone();
 	Mat poly = Mat::zeros(frame.size(), CV_8UC1);
 	vector<Vec3f> circles;
 
@@ -486,8 +488,6 @@ void detectBalls(const Mat &frame, Table &table){
 			category = classificationBall(subImg, radius);
 			if(category != BACKGROUND)
 				balls->push_back(Ball(rect, category));
-			else
-				rectangle(frameRect, rect, Scalar(0, 255, 0), 1, LINE_AA);
 		}
 	}
 
@@ -509,6 +509,7 @@ void detectBalls(const Mat &frame, Table &table){
 				rectangle(frameRect, a, BLACK_BGR_COLOR, 1, LINE_AA);
 			break;
 			default:
+				// do nothing if not a ball
 				break;
 		}
 	}
@@ -516,5 +517,4 @@ void detectBalls(const Mat &frame, Table &table){
 		line(frameRect, tableCornersInt[i], tableCornersInt[i+1], border_color, 2, LINE_AA);
 
 	line(frameRect, tableCornersInt[0], tableCornersInt[3], border_color, 2, LINE_AA);
-	imshow("detected rectangles", frameRect);
 }

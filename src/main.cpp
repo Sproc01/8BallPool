@@ -29,7 +29,7 @@ int main(int argc, char* argv[]){
 	//VARIABLES
 	filesystem::path videoPath;
 	filesystem::path outputPath = "../Output";
-	Mat originalFrame, workingFrame;	// originalFrame is the frame read from the video frob which the output is build, workingFrame is the frame to work on, which will be rotated and rescaled if necessary
+	Mat frame;
 	Vec2b colorTable;
 	Table table;
 	Vec<Point2f, 4> tableCorners;
@@ -38,7 +38,8 @@ int main(int argc, char* argv[]){
 	Mat lastFrame;
 	Mat detected;
 	Mat res;
-	bool isRotated = false;
+	bool toRotate, toResize;
+	short leftBorderLength, rightBorderLength;
 
 	//INPUT
 	// TODO rotate image if vertical; resize to be inscribed in current sizes, centered in the Mat; use this to calculate minimap; write to video file the original unrotated, unscaled image with the calculated image superimposed
@@ -58,14 +59,15 @@ int main(int argc, char* argv[]){
 	//START THE VIDEO
 	VideoCapture vid = VideoCapture(videoPath.string());
 	// work on first frame
-	if (!vid.isOpened() || !vid.read(originalFrame)){
+	if (!vid.isOpened() || !vid.read(frame)){
 		cout << "Error opening video file" << endl;
 		return -1;
 	}
 
-	workingFrame = originalFrame.clone();
-	inscriptInHorizontalFrame(workingFrame, TABLE_WIDTH, TABLE_HEIGHT);
-	imshow("Inscripted horizontal frame", workingFrame);
+	const unsigned short ORIGINAL_WIDTH = frame.cols;
+	const unsigned short ORIGINAL_HEIGHT = frame.rows;
+
+	calculateInscriptionParameters(frame, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 
 	string videoName = videoPath.stem().string();
 	string outputVideoName = videoName + "_output.mp4";
@@ -78,19 +80,23 @@ int main(int argc, char* argv[]){
 	int codec = VideoWriter::fourcc('m', 'p', '4', 'v');
 	VideoWriter vidOutput = VideoWriter();
 	double fps = vid.get(CAP_PROP_FPS);
-	vidOutput.open(tempOutputPath.string(), codec, fps, originalFrame.size(), true);
+	vidOutput.open(tempOutputPath.string(), codec, fps, frame.size(), true);
 
 	//DETECT AND SEGMENT TABLE
-	detectTable(workingFrame, tableCorners, colorTable);
+	doInscript(frame, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
+	detectTable(frame, tableCorners, colorTable);
 	table = Table(tableCorners, colorTable);
-	segmentTable(workingFrame, table, segmented);
+	segmentTable(frame, table, segmented);
+	undoInscript(segmented, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	imshow("segmentedTable", segmented);
 
 	//DETECT AND SEGMENT BALLS
-	detectBalls(workingFrame, table, detected);
+	detectBalls(frame, table, detected);
+	undoInscript(detected, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	imshow("detectedBalls", detected);
 
 	segmentBalls(segmented, table.ballsPtr(), segmented);
+	undoInscript(segmented, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	imshow("segmentedBalls", segmented);
 	cout << "Metrics first frame:" << endl;
 
@@ -98,6 +104,7 @@ int main(int argc, char* argv[]){
 
 	//TRANSFORMATION
 	Vec<Point2f, 4>  img_corners = table.getBoundaries();
+	doInscript(segmented, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	table.setTransform(computeTransformation(segmented, img_corners));
 	table.setBoundaries(img_corners);
 
@@ -113,31 +120,35 @@ int main(int argc, char* argv[]){
 	Mat transform =  table.getTransform(); //TODO: change and return value (check if working)
 	minimap_with_balls = drawMinimap(minimap_with_track, transform, table.ballsPtr());
 	//imshow("Minimap with balls", minimap_with_balls);
-	createOutputImage(originalFrame, minimap_with_balls, res);
+	undoInscript(frame, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
+	createOutputImage(frame, minimap_with_balls, res);
 	//imshow("result", res);
 	vidOutput.write(res);
 
 	//TRACKER
 	BallTracker tracker = BallTracker(table.ballsPtr());
-	tracker.trackAll(workingFrame);
+	doInscript(frame, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
+	tracker.trackAll(frame);
 	// waitKey();
 
 	//VIDEO WITH MINIMAP
 	time_point start = high_resolution_clock::now();
 
-	while (vid.isOpened() && vid.read(originalFrame)){  // work on middle frames
+	while (vid.isOpened() && vid.read(frame)){  // work on middle frames
 		//cout << "Frame number: " << ++frameCount << endl;
-		workingFrame = originalFrame.clone();
-		inscriptInHorizontalFrame(workingFrame, TABLE_WIDTH, TABLE_HEIGHT);
+
+		doInscript(frame, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 
  		//VIDEO WITH MINIMAP
-		tracker.trackAll(workingFrame);
+		tracker.trackAll(frame);
 		minimap_with_balls = drawMinimap(minimap_with_track, transform, table.ballsPtr());
-		createOutputImage(originalFrame, minimap_with_balls, res);
+
+		undoInscript(frame, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
+		createOutputImage(frame, minimap_with_balls, res);
 		//imshow("result", res);
 		vidOutput.write(res);
 
-		lastFrame = originalFrame.clone();
+		lastFrame = frame.clone();
 	}
 	time_point stop = high_resolution_clock::now();
 	minutes duration = duration_cast<minutes>(stop - start);
@@ -145,13 +156,14 @@ int main(int argc, char* argv[]){
 	vidOutput.release();
 
 	// work on last frame
-	workingFrame = originalFrame.clone();
-	inscriptInHorizontalFrame(workingFrame, TABLE_WIDTH, TABLE_HEIGHT);
+	doInscript(lastFrame, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	table.clearBalls();
 	detectBalls(lastFrame, table, detected);
 	segmentTable(lastFrame, table, segmented);
+	undoInscript(detected, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	imshow("detected balls", detected);
 	segmentBalls(segmented, table.ballsPtr(), segmented);
+	undoInscript(segmented, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	imshow("segmentedBalls", segmented);
 	cout << "Metrics last frame:" << endl;
 	// compareMetrics(table, segmented, videoPath.parent_path().string(), LAST);

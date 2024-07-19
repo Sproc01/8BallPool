@@ -64,6 +64,7 @@ void computeIntersection(const cv::Vec3f &line1, const cv::Vec3f &line2, cv::Poi
  */
 void equationFormula(float x1, float y1, float x2, float y2, float &a, float &b, float &c);
 
+
 /**
  * @brief Create a Output Image object.
  * @param frame input image.
@@ -72,6 +73,7 @@ void equationFormula(float x1, float y1, float x2, float y2, float &a, float &b,
  * @throw invalid_argument if frame or minimap_with_balls are empty or if the two images have different number of channels.
  */
 void createOutputImage(const cv::Mat &frame, const cv::Mat &minimap_with_balls, cv::Mat &res);
+
 
 /**
  * @brief do the clustering by using only color information on the input image.
@@ -84,6 +86,11 @@ void createOutputImage(const cv::Mat &frame, const cv::Mat &minimap_with_balls, 
  */
 void kMeansClustering(const cv::Mat &inputImage, const std::vector<cv::Vec3b> &colors, cv::Mat &clusteredImage);
 
-void inscriptInHorizontalFrame(cv::Mat &img, int targetFrameWidth, int targetFrameHeight);
+
+void calculateInscriptionParameters(const cv::Mat &img, int targetWidth, int targetHeight, bool &toRotate, bool &toResize, short &leftBorderLength, short &rightBorderLength);
+
+void doInscript(cv::Mat &img, int targetWidth, int targetHeight, const bool &toRotate, const bool &toResize, const short &leftBorderLength, const short &rightBorderLength);
+
+void undoInscript(cv::Mat &img, int originalWidth, int originalHeight, const bool &toRotate, const bool &toResize, const short &leftBorderLength, const short &rightBorderLength);
 
 #endif //UTIL_H

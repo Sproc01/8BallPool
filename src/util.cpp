@@ -272,36 +272,66 @@ void kMeansClustering(const Mat &inputImage, const vector<Vec3b> &colors, Mat &c
     }
 }
 
-
 bool isHorizontal(const Mat &img) {
 	return img.cols > img.rows;
 }
 
+void calculateInscriptionParameters(const Mat &img, int targetWidth, int targetHeight, bool &toRotate, bool &toResize, short &leftBorderLength, short &rightBorderLength) {
+	Mat test;
 
-Mat rotateImage(const Mat &img) {
-	Mat out;
-	rotate(img, out, ROTATE_90_CLOCKWISE);
-
-	return out;
-}
-
-
-void inscriptInHorizontalFrame(Mat &img, int targetFrameWidth, int targetFrameHeight) {
-	if (img.cols == targetFrameWidth && img.rows == targetFrameHeight) {	// skip if already has the target size
-		return;
-	}
+	// skip if already has the target aspect
+	toRotate = false;
+	toResize = false;
+	leftBorderLength = 0;
+	rightBorderLength = 0;
 
 	if (!isHorizontal(img)) {	// rotate if vertical
-		img = rotateImage(img);
+		toRotate = true;
+
+		test = img.clone();
+		doInscript(test, targetHeight, targetWidth, toRotate, toResize, leftBorderLength, rightBorderLength);
 	}
 
-	if (img.cols != targetFrameWidth && img.rows != targetFrameHeight) {	// resize if not inscribed
-		resize(img, img, Size(round(targetFrameHeight/targetFrameWidth * img.cols), targetFrameHeight));
+	if (img.cols != targetWidth && img.rows != targetHeight) {	// resize if not inscribed
+		toResize = true;
+
+		test = img.clone();
+		doInscript(test, targetWidth, targetHeight, toRotate, toResize, leftBorderLength, rightBorderLength);
 	}
 
-	const short LEFT_BORDER_LENGTH = (targetFrameWidth - img.cols) / 2;
-	const short RIGHT_BORDER_LENGTH = targetFrameWidth - img.cols - LEFT_BORDER_LENGTH;	// if the difference is odd, the right border will be one pixel longer than the left one
-	copyMakeBorder(img, img, 0, 0, LEFT_BORDER_LENGTH, RIGHT_BORDER_LENGTH, BORDER_CONSTANT, Scalar(0, 0, 0));	// center the image
+	// parameters to center the image
+	test = img.clone();
+	doInscript(test, targetWidth, targetHeight, toRotate, toResize, leftBorderLength, rightBorderLength);
+	leftBorderLength = (targetWidth - img.cols) / 2;
+	rightBorderLength = targetWidth - img.cols - leftBorderLength;	// if the difference is odd, the right border will be one pixel longer than the left one
 }
 
+void doInscript(Mat &img, int targetWidth, int targetHeight, const bool &toRotate, const bool &toResize, const short &leftBorderLength, const short &rightBorderLength) {
+	if (toRotate) {
+		rotate(img, img, ROTATE_90_CLOCKWISE);
+	}
 
+	if (toResize) {
+		resize(img, img, Size(round(targetHeight/targetWidth * img.cols), targetHeight));
+	}
+
+	if (leftBorderLength > 0 || rightBorderLength > 0) {
+		copyMakeBorder(img, img, 0, 0, leftBorderLength, rightBorderLength, BORDER_CONSTANT, Scalar(0, 0, 0));	// center the image
+	}
+}
+
+void undoInscript(Mat &img, int originalWidth, int originalHeight, const bool &toRotate, const bool &toResize, const short &leftBorderLength, const short &rightBorderLength) {
+	if (leftBorderLength > 0 || rightBorderLength > 0) {
+		img = img(Rect(leftBorderLength, 0, originalWidth, originalHeight));
+	}
+
+	if (toResize) {
+		resize(img, img, Size(originalWidth, originalHeight));
+	}
+
+	if (toRotate) {
+		rotate(img, img, ROTATE_90_COUNTERCLOCKWISE);
+	}
+
+
+}

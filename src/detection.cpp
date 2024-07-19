@@ -343,7 +343,7 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
 	for(size_t i = 0; i < 4; i++)
 		corners[i] = intersectionsGood[i];
 
-	imshow("Line", imgLine);
+	//imshow("Line", imgLine);
 }
 
 /**

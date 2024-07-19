@@ -96,7 +96,6 @@ bool checkHorizontalTable(const Mat &table_img, Vec<Point2f, 4> corners){
 	if(table_img.empty())
         throw invalid_argument("Empty image in input");
 
-
     //compute the centers of each table edge
     vector<Edge> edges(4);
 
@@ -158,7 +157,7 @@ bool checkHorizontalTable(const Mat &table_img, Vec<Point2f, 4> corners){
     sort(ordered_edges.begin(), ordered_edges.end(), compareByPercentile);
 
     if(oppositeEdges(ordered_edges[0], ordered_edges[1])) {
-        //the one with "more pool" are opposite edges -> they are the longest edges
+        //the ones with "more pool" are opposite edges -> they are the longest edges
         if(ordered_edges[0].center == edges[0].center || ordered_edges[1].center == edges[0].center)
             return true;
         else
@@ -172,7 +171,7 @@ bool checkHorizontalTable(const Mat &table_img, Vec<Point2f, 4> corners){
             return true;
     }
     else {
-        //there is uncertanty, probably the one with "more pool" is one longest edge
+        //there is uncertainty, probably the one with "more pool" is the longest edge
         if(ordered_edges[0].center == edges[0].center)
             return true;
         else

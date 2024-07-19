@@ -271,3 +271,37 @@ void kMeansClustering(const Mat &inputImage, const vector<Vec3b> &colors, Mat &c
         }
     }
 }
+
+
+bool isHorizontal(const Mat &img) {
+	return img.cols > img.rows;
+}
+
+
+Mat rotateImage(const Mat &img) {
+	Mat out;
+	rotate(img, out, ROTATE_90_CLOCKWISE);
+
+	return out;
+}
+
+
+void inscriptInHorizontalFrame(Mat &img, int targetFrameWidth, int targetFrameHeight) {
+	if (img.cols == targetFrameWidth && img.rows == targetFrameHeight) {	// skip if already has the target size
+		return;
+	}
+
+	if (!isHorizontal(img)) {	// rotate if vertical
+		img = rotateImage(img);
+	}
+
+	if (img.cols != targetFrameWidth && img.rows != targetFrameHeight) {	// resize if not inscribed
+		resize(img, img, Size(round(targetFrameHeight/targetFrameWidth * img.cols), targetFrameHeight));
+	}
+
+	const short LEFT_BORDER_LENGTH = (targetFrameWidth - img.cols) / 2;
+	const short RIGHT_BORDER_LENGTH = targetFrameWidth - img.cols - LEFT_BORDER_LENGTH;	// if the difference is odd, the right border will be one pixel longer than the left one
+	copyMakeBorder(img, img, 0, 0, LEFT_BORDER_LENGTH, RIGHT_BORDER_LENGTH, BORDER_CONSTANT, Scalar(0, 0, 0));	// center the image
+}
+
+

@@ -29,15 +29,16 @@ int main(int argc, char* argv[]){
 	//VARIABLES
 	filesystem::path videoPath;
 	filesystem::path outputPath = "../Output";
-	Mat frame;
+	Mat originalFrame, workingFrame;	// originalFrame is the frame read from the video frob which the output is build, workingFrame is the frame to work on, which will be rotated and rescaled if necessary
 	Vec2b colorTable;
 	Table table;
 	Vec<Point2f, 4> tableCorners;
 	Mat segmented;
 	int frameCount = 0;
-	Mat previousFrame;
+	Mat lastFrame;
 	Mat detected;
 	Mat res;
+	bool isRotated = false;
 
 	//INPUT
 	// TODO rotate image if vertical; resize to be inscribed in current sizes, centered in the Mat; use this to calculate minimap; write to video file the original unrotated, unscaled image with the calculated image superimposed
@@ -45,7 +46,8 @@ int main(int argc, char* argv[]){
 		videoPath = filesystem::path(argv[1]);
 	}
 	else if (argc == 1) { //TODO: remove at the end
-		videoPath = filesystem::path("../Dataset/game2_clip1/game2_clip1.mp4");
+		videoPath = filesystem::path("../Dataset/game1_clip1/game1_clip1.mp4");
+		videoPath = filesystem::path("../Dataset/other_videos_not_deliver/game1_clip1_vertical.mp4");
 	}
 	else {
 		cout << "Error of number of parameters: insert one parameter" << endl;
@@ -56,10 +58,15 @@ int main(int argc, char* argv[]){
 	//START THE VIDEO
 	VideoCapture vid = VideoCapture(videoPath.string());
 	// work on first frame
-	if (!vid.isOpened() || !vid.read(frame)){
+	if (!vid.isOpened() || !vid.read(originalFrame)){
 		cout << "Error opening video file" << endl;
 		return -1;
 	}
+
+	workingFrame = originalFrame.clone();
+	inscriptInHorizontalFrame(workingFrame, TABLE_WIDTH, TABLE_HEIGHT);
+	imshow("Inscripted horizontal frame", workingFrame);
+
 	string videoName = videoPath.stem().string();
 	string outputVideoName = videoName + "_output.mp4";
 	outputPath = outputPath / outputVideoName;
@@ -71,24 +78,23 @@ int main(int argc, char* argv[]){
 	int codec = VideoWriter::fourcc('m', 'p', '4', 'v');
 	VideoWriter vidOutput = VideoWriter();
 	double fps = vid.get(CAP_PROP_FPS);
-	//TODO: remove the video if some error occour, or if the execution is closed before end (it is corrupted)
-	vidOutput.open(tempOutputPath.string(), codec, fps, frame.size(), true);
+	vidOutput.open(tempOutputPath.string(), codec, fps, originalFrame.size(), true);
 
 	//DETECT AND SEGMENT TABLE
-	detectTable(frame, tableCorners, colorTable);
+	detectTable(workingFrame, tableCorners, colorTable);
 	table = Table(tableCorners, colorTable);
-	segmentTable(frame, table, segmented);
+	segmentTable(workingFrame, table, segmented);
 	imshow("segmentedTable", segmented);
 
 	//DETECT AND SEGMENT BALLS
-	detectBalls(frame, table, detected);
-	imshow("detected balls", detected);
+	detectBalls(workingFrame, table, detected);
+	imshow("detectedBalls", detected);
 
 	segmentBalls(segmented, table.ballsPtr(), segmented);
 	imshow("segmentedBalls", segmented);
 	cout << "Metrics first frame:" << endl;
-	compareMetrics(table, segmented, videoPath.parent_path().string(), FIRST);
 
+	// compareMetrics(table, segmented, videoPath.parent_path().string(), FIRST);
 
 	//TRANSFORMATION
 	Vec<Point2f, 4>  img_corners = table.getBoundaries();
@@ -107,37 +113,31 @@ int main(int argc, char* argv[]){
 	Mat transform =  table.getTransform(); //TODO: change and return value (check if working)
 	minimap_with_balls = drawMinimap(minimap_with_track, transform, table.ballsPtr());
 	//imshow("Minimap with balls", minimap_with_balls);
-	createOutputImage(frame, minimap_with_balls, res);
+	createOutputImage(originalFrame, minimap_with_balls, res);
 	//imshow("result", res);
 	vidOutput.write(res);
 
 	//TRACKER
 	BallTracker tracker = BallTracker(table.ballsPtr());
-	tracker.trackAll(frame);
+	tracker.trackAll(workingFrame);
+	// waitKey();
 
 	//VIDEO WITH MINIMAP
 	time_point start = high_resolution_clock::now();
-	bool ret = vid.read(frame);
-	while (vid.isOpened() && ret){  // work on middle frames
+
+	while (vid.isOpened() && vid.read(originalFrame)){  // work on middle frames
 		//cout << "Frame number: " << ++frameCount << endl;
+		workingFrame = originalFrame.clone();
+		inscriptInHorizontalFrame(workingFrame, TABLE_WIDTH, TABLE_HEIGHT);
 
  		//VIDEO WITH MINIMAP
-		tracker.trackAll(frame);
+		tracker.trackAll(workingFrame);
 		minimap_with_balls = drawMinimap(minimap_with_track, transform, table.ballsPtr());
-		createOutputImage(frame, minimap_with_balls, res);
+		createOutputImage(originalFrame, minimap_with_balls, res);
 		//imshow("result", res);
 		vidOutput.write(res);
-		/*
-		// show minimap status every 10 frame
-		if((frameCount % 10) == 0) {
-			imshow("frame " + to_string(frameCount), frame);
-			imshow("Minimap with balls " + to_string(frameCount), minimap_with_balls);
-			waitKey(0);
-		}
-		*/
-		//waitKey(0);
-		previousFrame = frame.clone();
-		ret = vid.read(frame);
+
+		lastFrame = originalFrame.clone();
 	}
 	time_point stop = high_resolution_clock::now();
 	minutes duration = duration_cast<minutes>(stop - start);
@@ -145,16 +145,21 @@ int main(int argc, char* argv[]){
 	vidOutput.release();
 
 	// work on last frame
+	workingFrame = originalFrame.clone();
+	inscriptInHorizontalFrame(workingFrame, TABLE_WIDTH, TABLE_HEIGHT);
 	table.clearBalls();
-	detectBalls(previousFrame, table, detected);
+	detectBalls(lastFrame, table, detected);
+	segmentTable(lastFrame, table, segmented);
 	imshow("detected balls", detected);
-	segmentTable(previousFrame, table, segmented);
 	segmentBalls(segmented, table.ballsPtr(), segmented);
 	imshow("segmentedBalls", segmented);
 	cout << "Metrics last frame:" << endl;
-	compareMetrics(table, segmented, videoPath.parent_path().string(), LAST);
-	waitKey(0);
-	// write to a temp file first, then rename to the final name
+	// compareMetrics(table, segmented, videoPath.parent_path().string(), LAST);
+
+	// write to a temp file first, then rename to the final name only if everything went well
 	filesystem::rename(tempOutputPath, outputPath);
+
+	waitKey(0);
+
 	return 0;
 }

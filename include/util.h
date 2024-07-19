@@ -84,4 +84,6 @@ void createOutputImage(const cv::Mat &frame, const cv::Mat &minimap_with_balls, 
  */
 void kMeansClustering(const cv::Mat &inputImage, const std::vector<cv::Vec3b> &colors, cv::Mat &clusteredImage);
 
+void inscriptInHorizontalFrame(cv::Mat &img, int targetFrameWidth, int targetFrameHeight);
+
 #endif //UTIL_H

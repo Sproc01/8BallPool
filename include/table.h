@@ -11,6 +11,9 @@
 
 constexpr unsigned short MAX_BALLS = 16;
 
+constexpr unsigned short TABLE_WIDTH = 1024;
+constexpr unsigned short TABLE_HEIGHT = 576;
+
 
 class Table {
 	cv::Vec<cv::Point2f, 4> boundaries_;  // TODO define order of points

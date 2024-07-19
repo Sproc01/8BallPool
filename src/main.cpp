@@ -153,7 +153,5 @@ int main(int argc, char* argv[]){
 	waitKey(0);
 	// write to a temp file first, then rename to the final name
 	filesystem::rename(tempOutputPath, outputPath);
-	// TODO: mac not necessary because does not remove anything, windows?
-	filesystem::remove(tempOutputPath); // remove temp file
 	return 0;
 }

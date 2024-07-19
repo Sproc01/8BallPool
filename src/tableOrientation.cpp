@@ -88,17 +88,14 @@ bool oppositeEdges(const Edge &e1, const Edge &e2) {
  * the percentile of background in the rect. Verify which of the four centers are the pools of the longest
  * table edges, using the background percentile.
  * @param table_img image of the table transformed and cropped to the minimap dimension
+ * @param corners corners of the table in the table_img
  * @return true if the image is horizontal, false otherwise
  * @throw invalid_argument if the image in input is empty
  */
-bool checkHorizontalTable(const Mat &table_img){
+bool checkHorizontalTable(const Mat &table_img, Vec<Point2f, 4> corners){
 	if(table_img.empty())
         throw invalid_argument("Empty image in input");
 
-    Vec<Point2f, 4> corners =  {Point2f(0, 0),
-                                Point2f(table_img.cols, 0),
-                                Point2f(table_img.cols, table_img.rows),
-                                Point2f(0, table_img.rows)};
 
     //compute the centers of each table edge
     vector<Edge> edges(4);

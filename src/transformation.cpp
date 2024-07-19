@@ -56,11 +56,16 @@ Mat computeTransformation(const Mat& img, Vec<Point2f, 4>  &img_corners) {
     Mat transform = getPerspectiveTransform(img_corners, map_corners);
 
     //apply transformation considering corners such as top-left is the first one, followed by a long table side
-    Mat tableSegmentedTransformed = imgTransformedCropped(img, transform);
+    Mat table_segmented_transformed = imgTransformedCropped(img, transform);
     //imshow("Img transformed cropped", tableSegmentedTransformed);
 
+    Vec<Point2f, 4> table_segmented_transformed_corners =  {Point2f(0, 0),
+                                Point2f(table_segmented_transformed.cols, 0),
+                                Point2f(table_segmented_transformed.cols, table_segmented_transformed.rows),
+                                Point2f(0, table_segmented_transformed.rows)};
+
     //check if the transformation produces the table oriented correctly (in horizontal direction)
-    if(!checkHorizontalTable(tableSegmentedTransformed)) {
+    if(!checkHorizontalTable(table_segmented_transformed, table_segmented_transformed_corners)) {
         //the table is not correctly rotated
 
         //rotate the corners correctly

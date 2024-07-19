@@ -48,9 +48,9 @@ int main(int argc, char* argv[]){
 		detectBalls(frame, table);
 		segmentTable(frame, table, segmented);
 		segmentBalls(frame, table.ballsPtr(), segmented);
-		imshow("seg", segmented);
+		//imshow("seg", segmented);
 		compareMetrics(table, segmented, "../Dataset"+name[i], FIRST);
-		waitKey(0);
+		//waitKey(0);
 		previousFrame = frame.clone();
 		ret = vid.read(frame);
 		while (vid.isOpened() && ret){
@@ -63,9 +63,9 @@ int main(int argc, char* argv[]){
 		detectBalls(previousFrame, table);
 		segmentTable(previousFrame, table, segmented);
 		segmentBalls(segmented, table.ballsPtr(), segmented);
-		imshow("seg", segmented);
+		//imshow("seg", segmented);
 		compareMetrics(table, segmented, "../Dataset"+name[i], LAST);
-		waitKey(0);
+		//waitKey(0);
 	}
 	return 0;
 }

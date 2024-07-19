@@ -79,12 +79,17 @@ void radiusInterval(float &min_radius, float &max_radius, const Vec<Point2f, 4> 
 	float mean_radius = (RADIUS_CM/DIAGONAL_CM) * long_diag_px;
 	//mean_radius = mean_radius - (mean_radius/15)*(1 - percentage_slope);
 
-	const float PRECISION = 3;
+	const float PRECISION = 1;
 
 	min_radius = mean_radius - (mean_radius*percentage_slope) - PRECISION;
 	max_radius = mean_radius + (mean_radius*percentage_slope) + PRECISION;
 
-	cout << "RADIUS: min: " << min_radius << ", medium: " << mean_radius << ", max: " << max_radius << endl;
+	if(abs(min_radius - max_radius) < 3) {
+		min_radius -= 2;
+		max_radius += 2;
+	}
+
+	//cout << "RADIUS: min: " << min_radius << ", medium: " << mean_radius << ", max: " << max_radius << endl;
 }
 
 /**

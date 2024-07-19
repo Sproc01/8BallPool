@@ -9,8 +9,6 @@
 using namespace cv;
 using namespace std;
 
-//TODO: error if img/transform empty?
-
 /**
  * @brief compute the original image transformed and cropped to the table.
  * Apply the transformation (warpPerspective) to the image in input and crop it in the minimap
@@ -57,15 +55,12 @@ Mat computeTransformation(const Mat& img, Vec<Point2f, 4>  &img_corners) {
     if(img.empty())
         throw invalid_argument("Empty image in input");
 
-    //TODO: map corners as arguments?
-    Vec<Point2f, 4> map_corners = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
-
     //compute perspective transform
     Mat transform = getPerspectiveTransform(img_corners, map_corners);
 
     //apply transformation considering corners such as top-left is the first one, followed by a long table side
     Mat tableSegmentedTransformed = imgTransformedCropped(img, transform);
-    //imshow("Img transformed cropped", imgTransformed);
+    //imshow("Img transformed cropped", tableSegmentedTransformed);
 
     //check if the transformation produces the table oriented correctly (in horizontal direction)
     if(!checkHorizontalTable(tableSegmentedTransformed)) {
@@ -124,8 +119,6 @@ Mat drawMinimap(Mat &minimap_with_track, const Mat &transform, Ptr<vector<Ball>>
     perspectiveTransform(img_balls_pos, map_balls_pos, transform);
     vector<Point2f> map_prec_balls_pos;
     perspectiveTransform(img_prec_balls_pos, map_prec_balls_pos, transform);
-
-    Vec<Point2f, 4> map_corners = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
 
     //draw tracking lines
     for(int i = 0; i < balls->size(); i++) {

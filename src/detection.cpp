@@ -522,4 +522,10 @@ void detectBalls(const Mat &frame, Table &table){
 
 	line(frameRect, tableCornersInt[0], tableCornersInt[3], border_color, 2, LINE_AA);
 	imshow("detected rectangles", frameRect);
+
+	/*
+	//TODO: remove
+	int x = rand()*5000;
+	imwrite("../output_detection/temp/" + to_string(x) + ".png", frameRect);
+	*/
 }

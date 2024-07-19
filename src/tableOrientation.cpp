@@ -84,7 +84,7 @@ bool oppositeEdges(const Edge &e1, const Edge &e2) {
  * @param table_img image of the table transformed and cropped to the minimap dimension
  * @return true if the image is horizontal, false otherwise
  */
-bool checkHorizontalTable(Mat table_img){
+bool checkHorizontalTable(const Mat &table_img){
 	if(table_img.empty())
         throw invalid_argument("Empty image in input");
 

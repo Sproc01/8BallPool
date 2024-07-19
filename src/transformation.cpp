@@ -5,14 +5,26 @@
 #include "minimapConstants.h"
 #include "tableOrientation.h"
 #include "util.h"
-#include "segmentation.h"
 
 using namespace cv;
 using namespace std;
 
-//compute the image transformed cropped
+/**
+ * @brief compute the original image transformed and cropped to the table.
+ * Apply the transformation (warpPerspective) to the image in input and crop it in the minimap
+ * table coordinates.
+ * @param img original image to transform.
+ * @param transform transformation to apply to the image.
+ * @return image with the dimension of the minimap image, transformed and cropped.
+ * @throw invalid_argument if the image in input is empty
+ * @throw invalid_argument if the transformation matrix in input is empty
+ */
 Mat imgTransformedCropped(const Mat &img, const Mat &transform) {
-    Vec<Point2f, 4> map_corners = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
+    if(img.empty())
+        throw invalid_argument("Empty image in input");
+
+    if(transform.empty())
+        throw invalid_argument("Empty transformation matrix in input");
 
     //img transformed with perspective
     Mat img_transformed;
@@ -26,19 +38,34 @@ Mat imgTransformedCropped(const Mat &img, const Mat &transform) {
     return img_transformed_cropped;
 }
 
-//compute the transformation matrix using perspective transform
-Mat computeTransformation(const Mat& img, const Mat& segmented, Vec<Point2f, 4>  &img_corners) {
-    Vec<Point2f, 4> map_corners = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
+/**
+ * @brief compute the transformation matrix.
+ * Compute the transformation matrix using the corners of the table in the original image and the corners of the table
+ * in the minimap image and with that compute the corrispondent perspective transform. After the first computation,
+ * the correctness of the table orientation is checked, if it is not correct, the transformation is recomputed.
+ * @param img original image used to check the orientation of the table.
+ * @param img_corners corners of the table in the original image.
+ * @return transformation matrix.
+ * @throw invalid_argument if the image in input is empty
+ */
+Mat computeTransformation(const Mat& img, Vec<Point2f, 4>  &img_corners) {
+    if(img.empty())
+        throw invalid_argument("Empty image in input");
 
     //compute perspective transform
     Mat transform = getPerspectiveTransform(img_corners, map_corners);
 
     //apply transformation considering corners such as top-left is the first one, followed by a long table side
-    Mat tableSegmentedTransformed = imgTransformedCropped(segmented, transform);
-    //imshow("Img transformed cropped", imgTransformed);
+    Mat table_segmented_transformed = imgTransformedCropped(img, transform);
+    //imshow("Img transformed cropped", tableSegmentedTransformed);
+
+    Vec<Point2f, 4> table_segmented_transformed_corners =  {Point2f(0, 0),
+                                Point2f(table_segmented_transformed.cols, 0),
+                                Point2f(table_segmented_transformed.cols, table_segmented_transformed.rows),
+                                Point2f(0, table_segmented_transformed.rows)};
 
     //check if the transformation produces the table oriented correctly (in horizontal direction)
-    if(!checkHorizontalTable(tableSegmentedTransformed)) {
+    if(!checkHorizontalTable(table_segmented_transformed, table_segmented_transformed_corners)) {
         //the table is not correctly rotated
 
         //rotate the corners correctly
@@ -52,15 +79,41 @@ Mat computeTransformation(const Mat& img, const Mat& segmented, Vec<Point2f, 4> 
     return transform;
 }
 
-Mat drawMinimap(Mat &minimap_with_track, Mat transform, vector<Ball> balls) {
+/**
+ * @brief draw the balls and their tracking on the minimap.
+ * First compute the current and previous positions of the balls using the transformation matrix.
+ * Draw the tracking lines in the image that will be reused in the next frames. Use a copy of the
+ * previous image to draw the balls with their correct colors.
+ * @param minimap_with_track minimap image in which the tracking lines are kept.
+ * @param transform transformation matrix.
+ * @param balls vector of balls containing their positions in the original image.
+ * @return minimap image with tracking lines and balls.
+ * @throw invalid_argument if the image in input is empty
+ * @throw invalid_argument if the transformation matrix in input is empty
+ * @throw invalid_argument if the balls pointer is a null pointer
+ */
+//TODO: const ptr?
+Mat drawMinimap(Mat &minimap_with_track, const Mat &transform, Ptr<vector<Ball>> balls) {
+    if(minimap_with_track.empty())
+        throw invalid_argument("Empty image in input");
+
+    if(transform.empty())
+        throw invalid_argument("Empty transformation matrix in input");
+
+    if(balls == nullptr)
+        throw invalid_argument("Null pointer");
+
+    if(balls->size() == 0 || balls.empty()) //TODO: if there are no balls the minimap is returned with nothing?
+        return minimap_with_track;
+
     //compute balls and prec balls positions in the image
-    vector<Point2f> img_balls_pos (balls.size());
-    vector<Point2f> img_prec_balls_pos (balls.size());
-    vector<Vec3b> ball_colors (balls.size());
-    for(int i = 0; i < balls.size(); i++) {
-        img_balls_pos[i] = balls[i].getBBoxCenter();
-        ball_colors[i] = getColorFromCategory(balls[i].getCategory());
-        img_prec_balls_pos[i] = balls[i].getBboxCenter_prec();
+    vector<Point2f> img_balls_pos (balls->size());
+    vector<Point2f> img_prec_balls_pos (balls->size());
+    vector<Vec3b> ball_colors (balls->size());
+    for(int i = 0; i < balls->size(); i++) {
+        img_balls_pos[i] = (balls->at(i)).getBBoxCenter();
+        ball_colors[i] = getColorFromCategory((balls->at(i)).getCategory());
+        img_prec_balls_pos[i] = (balls->at(i)).getBboxCenter_prec();
     }
 
     //compute balls and prec balls positions in the map
@@ -69,25 +122,30 @@ Mat drawMinimap(Mat &minimap_with_track, Mat transform, vector<Ball> balls) {
     vector<Point2f> map_prec_balls_pos;
     perspectiveTransform(img_prec_balls_pos, map_prec_balls_pos, transform);
 
-    Vec<Point2f, 4> map_corners = {TOP_LEFT_MAP_CORNER, TOP_RIGHT_MAP_CORNER, BOTTOM_RIGHT_MAP_CORNER, BOTTOM_LEFT_MAP_CORNER};
-
     //draw tracking lines
-    for(int i = 0; i < balls.size(); i++) {
+    for(int i = 0; i < balls->size(); i++) {
         //check if a precedent ball exists, otherwise do not draw a line
-        // TODO set visible to false if the ball is not visible; balls must not be copied!!!
-        if(img_prec_balls_pos[i].x != -1 && img_prec_balls_pos[i].y != -1) {
+        if(img_prec_balls_pos[i].x != -1 && img_prec_balls_pos[i].y != -1 && (balls->at(i)).getVisibility()) {
             if(pointPolygonTest	(map_corners, map_balls_pos[i], false) >= 0
-                && pointPolygonTest	(map_corners, map_prec_balls_pos[i], false) >= 0)
+                && pointPolygonTest	(map_corners, map_prec_balls_pos[i], false) >= 0) {
                 line(minimap_with_track, map_prec_balls_pos[i], map_balls_pos[i], Vec3d(0, 0, 0), 2);
+            }
+            else {
+                (balls->at(i)).setVisibility(false);
+            }
         }
     }
 
     //draw balls in the returned minimap
     Mat minimap_with_balls = minimap_with_track.clone();
-    for(int i = 0; i < balls.size(); i++) {
-        if(pointPolygonTest	(map_corners, map_balls_pos[i], false) >= 0) {
-            circle(minimap_with_balls, map_balls_pos[i], MAP_BALL_RADIUS, ball_colors[i], -1);
-            circle(minimap_with_balls, map_balls_pos[i], MAP_BALL_RADIUS, Vec3d(0, 0, 0), 2);
+    for(int i = 0; i < balls->size(); i++) {
+        if((balls->at(i)).getVisibility()) {
+            if(pointPolygonTest	(map_corners, map_balls_pos[i], false) >= 0) {
+                circle(minimap_with_balls, map_balls_pos[i], MAP_BALL_RADIUS, ball_colors[i], -1);
+                circle(minimap_with_balls, map_balls_pos[i], MAP_BALL_RADIUS, Vec3d(0, 0, 0), 2);
+            }
+            else
+                (balls->at(i)).setVisibility(false);
         }
     }
 	return minimap_with_balls;

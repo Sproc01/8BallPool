@@ -42,7 +42,12 @@ target_link_libraries(InteractiveTracking
 add_executable(ShowSegmentationColored src/showSegmentationColored.cpp)
 target_link_libraries(ShowSegmentationColored
     ${OpenCV_LIBS}
+    Ball
+    Table
+    Detection
+    Segmentation
     Utils
+    Metrics
 )
 
 add_executable(TestAllClip src/TestAllClip.cpp)

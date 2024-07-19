@@ -1,13 +1,22 @@
 #include <opencv2/highgui.hpp>
-#include "category.h"
+#include "ball.h"
+#include "table.h"
+#include "detection.h"
+#include "segmentation.h"
+#include "transformation.h"
 #include "minimapConstants.h"
+#include "tracking.h"
+#include "metrics.h"
+#include "util.h"
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 using namespace cv;
 
+// simple main to see the ground truths and to test the code for the metrics
 int main(){
-	Mat segmented = imread("../Dataset/game1_clip1/masks/frame_first.png", IMREAD_GRAYSCALE);
+	Mat segmented = imread("../Dataset/game2_clip1/masks/frame_last.png", IMREAD_GRAYSCALE);
 
 	Mat segmentedColored(segmented.rows, segmented.cols, CV_8UC3);
 	for (int i = 0; i < segmented.rows; i++){
@@ -38,6 +47,20 @@ int main(){
 		}
 	}
 	imshow("segmentedColored", segmentedColored);
+	const string str = "../Dataset/game2_clip1/bounding_boxes/frame_last_bbox.txt";
+	ifstream file(str);
+	Table table;
+	vector<Ball> bboxes;
+	string line;
+	while (getline(file, line)){
+		istringstream iss(line);
+		int x, y, w, h;
+		short cat;
+		iss >> x >> y >> w >> h >> cat;
+		bboxes.push_back(Ball(Rect(x, y, w, h), static_cast<Category>(cat)));
+	}
+	table.addBalls(bboxes);
+	compareMetrics(table, segmentedColored, "../Dataset/game2_clip1", LAST);
 	waitKey();
 	return 0;
 }

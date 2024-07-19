@@ -202,7 +202,7 @@ Vec2b mostFrequentHueColor(const Mat &img){
  * @param res output image containing the input image with superimposition of the minimap.
  * @throw invalid_argument if frame or minimap_with_balls are empty or if the two images have different number of channels.
  */
-void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res){
+void createOutputImage(const Mat &frame, const Mat &minimap_with_balls, Mat &res){
 
 	if(frame.empty() || minimap_with_balls.empty())
 		throw invalid_argument("Empty frame or minimap in input");
@@ -233,7 +233,7 @@ void createOutputImage(const Mat& frame, const Mat& minimap_with_balls, Mat& res
  * @throw invalid_argument if the input image is empty or if colors is empty
  * 						   	or if inputImage has a number of channels different from 3.
  */
-void kMeansClustering(const Mat inputImage, const vector<Vec3b> &colors, Mat& clusteredImage){
+void kMeansClustering(const Mat &inputImage, const vector<Vec3b> &colors, Mat &clusteredImage){
 
 	if(colors.size() == 0)
 		throw invalid_argument("Empty color vector");

@@ -71,7 +71,7 @@ void equationFormula(float x1, float y1, float x2, float y2, float &a, float &b,
  * @param res output image containing the input image with superimposition of the minimap.
  * @throw invalid_argument if frame or minimap_with_balls are empty or if the two images have different number of channels.
  */
-void createOutputImage(const cv::Mat& frame, const cv::Mat& minimap_with_balls, cv::Mat& res);
+void createOutputImage(const cv::Mat &frame, const cv::Mat &minimap_with_balls, cv::Mat &res);
 
 /**
  * @brief do the clustering by using only color information on the input image.
@@ -82,6 +82,6 @@ void createOutputImage(const cv::Mat& frame, const cv::Mat& minimap_with_balls, 
  * @throw invalid_argument if the input image is empty or if colors is empty
  * 							or if inputImage has a number of channels different from 3.
  */
-void kMeansClustering(const cv::Mat inputImage, const std::vector<cv::Vec3b> &colors, cv::Mat& clusteredImage);
+void kMeansClustering(const cv::Mat &inputImage, const std::vector<cv::Vec3b> &colors, cv::Mat &clusteredImage);
 
 #endif //UTIL_H

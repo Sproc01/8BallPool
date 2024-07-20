@@ -4,6 +4,7 @@
 #include <iostream>
 #include <opencv2/features2d.hpp>
 #include <math.h>
+#include <stdexcept>
 
 #include "table.h"
 #include "ball.h"

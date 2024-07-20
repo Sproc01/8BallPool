@@ -1,7 +1,11 @@
 //Author: Michele Sprocatti
+#include <stdexcept>
 #include <opencv2/opencv.hpp>
 #include "util.h"
 #include "minimapConstants.h"
+#include "ball.h"
+
+
 
 using namespace std;
 using namespace cv;

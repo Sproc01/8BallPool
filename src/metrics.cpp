@@ -3,6 +3,7 @@
 #include "metrics.h"
 #include "category.h"
 #include "table.h"
+#include "ball.h"
 #include "minimapConstants.h"
 #include <stdexcept>
 #include <filesystem>

@@ -92,8 +92,7 @@ Mat computeTransformation(const Mat& img, Vec<Point2f, 4>  &img_corners) {
  * @throw invalid_argument if the transformation matrix in input is empty
  * @throw invalid_argument if the balls pointer is a null pointer
  */
-//TODO: const ptr?
-Mat drawMinimap(Mat &minimap_with_track, const Mat &transform, const Ptr<vector<Ball>> balls) {
+Mat drawMinimap(Mat &minimap_with_track, const Mat &transform, Ptr<vector<Ball>> balls) {
     if(minimap_with_track.empty())
         throw invalid_argument("Empty image in input");
 

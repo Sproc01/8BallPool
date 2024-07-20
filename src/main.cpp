@@ -51,7 +51,7 @@ int main(int argc, char* argv[]){
 		videoPath = filesystem::path(argv[1]);
 	}
 	else if (argc == 1) { //TODO: remove at the end
-		videoPath = filesystem::path("../Dataset/game1_clip1/game1_clip1.mp4");
+		// videoPath = filesystem::path("../Dataset/game1_clip1/game1_clip1.mp4");
 		videoPath = filesystem::path("../Dataset/game1_clip1_vertical/game1_clip1_vertical.mp4");
 	}
 	else {
@@ -103,8 +103,11 @@ int main(int argc, char* argv[]){
 	undoInscript(segmented, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	imshow("segmentedBalls", segmented);
 
+
 	cout << "Metrics first frame:" << endl;
-	unrotateTable(table, segmented);
+	if (toRotate) {
+		unrotateTable(table, ORIGINAL_WIDTH, ORIGINAL_HEIGHT);
+	}
 	metricsAP = compareMetricsAP(table, videoPath.parent_path().string(), FIRST);
 	metricsIoU = compareMetricsIoU(segmented, videoPath.parent_path().string(), FIRST);
 	for(int i = 0; i < metricsAP.size(); i++)
@@ -112,7 +115,9 @@ int main(int argc, char* argv[]){
 
 	for(int i = 0; i < metricsIoU.size(); i++)
 		cout << "IoU for category " << i << ": " << metricsIoU[i] << endl;
-	rotateTable(table, segmented);
+	if (toRotate) {
+		rotateTable(table, TABLE_WIDTH, TABLE_HEIGHT);
+	}
 
 
 	//TRANSFORMATION
@@ -181,7 +186,9 @@ int main(int argc, char* argv[]){
 	imshow("segmentedBalls", segmented);
 
 	cout << "Metrics last frame:" << endl;
-	unrotateTable(table, segmented);
+	if (toRotate) {
+		unrotateTable(table, ORIGINAL_WIDTH, ORIGINAL_HEIGHT);
+	}
 	metricsAP = compareMetricsAP(table, videoPath.parent_path().string(), LAST);
 	metricsIoU = compareMetricsIoU(segmented, videoPath.parent_path().string(), LAST);
 
@@ -190,7 +197,9 @@ int main(int argc, char* argv[]){
 
 	for(int i = 0; i < metricsIoU.size(); i++)
 		cout << "IoU for category " << static_cast<Category>(i) << ": " << metricsIoU[i] << endl;
-	rotateTable(table, segmented);
+	if (toRotate) {
+		rotateTable(table, TABLE_WIDTH, TABLE_HEIGHT);
+	}
 
 
 	// write to a temp file first, then rename to the final name

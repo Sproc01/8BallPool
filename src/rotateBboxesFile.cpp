@@ -90,23 +90,25 @@ Rect unrotateRect(Rect rect, const Mat &destImg) {
 }
 
 void main() {
-	auto gts = readGroundTruthBbox("../Dataset/game1_clip1_vertical/bounding_boxes/frame_first_bbox.txt");
-	// auto gts = readGroundTruthBbox("../Dataset/game1_clip1_vertical/bounding_boxes/frame_last_bbox.txt");
+	Mat vertImg(1024, 576, CV_8UC3, Scalar(0, 0, 0));
+	Mat horImg(576, 1024, CV_8UC3, Scalar(0, 0, 0));
+
+	// string filename = "../Dataset/game1_clip1_vertical/bounding_boxes/frame_first_bbox.txt";
+	string filename = "../Dataset/game1_clip1_vertical/bounding_boxes/frame_last_bbox.txt";
+
+	auto gts = readGroundTruthBbox(filename);
 
 	vector<pair<Rect,Category>> rotated;
 
-	Mat img(1024, 576, CV_8UC3, Scalar(0, 0, 0));
-
 	for (auto gt : gts){
 		cout << "Rect: " << gt.first << " Category: " << gt.second << endl;
-		// rotated.push_back(make_pair(rotateRect(gt.first, img), gt.second));
-		rotated.push_back(make_pair(unrotateRect(gt.first, img), gt.second));
+		rotated.push_back(make_pair(rotateRect(gt.first, vertImg), gt.second));
+		// rotated.push_back(make_pair(unrotateRect(gt.first, horImg), gt.second));
 		cout<< "Rotated: " << rotated.back().first << " Category: " << rotated.back().second << endl;
 	}
 
 	// write to file one bounding box per line
-	ofstream file("../Dataset/game1_clip1_vertical/bounding_boxes/frame_first_bbox_rotated.txt");
-	// ofstream file("../Dataset/game1_clip1_vertical/bounding_boxes/frame_last_bbox_rotated.txt");
+	ofstream file(filename);
 	for (auto r : rotated){
 		file << r.first.x << " " << r.first.y << " " << r.first.width << " " << r.first.height << " " << static_cast<int>(r.second) << endl;
 	}

@@ -13,7 +13,7 @@ void calculateInscriptionParameters(const cv::Mat &img, int targetWidth, int tar
 void doInscript(cv::Mat &img, int targetWidth, int targetHeight, const bool &toRotate, const bool &toResize, const short &leftBorderLength, const short &rightBorderLength);
 void undoInscript(cv::Mat &img, int originalWidth, int originalHeight, const bool &toRotate, const bool &toResize, const short &leftBorderLength, const short &rightBorderLength);
 
-void rotateTable(Table &table, const cv::Mat &destImg, bool changeBboxPrec = false);
-void unrotateTable(Table &table, const cv::Mat &destImg, bool changeBboxPrec = false);
+void rotateTable(Table &table, int targetWidth, int targetHeight, bool changeBboxPrec  = false);
+void unrotateTable(Table &table, int targetWidth, int targetHeight, bool changeBboxPrec  = false);
 
 #endif //IMAGEROTATION_H

@@ -70,13 +70,13 @@ void undoInscript(Mat &img, int originalWidth, int originalHeight, const bool &t
 /**
  * @brief Find the point in the 90° clockwise rotated image corresponding to the input point.
  * @param point point with still to be rotated image coordinates.
- * @param destImg destination image (used to get its size).
+ * @param destImg destination image (used to get its size).	TODO
  * @return rotated Point2f.
  */
-Point2f rotatePoint(Point2f point, const Mat &destImg) {
+Point2f rotatePoint(Point2f point, int targetWidth, int targetHeight) {
 	float old_row = point.y;
 	point.y = point.x;
-	point.x = destImg.cols - old_row;
+	point.x = targetWidth - old_row;
 
 	return point;
 }
@@ -84,12 +84,12 @@ Point2f rotatePoint(Point2f point, const Mat &destImg) {
 /**
  * @brief Find the point in the 90° counter-clockwise rotated image corresponding to the input point.
  * @param point point with still to be "unrotated" image coordinates.
- * @param destImg destination image (used to get its size).
+ * @param destImg destination image (used to get its size).	TODO
  * @return "unrotated" Point2f.
  */
-Point2f unrotatePoint(Point2f point, const Mat &destImg) {
+Point2f unrotatePoint(Point2f point, int targetWidth, int targetHeight) {
 	float old_row = point.y;
-	point.y = destImg.rows - point.x;
+	point.y = targetHeight - point.x;
 	point.x = old_row;
 
 	return point;
@@ -98,33 +98,33 @@ Point2f unrotatePoint(Point2f point, const Mat &destImg) {
 /**
  * @brief Find the same rect in the 90° clockwise rotated image corresponding to the input point.
  * @param rect Rect with still to be rotated image coordinates.
- * @param destImg destination image (used to get its size).
+ * @param destImg destination image (used to get its size).	TODO
  * @return rotated Rect.
  */
-Rect rotateRect(Rect rect, const Mat &destImg) {
+Rect rotateRect(Rect rect, int targetWidth, int targetHeight) {
 	Point2f oldTR(rect.tl().x + rect.width, rect.tl().y);
 	Point2f oldBL(rect.tl().x, rect.tl().y + rect.height);
 
-	return Rect(rotatePoint(oldTR, destImg), rotatePoint(oldBL, destImg));
+	return Rect(rotatePoint(oldTR, targetWidth, targetHeight), rotatePoint(oldBL, targetWidth, targetHeight));
 }
 
 /**
  * @brief Find the same rect in the 90° counter-clockwise rotated image corresponding to the input point.
  * @param rect Rect with still to be unrotated image coordinates.
- * @param destImg destination image (used to get its size).
+ * @param destImg destination image (used to get its size).	TODO
  * @return "unrotated" Rect.
  */
-Rect unrotateRect(Rect rect, const Mat &destImg) {
+Rect unrotateRect(Rect rect, int targetWidth, int targetHeight) {
 	Point2f oldTR(rect.tl().x + rect.width, rect.tl().y);
 	Point2f oldBL(rect.tl().x, rect.tl().y + rect.height);
 
-	return Rect(unrotatePoint(oldTR, destImg), unrotatePoint(oldBL, destImg));
+	return Rect(unrotatePoint(oldTR, targetWidth, targetHeight), unrotatePoint(oldBL, targetWidth, targetHeight));
 }
 
-void rotateTable(Table &table, const Mat &destImg, bool changeBboxPrec /* = false */) {
+void rotateTable(Table &table, int targetWidth, int targetHeight, bool changeBboxPrec /* = false */) {
 	Vec<Point2f, 4> boundaries = table.getBoundaries();
 	for (size_t i = 0; i < 4; ++i) {
-		boundaries[i] = rotatePoint(boundaries[i], destImg);
+		boundaries[i] = rotatePoint(boundaries[i], targetWidth, targetHeight);
 	}
 	table.setBoundaries(boundaries);
 
@@ -132,17 +132,17 @@ void rotateTable(Table &table, const Mat &destImg, bool changeBboxPrec /* = fals
 
 	Ptr<vector<Ball>> balls = table.ballsPtr();
 	for (Ball &ball : *balls) {
-		ball.setBbox(rotateRect(ball.getBbox(), destImg));
+		ball.setBbox(rotateRect(ball.getBbox(), targetWidth, targetHeight));
 		if (changeBboxPrec) {
-			ball.setBbox_prec(rotateRect(ball.getBbox_prec(), destImg));
+			ball.setBbox_prec(rotateRect(ball.getBbox_prec(), targetWidth, targetHeight));
 		}
 	}
 }
 
-void unrotateTable(Table &table, const Mat &destImg, bool changeBboxPrec /* = false */) {
+void unrotateTable(Table &table, int targetWidth, int targetHeight, bool changeBboxPrec /* = false */) {
 	Vec<Point2f, 4> boundaries = table.getBoundaries();
 	for (size_t i = 0; i < 4; ++i) {
-		boundaries[i] = unrotatePoint(boundaries[i], destImg);
+		boundaries[i] = unrotatePoint(boundaries[i], targetWidth, targetHeight);
 	}
 	table.setBoundaries(boundaries);
 
@@ -150,9 +150,9 @@ void unrotateTable(Table &table, const Mat &destImg, bool changeBboxPrec /* = fa
 
 	Ptr<vector<Ball>> balls = table.ballsPtr();
 	for (Ball &ball : *balls) {
-		ball.setBbox(unrotateRect(ball.getBbox(), destImg));
+		ball.setBbox(unrotateRect(ball.getBbox(), targetWidth, targetHeight));
 		if (changeBboxPrec) {
-			ball.setBbox_prec(unrotateRect(ball.getBbox_prec(), destImg));
+			ball.setBbox_prec(unrotateRect(ball.getBbox_prec(), targetWidth, targetHeight));
 		}
 	}
 }

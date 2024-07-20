@@ -94,11 +94,6 @@ target_link_libraries(${PROJECT_NAME}
     Utils
 )
 
-add_executable(InteractiveTracking src/testTrackingInteractive.cpp)
-target_link_libraries(InteractiveTracking
-    ${OpenCV_LIBS}
-)
-
 add_executable(ShowSegmentationColored src/showSegmentationColored.cpp)
 target_link_libraries(ShowSegmentationColored
     ${OpenCV_LIBS}

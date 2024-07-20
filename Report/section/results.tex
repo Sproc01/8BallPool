@@ -4,7 +4,7 @@ Table detection exhibits very high accuracy, in particular for each initial fram
 In contrast, ball detection is influenced by k-means clustering. To achieve consistent and satisfactory results, a fixed random seed is incorporated into the code. This method results in an average mAP of 0.51 for the dataset.
 
 \subsection{Quantitative results}
-By executing the code in \textit{computePerformance}, the performance of the detection and segmentation are computed.
+The \textit{computePerformance} executable calculates the detection and segmentation performance across the dataset.
 \begin{table}
 	\centering
     \begin{tabular}{|c|c|}
@@ -17,6 +17,10 @@ By executing the code in \textit{computePerformance}, the performance of the det
     \caption{Performance of the detection and segmentation}
     \label{tab: performance}
 \end{table}
+While the method successfully detects tables, backgrounds, and both white and black balls with high Intersection
+over Union (IoU), it struggles with solid and striped balls due to inaccurate classification.
+This leads to a lower overall mean Average Precision (mAP) that is focused only on balls,
+but a good mean Intersection over Union (mIoU) because the background and playing field are identified well.
 
 \subsection{Qualitative results}
 Below some qualitative results are presented.

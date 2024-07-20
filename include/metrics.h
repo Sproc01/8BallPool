@@ -10,12 +10,7 @@
 #include "table.h"
 #include "category.h"
 #include "ball.h"
-
-enum FrameN {
-  FIRST = 0,
-  MIDDLE,
-  LAST
-};
+#include "util.h"
 
 const float MAP_IOU_THRESHOLD = 0.5;
 

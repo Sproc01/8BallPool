@@ -10,6 +10,7 @@
 #include "ball.h"
 #include "table.h"
 #include "detection.h"
+#include "imageRotation.h"
 #include "segmentation.h"
 #include "transformation.h"
 #include "minimapConstants.h"
@@ -46,13 +47,12 @@ int main(int argc, char* argv[]){
 	vector<double> metricsIoU;
 
 	//INPUT
-	// TODO rotate image if vertical; resize to be inscribed in current sizes, centered in the Mat; use this to calculate minimap; write to video file the original unrotated, unscaled image with the calculated image superimposed
 	if (argc == 2){
 		videoPath = filesystem::path(argv[1]);
 	}
 	else if (argc == 1) { //TODO: remove at the end
 		videoPath = filesystem::path("../Dataset/game1_clip1/game1_clip1.mp4");
-		videoPath = filesystem::path("../Dataset/other_videos_not_deliver/game1_clip1_vertical.mp4");
+		videoPath = filesystem::path("../Dataset/game1_clip1_vertical/game1_clip1_vertical.mp4");
 	}
 	else {
 		cout << "Error of number of parameters: insert one parameter" << endl;
@@ -92,6 +92,7 @@ int main(int argc, char* argv[]){
 	segmentTable(frame, table, segmented);
 	undoInscript(segmented, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	imshow("segmentedTable", segmented);
+	doInscript(segmented, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 
 	//DETECT AND SEGMENT BALLS
 	detectBalls(frame, table, detected);
@@ -101,7 +102,9 @@ int main(int argc, char* argv[]){
 	segmentBalls(segmented, table.ballsPtr(), segmented);
 	undoInscript(segmented, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	imshow("segmentedBalls", segmented);
+
 	cout << "Metrics first frame:" << endl;
+	unrotateTable(table, segmented, FIRST);
 	metricsAP = compareMetricsAP(table, videoPath.parent_path().string(), FIRST);
 	metricsIoU = compareMetricsIoU(segmented, videoPath.parent_path().string(), FIRST);
 	for(int i = 0; i < metricsAP.size(); i++)
@@ -109,6 +112,7 @@ int main(int argc, char* argv[]){
 
 	for(int i = 0; i < metricsIoU.size(); i++)
 		cout << "IoU for category " << i << ": " << metricsIoU[i] << endl;
+	rotateTable(table, segmented, FIRST);
 
 
 	//TRANSFORMATION
@@ -171,11 +175,13 @@ int main(int argc, char* argv[]){
 	detectBalls(lastFrame, table, detected);
 	segmentTable(lastFrame, table, segmented);
 	undoInscript(detected, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
-	imshow("detected balls", detected);
+	imshow("detectedBalls", detected);
 	segmentBalls(segmented, table.ballsPtr(), segmented);
 	undoInscript(segmented, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	imshow("segmentedBalls", segmented);
+
 	cout << "Metrics last frame:" << endl;
+	unrotateTable(table, segmented, LAST);
 	metricsAP = compareMetricsAP(table, videoPath.parent_path().string(), LAST);
 	metricsIoU = compareMetricsIoU(segmented, videoPath.parent_path().string(), LAST);
 
@@ -184,9 +190,13 @@ int main(int argc, char* argv[]){
 
 	for(int i = 0; i < metricsIoU.size(); i++)
 		cout << "IoU for category " << static_cast<Category>(i) << ": " << metricsIoU[i] << endl;
-	waitKey(0);
+	rotateTable(table, segmented, LAST);
+
+
 	// write to a temp file first, then rename to the final name
 	filesystem::copy(tempOutputPath, outputPath, filesystem::copy_options::overwrite_existing);
 	filesystem::remove(tempOutputPath);
+
+	waitKey(0);
 	return 0;
 }

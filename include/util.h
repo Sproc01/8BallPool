@@ -7,6 +7,12 @@
 #include "category.h"
 #include "ball.h"
 
+enum FrameN {
+ FIRST = 0,
+ MIDDLE,
+ LAST
+};
+
 /**
  * @brief compute the center between two points.
  * @param p1 first point.
@@ -111,10 +117,11 @@ void separateResultGT(std::vector<std::pair<cv::Rect, Category>> gt, std::vector
 void separateResultBalls(cv::Ptr<std::vector<Ball>> balls, std::vector<Ball> &white, std::vector<Ball> &black,
 							std::vector<Ball> &solid, std::vector<Ball> &striped);
 
-void calculateInscriptionParameters(const cv::Mat &img, int targetWidth, int targetHeight, bool &toRotate, bool &toResize, short &leftBorderLength, short &rightBorderLength);
-
-void doInscript(cv::Mat &img, int targetWidth, int targetHeight, const bool &toRotate, const bool &toResize, const short &leftBorderLength, const short &rightBorderLength);
-
-void undoInscript(cv::Mat &img, int originalWidth, int originalHeight, const bool &toRotate, const bool &toResize, const short &leftBorderLength, const short &rightBorderLength);
+/**
+ * @brief check if the image is horizontal.
+ * @param img image.
+ * @return true if the image is horizontal, false otherwise.
+ */
+bool isHorizontal(const cv::Mat &img);
 
 #endif //UTIL_H

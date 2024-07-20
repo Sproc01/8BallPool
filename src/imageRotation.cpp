@@ -73,10 +73,10 @@ void undoInscriptImage(Mat &img, int originalWidth, int originalHeight, const bo
  * @param destImg destination image (used to get its size).	TODO
  * @return rotated Point2f.
  */
-Point2f rotatePoint(Point2f point, int targetWidth, int targetHeight) {
+Point2f rotatePoint(Point2f point, int destWidth, int destHeight) {
 	float old_row = point.y;
 	point.y = point.x;
-	point.x = targetWidth - old_row;
+	point.x = destWidth - old_row;
 
 	return point;
 }
@@ -87,9 +87,9 @@ Point2f rotatePoint(Point2f point, int targetWidth, int targetHeight) {
  * @param destImg destination image (used to get its size).	TODO
  * @return "unrotated" Point2f.
  */
-Point2f unrotatePoint(Point2f point, int targetWidth, int targetHeight) {
+Point2f unrotatePoint(Point2f point, int destWidth, int destHeight) {
 	float old_row = point.y;
-	point.y = targetHeight - point.x;
+	point.y = destHeight - point.x;
 	point.x = old_row;
 
 	return point;
@@ -101,11 +101,11 @@ Point2f unrotatePoint(Point2f point, int targetWidth, int targetHeight) {
  * @param destImg destination image (used to get its size).	TODO
  * @return rotated Rect.
  */
-Rect rotateRect(Rect rect, int targetWidth, int targetHeight) {
+Rect rotateRect(Rect rect, int destWidth, int destHeight) {
 	Point2f oldTR(rect.tl().x + rect.width, rect.tl().y);
 	Point2f oldBL(rect.tl().x, rect.tl().y + rect.height);
 
-	return Rect(rotatePoint(oldTR, targetWidth, targetHeight), rotatePoint(oldBL, targetWidth, targetHeight));
+	return Rect(rotatePoint(oldTR, destWidth, destHeight), rotatePoint(oldBL, destWidth, destHeight));
 }
 
 /**
@@ -114,11 +114,11 @@ Rect rotateRect(Rect rect, int targetWidth, int targetHeight) {
  * @param destImg destination image (used to get its size).	TODO
  * @return "unrotated" Rect.
  */
-Rect unrotateRect(Rect rect, int targetWidth, int targetHeight) {
+Rect unrotateRect(Rect rect, int destWidth, int destHeight) {
 	Point2f oldTR(rect.tl().x + rect.width, rect.tl().y);
 	Point2f oldBL(rect.tl().x, rect.tl().y + rect.height);
 
-	return Rect(unrotatePoint(oldTR, targetWidth, targetHeight), unrotatePoint(oldBL, targetWidth, targetHeight));
+	return Rect(unrotatePoint(oldTR, destWidth, destHeight), unrotatePoint(oldBL, destWidth, destHeight));
 }
 
 void doInscriptTableObject(Table &table, int targetWidth, int targetHeight, int originalWidth, int originalHeight, const bool &toRotate, const bool &toResize, const short &leftBorderLength, const short &rightBorderLength, bool changeBboxPrec /* = false */) {
@@ -179,6 +179,7 @@ void undoInscriptTableObject(Table &table, int targetWidth, int targetHeight, in
 		for (size_t i = 0; i < 4; ++i) {
 			boundaries[i].x -= leftBorderLength;
 		}
+		table.setBoundaries(boundaries);
 
 		for (Ball &ball : *balls) {
 			ball.setBbox(Rect(ball.getBbox().tl().x - leftBorderLength, ball.getBbox().tl().y, ball.getBbox().width, ball.getBbox().height));
@@ -193,6 +194,7 @@ void undoInscriptTableObject(Table &table, int targetWidth, int targetHeight, in
 			boundaries[i].x = boundaries[i].x/targetHeight*originalHeight;
 			boundaries[i].y = boundaries[i].y/targetHeight*originalHeight;
 		}
+		table.setBoundaries(boundaries);
 
 		for (Ball &ball : *balls) {
 			ball.setBbox(Rect(ball.getBbox().tl().x/targetHeight*originalHeight, ball.getBbox().tl().y/targetHeight*originalHeight, ball.getBbox().width/targetHeight*originalHeight, ball.getBbox().height/targetHeight*originalHeight));
@@ -204,14 +206,14 @@ void undoInscriptTableObject(Table &table, int targetWidth, int targetHeight, in
 
 	if (toRotate) {
 		for (size_t i = 0; i < 4; ++i) {
-			boundaries[i] = unrotatePoint(boundaries[i], targetWidth, targetHeight);
+			boundaries[i] = unrotatePoint(boundaries[i], originalWidth, originalHeight);
 		}
 		table.setBoundaries(boundaries);
 
 		for (Ball &ball : *balls) {
-			ball.setBbox(unrotateRect(ball.getBbox(), targetWidth, targetHeight));
+			ball.setBbox(unrotateRect(ball.getBbox(), originalWidth, originalHeight));
 			if (changeBboxPrec) {
-				ball.setBbox_prec(unrotateRect(ball.getBbox_prec(), targetWidth, targetHeight));
+				ball.setBbox_prec(unrotateRect(ball.getBbox_prec(), originalWidth, originalHeight));
 			}
 		}
 	}

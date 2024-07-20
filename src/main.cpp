@@ -113,7 +113,7 @@ int main(int argc, char* argv[]){
 
 	for(int i = 0; i < metricsIoU.size(); i++)
 		cout << "IoU for category " << i << ": " << metricsIoU[i] << endl;
-	doInscriptTableObject(table, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
+	doInscriptTableObject(table, TABLE_WIDTH, TABLE_HEIGHT, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 
 
 	//TRANSFORMATION
@@ -182,9 +182,7 @@ int main(int argc, char* argv[]){
 	imshow("segmentedBalls", segmented);
 
 	cout << "Metrics last frame:" << endl;
-	if (toRotate) {
-		undoInscriptTableObject(table, ORIGINAL_WIDTH, ORIGINAL_HEIGHT);
-	}
+	undoInscriptTableObject(table, TABLE_WIDTH, TABLE_HEIGHT, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	metricsAP = compareMetricsAP(table, videoPath.parent_path().string(), LAST);
 	metricsIoU = compareMetricsIoU(segmented, videoPath.parent_path().string(), LAST);
 
@@ -193,9 +191,7 @@ int main(int argc, char* argv[]){
 
 	for(int i = 0; i < metricsIoU.size(); i++)
 		cout << "IoU for category " << static_cast<Category>(i) << ": " << metricsIoU[i] << endl;
-	if (toRotate) {
-		doInscriptTableObject(table, TABLE_WIDTH, TABLE_HEIGHT);
-	}
+	doInscriptTableObject(table, TABLE_WIDTH, TABLE_HEIGHT, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 
 
 	// write to a temp file first, then rename to the final name

@@ -141,10 +141,7 @@ bool checkHorizontalTable(const Mat &table_img, Vec<Point2f, 4> corners){
     for(int i = 0; i < 4; i++) {
         rectangle(mask_img_rectangles, edges[i].center_rect, Scalar(0, 0, 255), 1, LINE_AA);
     }
-    imshow("Rectangles on pools (mask)", mask_img_rectangles);
-    imwrite("../Report/images/mask_rect.jpg", mask_img_rectangles);
-    waitKey(0);
-
+    //imshow("Rectangles on pools (mask)", mask_img_rectangles);
 
     //compute the rects with and without the pools
     //compute the percentile of rectangle with color close to the table background

@@ -49,7 +49,7 @@ int main(int argc, char* argv[]){
 		videoPath = filesystem::path(argv[1]);
 	}
 	else if (argc == 1) { //TODO: remove at the end
-		videoPath = filesystem::path("../Dataset/game1_clip1/game1_clip1.mp4");
+		videoPath = filesystem::path("../Dataset/game2_clip1/game2_clip1.mp4");
 	}
 	else {
 		cout << "Error of number of parameters: insert one parameter" << endl;
@@ -148,6 +148,7 @@ int main(int argc, char* argv[]){
 		previousFrame = frame.clone();
 		ret = vid.read(frame);
 	}
+
 	time_point stop = high_resolution_clock::now();
 	minutes duration = duration_cast<minutes>(stop - start);
 	cout << "Time to create the video: " << duration.count() <<" minutes" << endl;

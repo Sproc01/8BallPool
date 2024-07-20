@@ -9,8 +9,6 @@
 #include <vector>
 #include "ball.h"
 
-constexpr unsigned short MAX_BALLS = 16;
-
 
 class Table {
 	cv::Vec<cv::Point2f, 4> boundaries_;

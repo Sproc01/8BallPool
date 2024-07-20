@@ -75,8 +75,8 @@ void undoInscript(Mat &img, int originalWidth, int originalHeight, const bool &t
  */
 Point2f rotatePoint(Point2f point, const Mat &destImg) {
 	float old_row = point.y;
-	point.y = destImg.cols - point.x;
-	point.x = old_row;
+	point.y = point.x;
+	point.x = destImg.cols - old_row;
 
 	return point;
 }
@@ -105,10 +105,7 @@ Rect rotateRect(Rect rect, const Mat &destImg) {
 	Point2f oldTR(rect.tl().x + rect.width, rect.tl().y);
 	Point2f oldBL(rect.tl().x, rect.tl().y + rect.height);
 
-	rotatePoint(oldTR, destImg);
-	rotatePoint(oldBL, destImg);
-
-	return Rect(oldTR, oldBL);
+	return Rect(rotatePoint(oldTR, destImg), rotatePoint(oldBL, destImg));
 }
 
 /**
@@ -121,10 +118,7 @@ Rect unrotateRect(Rect rect, const Mat &destImg) {
 	Point2f oldTR(rect.tl().x + rect.width, rect.tl().y);
 	Point2f oldBL(rect.tl().x, rect.tl().y + rect.height);
 
-	unrotatePoint(oldTR, destImg);
-	unrotatePoint(oldBL, destImg);
-
-	return Rect(oldTR, oldBL);
+	return Rect(unrotatePoint(oldTR, destImg), unrotatePoint(oldBL, destImg));
 }
 
 void rotateTable(Table &table, const Mat &destImg, bool changeBboxPrec /* = false */) {

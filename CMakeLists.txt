@@ -128,3 +128,15 @@ target_link_libraries(ComputePerformance
     Utils
     Metrics
 )
+
+add_executable(RotateBbox src/rotateBboxesFile.cpp)
+target_link_libraries(RotateBbox
+    ${OpenCV_LIBS}
+    Utils
+)
+
+add_executable(ShowBB src/showBB.cpp)
+target_link_libraries(ShowBB
+    ${OpenCV_LIBS}
+    Utils
+)

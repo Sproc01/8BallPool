@@ -43,7 +43,7 @@ bool compareByPercentile(const Edge &e1, const Edge &e2)
  * @throw invalid_argument if the rect in input is empty
  */
 double computeTablePercentile(const Mat &mask_img, const Rect &rect) {
-    //TODO: check mask_img and colors
+
 	if(mask_img.empty())
         throw invalid_argument("Empty image in input");
 

@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 find_package(OpenCV REQUIRED)
 
-include_directories(${OpenCV_INCLUDE_DIRS} include/)
+include_directories(${OpenCV_INCLUDE_DIRS} include/ img/)
 
 add_library(Ball include/ball.h src/ball.cpp)
 add_library(Table include/table.h src/table.cpp)
@@ -17,7 +17,7 @@ add_library(TableOrientation include/tableOrientation.h src/tableOrientation.cpp
 add_library(Transformation include/transformation.h src/transformation.cpp)
 add_library(Tracking include/tracking.h src/tracking.cpp)
 add_library(Metrics include/metrics.h src/metrics.cpp)
-add_library(Utils include/category.h include/minimapConstants.h include/util.h src/util_first.cpp src/util_second.cpp)
+add_library(Utils include/category.h include/minimapConstants.h include/util.h src/util_first.cpp src/util_second.cpp img/minimap.h)
 
 target_link_libraries(Ball
     ${OpenCV_LIBS}

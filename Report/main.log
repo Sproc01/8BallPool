@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.3.14)  20 JUL 2024 14:41
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.3.14)  20 JUL 2024 14:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -343,46 +343,56 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 \actualheight=\skip58
 
 (section/introduction.tex) (section/workload.tex) (section/elements.tex
-(section/tableDetection.tex) (section/tableSegmentation.tex
-Underfull \hbox (badness 1158) in paragraph at lines 3--1
-\OT1/ptm/m/n/10 ti-fy-ing the most com-mon color in the im-age's cen-tral
- []
-
-) (section/ballsDetection.tex) (section/radiusAttempt.tex
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 3
+(section/executables.tex
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 4
 .
 
 (C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-[1{C:/Users/Michela/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/
-Michela/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 4
+.
+
+(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1pcr.fd
+File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+))
+(section/tableDetection.tex) (section/tableSegmentation.tex
+Underfull \hbox (badness 1158) in paragraph at lines 3--1
+\OT1/ptm/m/n/10 ti-fy-ing the most com-mon color in the im-age's cen-tral
+ []
+
+) (section/ballsDetection.tex) (section/radiusAttempt.tex [1{C:/Users/Michela/A
+ppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/Michela/AppData/Local
+/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
 
 
 
-])
-(section/tracking.tex) (section/minimap.tex) (section/video.tex))
-(section/results.tex) (section/conclusions.tex) [2] (main.aux)
+]) (section/tracking.tex)
+(section/minimap.tex) (section/video.tex [2])) (section/results.tex)
+(section/conclusions.tex) [3
+
+] (main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 7392 strings out of 474485
- 128438 string characters out of 5742790
- 1942542 words of memory out of 5000000
- 29538 multiletter control sequences out of 15000+600000
- 574418 words of font info for 64 fonts, out of 8000000 for 9000
+ 7440 strings out of 474485
+ 129358 string characters out of 5742790
+ 1943542 words of memory out of 5000000
+ 29578 multiletter control sequences out of 15000+600000
+ 574933 words of font info for 66 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  69i,8n,79p,972b,265s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/Michela/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/c
-m/cmsy10.pfb><C:/Users/Michela/AppData/Local/Programs/MiKTeX/fonts/type1/urw/ti
-mes/utmb8a.pfb><C:/Users/Michela/AppData/Local/Programs/MiKTeX/fonts/type1/urw/
-times/utmr8a.pfb>
-Output written on main.pdf (2 pages, 53302 bytes).
+m/cmsy10.pfb><C:/Users/Michela/AppData/Local/Programs/MiKTeX/fonts/type1/urw/co
+urier/ucrr8a.pfb><C:/Users/Michela/AppData/Local/Programs/MiKTeX/fonts/type1/ur
+w/times/utmb8a.pfb><C:/Users/Michela/AppData/Local/Programs/MiKTeX/fonts/type1/
+urw/times/utmr8a.pfb>
+Output written on main.pdf (3 pages, 68019 bytes).
 PDF statistics:
- 25 PDF objects out of 1000 (max. 8388607)
+ 33 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -1,1 +1,32 @@
 \subsection{Mini-map creation}
+
+To create the mini-map are needed:
+\begin{itemize}
+	\item An image that contains an empty billiard table and some information about it;
+	\item The position of the balls in the current and previous frames;
+	\item A transformation matrix that computes the position of the balls in the mini-map.
+\end{itemize}
+
+\subsubsection{Empty mini-map image}
+
+As a first step, an image of an empty billiard table has been selected, and its corner positions and dimensions have been stored in constant variables.
+
+\subsubsection{Computation of the transformation matrix}
+
+The computeTransformation() method has been written to compute the transformation matrix, which allows for the computation of the positions of the balls in the table of the mini-map. To do that, a relationship between the corners of the table in the frame and the corners of the table in the mini-map has been made. This relationship has been made by the OpenCV getPerspectiveTransform() method, which “calculates a perspective transform from four pairs of the corresponding points” and returns a transformation matrix. At first, it is supposed that the corners are given in clockwise order and that the first corner is followed by a long table edge. To check this information, checkHorizontalTable() has been written. 
+
+\subsubsection{Check if the corners are in the order needed}
+
+The checkHorizontalTable() method checks, using the image in input and the corners of the table in that image, if the corners are oriented such that the first corner is followed by a long table edge. To check this information, the “percentage of table” with respect to the pool in a rectangle placed in the center of the edge (with dimensions proportional to the real table and pool dimensions) has been computed for all the edges. This computation has been done in the table image previously transformed and cropped to the table dimensions; in this way, the center between two corners corresponds to the real one (otherwise, if the table has some perspective effect, the center between the two corners may not correspond to the real one). Then, the edges have been ordered by using this percentile. To understand how the corners were oriented, three cases have been considered:
+\begin{itemize}
+	\item If the edges with "more pool" are opposite edges, then they are the longest edges;
+	\item If the edge with "more pool" is opposite to the one with "less pool", then they are not the longest edges;
+	\item Otherwise, there is uncertainty, and then, probably, the one with "more pool" is the longest edge.
+\end{itemize}
+If the table is not horizontal as expected, then all the edges have been rotated and the transformation matrix has been re-computed.
+
+\subsubsection{Draw the mini-map with tracking lines and balls}
+
+Given the transformation matrix and the ball positions in the frame, it is possible to compute the positions of the balls in the mini-map. This computation has been done in the drawMinimap() method. Every time this method is called, the ball positions and the positions of the balls in the previous frame (if they have been computed by the tracker) are computed by using the perspectiveTransform() method. For each ball in the frame, a line between the previous position and the current position is drawn on the mini-map image, passed as a parameter by reference such that all the tracking lines are kept in a single image. Then this image is cloned into a copy, and the current balls are drawn on it. This image is then returned.\
+
+The ideas of using getPerspectiveTransform() and perspectiveTransform(), and how to check the orientation of the table were from Michela; the idea of drawing the balls on a copy of the mini-map image, rather than the one that contains the tracking, was from Alberto.

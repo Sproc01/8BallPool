@@ -78,6 +78,7 @@ void rotateCornersClockwise(Vec<Point2f, 4> &corners) {
  * @param img_corners corners of the table in the frame
  */
 void radiusInterval(float &min_radius, float &max_radius, const Vec<Point2f, 4>  &img_corners) {
+	//compute longer diagonal
 	float diag1_px = norm(img_corners[0] - img_corners[2]);
 	float diag2_px = norm(img_corners[1] - img_corners[3]);
 	float long_diag_px;
@@ -86,6 +87,10 @@ void radiusInterval(float &min_radius, float &max_radius, const Vec<Point2f, 4> 
 	else
 		long_diag_px = diag2_px;
 
+	//compute mean radius
+	float mean_radius = (BALL_RADIUS_CM/TABLE_DIAMETER_CM) * long_diag_px;
+
+	//compute smaller angle (two angles will be <= 90°, the other two will be 180°-min_angle=
 	float angle1 = atan2(img_corners[0].y - img_corners[1].y, img_corners[0].x - img_corners[1].x);
 	angle1 = angle1 >= 0 ? angle1 : abs(angle1) - CV_PI;
 	float angle2 = atan2(img_corners[1].y - img_corners[2].y, img_corners[1].x - img_corners[2].x);
@@ -94,17 +99,14 @@ void radiusInterval(float &min_radius, float &max_radius, const Vec<Point2f, 4> 
 	if(min_angle > (CV_PI/2))
 		min_angle = CV_PI - min_angle;
 
+	//compute the percentage of slope
 	float percentage_slope = 1 - (min_angle/(CV_PI/2));
-
-	//percentage_slope = 1 -> the camera is parallel to the table (ideally radius from 0 to infinite)
+	//percentage_slope = 1 -> (angle of 180°) the camera is parallel to the table (ideally radius from 0 to infinite)
 	//percentage_slope = 0.5 -> the camera is 45° to the table (radius can change)
-	//percentage_slope = 0 -> the camera is perpendicular to the table (ideally radius always mean_radius)
+	//percentage_slope = 0 -> (angles of 90°) the camera is perpendicular to the table (ideally radius always mean_radius)
 
-	float mean_radius = (BALL_RADIUS_CM/TABLE_DIAMETER_CM) * long_diag_px;
-	//mean_radius = mean_radius - (mean_radius/15)*(1 - percentage_slope);
-
+	//compute the minimum and maximum radius
 	const float PRECISION = 1;
-
 	min_radius = mean_radius - (mean_radius*percentage_slope) - PRECISION;
 	max_radius = mean_radius + (mean_radius*percentage_slope) + PRECISION;
 

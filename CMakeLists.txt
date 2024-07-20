@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 find_package(OpenCV REQUIRED)
 
-include_directories(${OpenCV_INCLUDE_DIRS} include/ img/)
+include_directories(${OpenCV_INCLUDE_DIRS} include/)
 
 add_library(Ball include/ball.h src/ball.cpp)
 add_library(Table include/table.h src/table.cpp)

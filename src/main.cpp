@@ -6,7 +6,7 @@
 #include <filesystem>
 #include <chrono>
 
-//#include "../img/minimap.h"
+#include "../img/minimap.h"
 #include "ball.h"
 #include "table.h"
 #include "detection.h"
@@ -77,7 +77,7 @@ int main(int argc, char* argv[]){
 	detectTable(frame, tableCorners, colorTable);
 	table = Table(tableCorners, colorTable);
 	segmentTable(frame, table, segmented);
-	imshow("segmentedTable", segmented);
+	//imshow("segmentedTable", segmented);
 
 	//DETECT AND SEGMENT BALLS
 	detectBalls(frame, table, detected);
@@ -103,12 +103,11 @@ int main(int argc, char* argv[]){
 	//MINIMAP
 	// The original is the png provided but we converted it to an header
 	// Mat minimap = imread(MINIMAP_PATH);
-	// Mat minimap_with_track = minimap.clone();
-	// Mat minimap_with_balls = minimap.clone();
 	vector<unsigned char> minimapVec(MINIMAP_DATA, MINIMAP_DATA + MINIMAP_DATA_SIZE);
-	Mat minimap = imdecode(minimapVec, cv::IMREAD_UNCHANGED);
-	Mat minimap = imread(MINIMAP_PATH);
-	imshow("minimap", minimap);
+	Mat minimap = imdecode(minimapVec, IMREAD_COLOR);
+	Mat minimap_with_track = minimap.clone();
+	Mat minimap_with_balls = minimap.clone();
+	// imshow("minimap", minimap);
 
 	Mat transform =  table.getTransform();
 	minimap_with_balls = drawMinimap(minimap_with_track, transform, table.ballsPtr());

@@ -21,6 +21,8 @@ using namespace std;
 using namespace cv;
 using namespace chrono;
 
+//TODO: remove folders Dataset/other_videos and output_detection
+
 /* 	Given a video it detects table and balls in the first frame and track the balls over different frame.
 	Using this information then it creates the output video with a minimap superimposed and then detect the balls
 	in the last frame. For the detection of the table and of the balls it computes also some performance metrics. */
@@ -40,6 +42,8 @@ int main(int argc, char* argv[]){
 	Mat res;
 	bool toRotate, toResize;
 	short leftBorderLength, rightBorderLength;
+	vector<double> metricsAP;
+	vector<double> metricsIoU;
 
 	//INPUT
 	// TODO rotate image if vertical; resize to be inscribed in current sizes, centered in the Mat; use this to calculate minimap; write to video file the original unrotated, unscaled image with the calculated image superimposed
@@ -73,9 +77,8 @@ int main(int argc, char* argv[]){
 	string outputVideoName = videoName + "_output.mp4";
 	outputPath = outputPath / outputVideoName;
 	++frameCount;
-	//TODO: check output in frame when the resolution is bigger (it is cropped)
 	//imshow("First frame", frame);
-	//TODO use minimap.h
+
 	filesystem::path tempOutputPath = filesystem::temp_directory_path() / outputVideoName;
 	int codec = VideoWriter::fourcc('m', 'p', '4', 'v');
 	VideoWriter vidOutput = VideoWriter();
@@ -99,8 +102,14 @@ int main(int argc, char* argv[]){
 	undoInscript(segmented, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	imshow("segmentedBalls", segmented);
 	cout << "Metrics first frame:" << endl;
+	metricsAP = compareMetricsAP(table, videoPath.parent_path().string(), FIRST);
+	metricsIoU = compareMetricsIoU(segmented, videoPath.parent_path().string(), FIRST);
+	for(int i = 0; i < metricsAP.size(); i++)
+		cout << "AP for category " << i+1 << ": " << metricsAP[i] << endl;
 
-	// compareMetrics(table, segmented, videoPath.parent_path().string(), FIRST);
+	for(int i = 0; i < metricsIoU.size(); i++)
+		cout << "IoU for category " << i << ": " << metricsIoU[i] << endl;
+
 
 	//TRANSFORMATION
 	Vec<Point2f, 4>  img_corners = table.getBoundaries();
@@ -112,12 +121,13 @@ int main(int argc, char* argv[]){
 	Mat minimap = imread(MINIMAP_PATH);
 	Mat minimap_with_track = minimap.clone();
 	Mat minimap_with_balls = minimap.clone();
+	//TODO use minimap.h
 	// vector<unsigned char> minimapVec(MINIMAP_DATA, MINIMAP_DATA + MINIMAP_DATA_SIZE);
 	// Mat minimap = imdecode(minimapVec, cv::IMREAD_UNCHANGED);
 	// Mat minimap = imread(MINIMAP_PATH);
 	// imshow("minimap", minimap);
 
-	Mat transform =  table.getTransform(); //TODO: change and return value (check if working)
+	Mat transform =  table.getTransform();
 	minimap_with_balls = drawMinimap(minimap_with_track, transform, table.ballsPtr());
 	//imshow("Minimap with balls", minimap_with_balls);
 	undoInscript(frame, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
@@ -166,12 +176,17 @@ int main(int argc, char* argv[]){
 	undoInscript(segmented, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	imshow("segmentedBalls", segmented);
 	cout << "Metrics last frame:" << endl;
-	// compareMetrics(table, segmented, videoPath.parent_path().string(), LAST);
+	metricsAP = compareMetricsAP(table, videoPath.parent_path().string(), LAST);
+	metricsIoU = compareMetricsIoU(segmented, videoPath.parent_path().string(), LAST);
 
-	// write to a temp file first, then rename to the final name only if everything went well
-	filesystem::rename(tempOutputPath, outputPath);
+	for(int i = 0; i < metricsAP.size(); i++)
+		cout << "AP for category " << static_cast<Category>(i+1) << ": " << metricsAP[i] << endl;
 
+	for(int i = 0; i < metricsIoU.size(); i++)
+		cout << "IoU for category " << static_cast<Category>(i) << ": " << metricsIoU[i] << endl;
 	waitKey(0);
-
+	// write to a temp file first, then rename to the final name
+	filesystem::copy(tempOutputPath, outputPath, filesystem::copy_options::overwrite_existing);
+	filesystem::remove(tempOutputPath);
 	return 0;
 }

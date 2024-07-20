@@ -1,0 +1,20 @@
+\section{Metrics}
+The \textit{computePerformance} executable handles both mAP and mIoU calculations.
+\begin{itemize}
+    \item mAP (mean Average Precision):
+        \begin{itemize}
+            \item Predictions are made for all first and last frames in a video.
+            \item Since we lack alternative confidence scores, we opted to calculate mAP using IoU as the measure of confidence, because it is a good indicator of how good the detection is.
+            \item For each object class (e.g., ball type), the Average Precision (AP) is calculated.
+            \item Then the final mAP is obtained by averaging the AP values across all classes.
+        \end{itemize}
+\end{itemize}
+\begin{itemize}
+    \item mIoU (mean Intersection over Union):
+        \begin{itemize}
+            \item IoU is calculated for the first and the last frame for each video.
+            \item The average IoU is then computed for each object class across all 20 images (10 videos each one with 2 frame).
+            \item Finally, the mIoU is obtained by averaging the IoU values obtained in the last step.
+        \end{itemize}
+\end{itemize}
+The 8BallPool executable displays the performance metrics (AP and IoU) achieved by the method for the specific input video.

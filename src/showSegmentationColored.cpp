@@ -17,7 +17,8 @@ using namespace cv;
 // simple main to see the ground truths and to test the code for the metrics
 int main(){
 	Mat segmented = imread("../Dataset/game2_clip1/masks/frame_last.png", IMREAD_GRAYSCALE);
-
+	vector<double> metricsAP;
+	vector<double> metricsIoU;
 	Mat segmentedColored(segmented.rows, segmented.cols, CV_8UC3);
 	for (int i = 0; i < segmented.rows; i++){
 		for (int j = 0; j < segmented.cols; j++){
@@ -60,7 +61,13 @@ int main(){
 		bboxes.push_back(Ball(Rect(x, y, w, h), static_cast<Category>(cat)));
 	}
 	table.addBalls(bboxes);
-	compareMetrics(table, segmentedColored, "../Dataset/game2_clip1", LAST);
+	metricsAP = compareMetricsAP(table, "../Dataset/game2_clip1", LAST);
+	metricsIoU = compareMetricsIoU(segmented, "../Dataset/game2_clip1", LAST);
+	for(int i = 0; i < metricsAP.size(); i++)
+		cout << "AP for category " << static_cast<Category>(i+1) << ": " << metricsAP[i] << endl;
+
+	for(int i = 0; i < metricsIoU.size(); i++)
+		cout << "IoU for category " << static_cast<Category>(i) << ": " << metricsIoU[i] << endl;
 	waitKey();
 	return 0;
 }

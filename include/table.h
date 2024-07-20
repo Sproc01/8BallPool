@@ -16,7 +16,7 @@ constexpr unsigned short TABLE_HEIGHT = 576;
 
 
 class Table {
-	cv::Vec<cv::Point2f, 4> boundaries_;  // TODO define order of points
+	cv::Vec<cv::Point2f, 4> boundaries_;
 	cv::Vec2b colorRange_;
 	cv::Mat transform_;
 	cv::Ptr<std::vector<Ball>> balls_;

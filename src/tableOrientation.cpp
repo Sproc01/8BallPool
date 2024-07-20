@@ -29,7 +29,6 @@ struct Edge{
  */
 bool compareByPercentile(const Edge &e1, const Edge &e2)
 {
-    //TODO: can be empty?
     return e1.background_percentile < e2.background_percentile;
 }
 
@@ -73,7 +72,6 @@ double computeTablePercentile(const Mat &mask_img, const Rect &rect) {
  * @return true if e1 and e2 are opposite to each other, false otherwise
  */
 bool oppositeEdges(const Edge &e1, const Edge &e2) {
-    //TODO: can be empty?
     if((e1.corner1 == e2.corner2)||
         e1.corner2 == e2.corner1 ||
         e1.corner1 == e2.corner1 ||
@@ -95,7 +93,6 @@ bool oppositeEdges(const Edge &e1, const Edge &e2) {
 bool checkHorizontalTable(const Mat &table_img, Vec<Point2f, 4> corners){
 	if(table_img.empty())
         throw invalid_argument("Empty image in input");
-
 
     //compute the centers of each table edge
     vector<Edge> edges(4);
@@ -158,7 +155,7 @@ bool checkHorizontalTable(const Mat &table_img, Vec<Point2f, 4> corners){
     sort(ordered_edges.begin(), ordered_edges.end(), compareByPercentile);
 
     if(oppositeEdges(ordered_edges[0], ordered_edges[1])) {
-        //the one with "more pool" are opposite edges -> they are the longest edges
+        //the ones with "more pool" are opposite edges -> they are the longest edges
         if(ordered_edges[0].center == edges[0].center || ordered_edges[1].center == edges[0].center)
             return true;
         else
@@ -172,7 +169,7 @@ bool checkHorizontalTable(const Mat &table_img, Vec<Point2f, 4> corners){
             return true;
     }
     else {
-        //there is uncertanty, probably the one with "more pool" is one longest edge
+        //there is uncertainty, probably the one with "more pool" is the longest edge
         if(ordered_edges[0].center == edges[0].center)
             return true;
         else

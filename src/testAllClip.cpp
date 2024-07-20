@@ -28,6 +28,9 @@ int main(int argc, char* argv[]){
 	Mat detected;
 	bool ret;
 
+	vector<double> metricsAP;
+	vector<double> metricsIoU;
+
 	vector<string> name ={"/game1_clip1", "/game1_clip2", "/game1_clip3",
 							"/game1_clip4", "/game2_clip1", "/game2_clip2",
 							"/game3_clip1", "/game3_clip2", "/game4_clip1",
@@ -37,7 +40,7 @@ int main(int argc, char* argv[]){
 	//  							"video2_1024_576.mp4", "video2_1920_1080.mp4"};
 
 	for(int i = 0; i < name.size(); i++){
-		
+
 		VideoCapture vid = VideoCapture("../Dataset"+name[i]+name[i]+".mp4");
 		//VideoCapture vid = VideoCapture("../Dataset/other_videos_not_deliver/" + nameOther[i]);
 		vid.read(frame);
@@ -53,7 +56,13 @@ int main(int argc, char* argv[]){
 		segmentBalls(frame, table.ballsPtr(), segmented);
 		imwrite("../Output/Segmentation"+name[i]+"_segmented_balls_first_frame.jpg", segmented);
 		//imshow("seg", segmented);
-		compareMetrics(table, segmented, "../Dataset"+name[i], FIRST);
+		metricsAP = compareMetricsAP(table, "../Dataset"+name[i] , FIRST);
+		metricsIoU = compareMetricsIoU(segmented, "../Dataset"+name[i], FIRST);
+		for(int i = 0; i < metricsAP.size(); i++)
+			cout << "AP for category " << static_cast<Category>(i+1) << ": " << metricsAP[i] << endl;
+
+		for(int i = 0; i < metricsIoU.size(); i++)
+			cout << "IoU for category " << static_cast<Category>(i) << ": " << metricsIoU[i] << endl;
 		//waitKey(0);
 		previousFrame = frame.clone();
 		ret = vid.read(frame);
@@ -71,8 +80,15 @@ int main(int argc, char* argv[]){
 		segmentBalls(segmented, table.ballsPtr(), segmented);
 		imwrite("../Output/Segmentation"+name[i]+"_segmented_balls_last_frame.jpg", segmented);
 		//imshow("seg", segmented);
-		compareMetrics(table, segmented, "../Dataset"+name[i], LAST);
-		//waitKey(0);
-	}
+		metricsAP = compareMetricsAP(table, "../Dataset"+name[i], LAST);
+		metricsIoU = compareMetricsIoU(segmented, "../Dataset"+name[i], LAST);
+
+		for(int i = 0; i < metricsAP.size(); i++)
+			cout << "AP for category " << static_cast<Category>(i+1) << ": " << metricsAP[i] << endl;
+
+		for(int i = 0; i < metricsIoU.size(); i++)
+			cout << "IoU for category " << static_cast<Category>(i) << ": " << metricsIoU[i] << endl;
+			//waitKey(0);
+		}
 	return 0;
 }

@@ -3,6 +3,7 @@
 #include "metrics.h"
 #include "category.h"
 #include "table.h"
+#include "ball.h"
 #include "minimapConstants.h"
 #include <stdexcept>
 #include <filesystem>
@@ -16,23 +17,13 @@
 using namespace std;
 using namespace cv;
 
-/**
- *
- * @param table
- * @param segmentedImage
- * @param folderPath
- * @param frameN Set to FIRST for the first frame, LAST for the last frame
- */
-void compareMetrics(Table &table, Mat &segmentedImage, const string &folderPath, FrameN frameN){
-	filesystem::path groundTruthBboxPath;
+vector<double> compareMetricsIoU(Mat &segmentedImage, const string &folderPath, FrameN frameN){
 	filesystem::path groundTruthMaskPath;
 	switch (frameN) {
 		case FIRST:
-			groundTruthBboxPath = filesystem::path(folderPath) / "bounding_boxes" / "frame_first_bbox.txt";
 			groundTruthMaskPath = filesystem::path(folderPath) / "masks" / "frame_first.png";
 			break;
 		case LAST:
-			groundTruthBboxPath = filesystem::path(folderPath) / "bounding_boxes" / "frame_last_bbox.txt";
 			groundTruthMaskPath = filesystem::path(folderPath) / "masks" / "frame_last.png";
 			break;
 		default:
@@ -40,10 +31,31 @@ void compareMetrics(Table &table, Mat &segmentedImage, const string &folderPath,
 	}
 
 	// For ball localization, the mean Average Precision (mAP) calculated at IoU threshold 0.5
-	double mIoU = mIoUSegmentation(segmentedImage, groundTruthMaskPath.string());
-	cout << "mIoU: " << mIoU << endl;
-	double mAP = mAPDetection(table.ballsPtr(), groundTruthBboxPath.string(), MAP_IOU_THRESHOLD);
-	cout << "mAP: " << mAP << endl;
+	vector<double> IoUs = mIoUSegmentation(segmentedImage, groundTruthMaskPath.string());
+	return IoUs;
+}
+/**
+ *
+ * @param table
+ * @param segmentedImage
+ * @param folderPath
+ * @param frameN Set to FIRST for the first frame, LAST for the last frame
+ */
+vector<double> compareMetricsAP(Table &table, const string &folderPath, FrameN frameN){
+	filesystem::path groundTruthBboxPath;
+	switch (frameN) {
+		case FIRST:
+			groundTruthBboxPath = filesystem::path(folderPath) / "bounding_boxes" / "frame_first_bbox.txt";
+			break;
+		case LAST:
+			groundTruthBboxPath = filesystem::path(folderPath) / "bounding_boxes" / "frame_last_bbox.txt";
+			break;
+		default:
+			throw invalid_argument("frameN must be FIRST or LAST");
+	}
+
+	vector<double> APs = mAPDetection(table.ballsPtr(), groundTruthBboxPath.string(), MAP_IOU_THRESHOLD);
+	return APs;
 }
 
 
@@ -104,7 +116,6 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
 		IoUs.push_back(maxIoU);
 	}
 
-	// TODO: check if sorting by IoU is reasonable
 	// Sort the detections by decreasing IoU using a index vector
 	vector<int> indices(IoUs.size());
 	for (int i = 0; i < IoUs.size(); i++){
@@ -119,7 +130,6 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
 	// cout << tp.size() << endl;
 	// cout << fp.size() << endl;
 	// cout << indices.size() << endl;
-	// TODO REMOVE THIS LINE segmentation fault because indices and tp not the same size because some IoU can be 0
 	vector<unsigned short> tpSorted(tp.size());
 	for (int i = 0; i<indices.size(); i++){
 		tpSorted[i] = tp[indices[i]];
@@ -131,7 +141,6 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
 		fpSorted[i] = fp[indices[i]];
 	}
 	fp = fpSorted;
-	//sort(IoUs.begin(), IoUs.end(), greater<>()); // TODO necessary?
 
 	// cout<<tpSorted.size()<<endl;
 	// cout<<fpSorted.size()<<endl;
@@ -180,16 +189,15 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
 }
 
 
-double mAPDetection(const Ptr<vector<Ball>> &detectedBalls, const string &groundTruthBboxPath, float iouThreshold /*= MAP_IOU_THRESHOLD*/){
+vector<double> mAPDetection(const Ptr<vector<Ball>> &detectedBalls, const string &groundTruthBboxPath, float iouThreshold /*= MAP_IOU_THRESHOLD*/){
 	vector<pair<Rect, Category>> groundTruthBboxes = readGroundTruthBboxFile(groundTruthBboxPath);
-
-	double mAP = 0;
+	vector<double> APs;
 	for (Category cat=Category::WHITE_BALL; cat<=Category::STRIPED_BALL; cat=static_cast<Category>(cat+1)){
 		//std::cout<<"here"<<std::endl;
-		mAP += APBallCategory(detectedBalls, groundTruthBboxes, cat, iouThreshold);
+		APs.push_back(APBallCategory(detectedBalls, groundTruthBboxes, cat, iouThreshold));
 	}
 
-	return mAP / static_cast<double>(Category::STRIPED_BALL - Category::WHITE_BALL + 1);
+	return APs;
 }
 
 
@@ -205,7 +213,7 @@ double mIoUCategory(const Mat &segmentedImage, const Mat &groundTruthMask, Categ
 }
 
 // For balls and playing field segmentation, the mean Intersection over Union (mIoU) metric, that is the average of the IoU computed for each class (background, white ball, black ball, solid color, striped and playing field)
-double mIoUSegmentation(const Mat &segmentedImage, const string& groundTruthMaskPath){
+vector<double> mIoUSegmentation(const Mat &segmentedImage, const string& groundTruthMaskPath){
 	// Convert the segmented image from BGR colors to grayscale category-related colors
 	Mat segmentedImageGray = Mat::zeros(segmentedImage.size(), CV_8UC1);
 	for (int i = 0; i < segmentedImage.rows; i++){
@@ -236,27 +244,14 @@ double mIoUSegmentation(const Mat &segmentedImage, const string& groundTruthMask
 
 	Mat groundTruthMask = imread(groundTruthMaskPath, IMREAD_GRAYSCALE);
 
-	double mIoU = 0;
+	vector<double> IoUs;
 
 	for (Category cat=Category::BACKGROUND; cat<=Category::PLAYING_FIELD; cat=static_cast<Category>(cat+1)){
-		mIoU += mIoUCategory(segmentedImageGray, groundTruthMask, cat);
+		IoUs.push_back(mIoUCategory(segmentedImageGray, groundTruthMask, cat));
 	}
 
-	return mIoU / static_cast<double>(Category::PLAYING_FIELD - Category::BACKGROUND + 1);
+	return IoUs;
 }
-
-
-//double mIoU(vector<Rect> &rects1, vector<Rect> &rects2){
-//	if(rects1.size() != rects2.size()){
-//		throw invalid_argument("rects1 and rects2 must have the same size");
-//	}
-//
-//	double sum = 0;
-//	for (int i = 0; i < rects1.size(); i++){
-//		sum += IoU(rects1[i], rects2[i]);
-//	}
-//	return sum / rects1.size();
-//}
 
 
 double IoU(const Rect &rect1, const Rect &rect2){

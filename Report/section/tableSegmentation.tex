@@ -1,0 +1,8 @@
+\subsection{Table segmentation}
+
+In order to isolate the table with high precision, Michele employed a two-mask combined with k-means algorithm.  The masks involved are:
+\begin{enumerate}
+	\item Color-based masking: A mask was created that identified pixels corresponding to the table's color.
+	\item Corner detection masking: A separate mask was generated to capture the table's geometric features starting from the corners already detected.
+\end{enumerate}
+By combining these two masks with the output of a k-means clustering algorithm with two clusters, the table was effectively isolated from the background.

@@ -34,10 +34,7 @@ Mat Table::getTransform() const {
 /*
  * Returns a cv::Ptr (shared pointer) to the vector of balls.
  */
-Ptr<std::vector<Ball>> Table::ballsPtr() { // TODO is it ok to let the pointer be managed outside?
-	// if (balls_->empty())
-	// 	std::cout<<"There are no balls! (pointer returned anyway)"<<std::endl;
-
+Ptr<std::vector<Ball>> Table::ballsPtr() {
 	return balls_;
 }
 

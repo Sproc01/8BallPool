@@ -42,7 +42,7 @@ int main(){
 					segmentedColored.at<Vec3b>(i, j) = PLAYING_FIELD_BGR_COLOR;
 					break;
 				default:    // in case of error
-					segmentedColored.at<Vec3b>(i, j) = Vec3b(255, 255, 0);
+					//segmentedColored.at<Vec3b>(i, j) = Vec3b(255, 255, 0);
 					break;
 			}
 		}
@@ -62,7 +62,7 @@ int main(){
 	}
 	table.addBalls(bboxes);
 	metricsAP = compareMetricsAP(table, "../Dataset/game2_clip1", LAST);
-	metricsIoU = compareMetricsIoU(segmented, "../Dataset/game2_clip1", LAST);
+	metricsIoU = compareMetricsIoU(segmentedColored, "../Dataset/game2_clip1", LAST);
 	for(int i = 0; i < metricsAP.size(); i++)
 		cout << "AP for category " << static_cast<Category>(i+1) << ": " << metricsAP[i] << endl;
 

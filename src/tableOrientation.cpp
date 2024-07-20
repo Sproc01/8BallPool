@@ -132,7 +132,7 @@ bool checkHorizontalTable(const Mat &table_img, Vec<Point2f, 4> corners){
     cvtColor(table_img, frameHSV, COLOR_BGR2HSV);
     inRange(frameHSV, Scalar(background_color[0], 50, 90),
                 Scalar(background_color[1], 255, 255), mask_img);
-    imshow("Mask img", mask_img);
+    //imshow("Mask img", mask_img);
     //waitKey(0);
 
 	//print the rectangles on the pool of the masked img (just for testing)

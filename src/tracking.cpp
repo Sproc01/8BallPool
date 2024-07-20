@@ -42,7 +42,7 @@ Rect BallTracker::trackOne(unsigned short ballIndex, const Mat &frame, bool call
 		if(ballsVec_->at(ballIndex).getVisibility())
 		{
 			isBboxUpdated = ballTrackers_[ballIndex]->update(frame, bbox);
-			const float IOU_THRESHOLD = 0.9;    // TODO tune IoU threshold for updating ball position
+			const float IOU_THRESHOLD = 0.7;
 			if (isBboxUpdated && IoU(ballsVec_->at(ballIndex).getBbox_prec(), bbox) > IOU_THRESHOLD) {  // if IoU is too high, do not update: the shift is not significant
 				isBboxUpdated = false;
 			} else {

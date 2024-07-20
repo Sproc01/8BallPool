@@ -46,7 +46,7 @@ int main(int argc, char* argv[]){
 		videoPath = filesystem::path(argv[1]);
 	}
 	else if (argc == 1) { //TODO: remove at the end
-		videoPath = filesystem::path("../Dataset/game1_clip1/game1_clip1.mp4");
+		videoPath = filesystem::path("../Dataset/game4_clip2/game4_clip2.mp4");
 	}
 	else {
 		cout << "Error of number of parameters: insert one parameter" << endl;
@@ -166,9 +166,9 @@ int main(int argc, char* argv[]){
 
 	for(int i = 0; i < metricsIoU.size(); i++)
 		cout << "IoU for category " << static_cast<Category>(i) << ": " << metricsIoU[i] << endl;
-	waitKey(0);
 	// write to a temp file first, then rename to the final name
 	filesystem::copy(tempOutputPath, outputPath, filesystem::copy_options::overwrite_existing);
 	filesystem::remove(tempOutputPath);
+	//waitKey(0);
 	return 0;
 }

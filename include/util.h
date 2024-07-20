@@ -5,6 +5,7 @@
 
 #include <opencv2/opencv.hpp>
 #include "category.h"
+#include "ball.h"
 
 /**
  * @brief compute the center between two points.
@@ -84,4 +85,27 @@ void createOutputImage(const cv::Mat &frame, const cv::Mat &minimap_with_balls, 
  */
 void kMeansClustering(const cv::Mat &inputImage, const std::vector<cv::Vec3b> &colors, cv::Mat &clusteredImage);
 
+/**
+ * @brief push the elements of the first vector in the right vector according to the category.
+ * @param gt input vector containing the elements to be separated.
+ * @param white output vector containing the white elements.
+ * @param black output vector containing the black elements.
+ * @param solid output vector containing the solid elements.
+ * @param striped output vector containing the striped elements.
+ * @throw invalid_argument if gt is empty.
+ */
+void separateResultGT(std::vector<std::pair<cv::Rect, Category>> gt, std::vector<std::pair<cv::Rect, Category>> &white,
+						std::vector<std::pair<cv::Rect, Category>> &black, std::vector<std::pair<cv::Rect, Category>> &solid,
+						std::vector<std::pair<cv::Rect, Category>> &striped);
+/**
+ * @brief push the elements of the first vector in the right vector according to the category.
+ * @param balls input pointer to a vector a balls that needs to be separated.
+ * @param white output vector containing the white balls.
+ * @param black output vector containing the black balls.
+ * @param solid output vector containing the solid balls.
+ * @param striped output vector containing the striped balls.
+ * @throw invalid_argument if balls is nullptr or if balls point to an empty vector.
+ */
+void separateResultBalls(cv::Ptr<std::vector<Ball>> balls, std::vector<Ball> &white, std::vector<Ball> &black,
+							std::vector<Ball> &solid, std::vector<Ball> &striped);
 #endif //UTIL_H

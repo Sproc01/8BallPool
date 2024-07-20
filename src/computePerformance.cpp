@@ -63,36 +63,9 @@ int main(){
 		segmentBalls(frame, table.ballsPtr(), segmented);
 
 		// save the results mAP
-		for(int i = 0; i < table.ballsPtr()->size(); i++){
-			Ball ball = table.ballsPtr()->at(i);
-			if(ball.getCategory() == WHITE_BALL){
-				detectedBallWhite.push_back(ball);
-			}
-			else if(ball.getCategory() == BLACK_BALL){
-				detectedBallBlack.push_back(ball);
-			}
-			else if(ball.getCategory() == SOLID_BALL){
-				detectedBallSolid.push_back(ball);
-			}
-			else if(ball.getCategory() == STRIPED_BALL){
-				detectedBallStriped.push_back(ball);
-			}
-		}
+		separateResultBalls(table.ballsPtr(), detectedBallWhite, detectedBallBlack, detectedBallSolid, detectedBallStriped);
 		gt = readGroundTruthBboxFile("../Dataset"+filename[i]+"/bounding_boxes/frame_first_bbox.txt");
-		for(int i = 0; i < gt.size(); i++){
-			if(gt[i].second == WHITE_BALL){
-				groundTruthBboxWhite.push_back(gt[i]);
-			}
-			else if(gt[i].second == BLACK_BALL){
-				groundTruthBboxBlack.push_back(gt[i]);
-			}
-			else if(gt[i].second == SOLID_BALL){
-				groundTruthBboxSolid.push_back(gt[i]);
-			}
-			else if(gt[i].second == STRIPED_BALL){
-				groundTruthBboxStriped.push_back(gt[i]);
-			}
-		}
+		separateResultGT(gt, groundTruthBboxWhite, groundTruthBboxBlack, groundTruthBboxSolid, groundTruthBboxStriped);
 
 		// save result mIOU
 		metricsIoU = compareMetricsIoU(segmented, "../Dataset"+filename[i], FIRST);
@@ -119,36 +92,9 @@ int main(){
 		segmentBalls(segmented, table.ballsPtr(), segmented);
 
 		// save the results mAP
-		for(int i = 0; i < table.ballsPtr()->size(); i++){
-			Ball ball = table.ballsPtr()->at(i);
-			if(ball.getCategory() == WHITE_BALL){
-				detectedBallWhite.push_back(ball);
-			}
-			else if(ball.getCategory() == BLACK_BALL){
-				detectedBallBlack.push_back(ball);
-			}
-			else if(ball.getCategory() == SOLID_BALL){
-				detectedBallSolid.push_back(ball);
-			}
-			else if(ball.getCategory() == STRIPED_BALL){
-				detectedBallStriped.push_back(ball);
-			}
-		}
+		separateResultBalls(table.ballsPtr(), detectedBallWhite, detectedBallBlack, detectedBallSolid, detectedBallStriped);
 		gt = readGroundTruthBboxFile("../Dataset"+filename[i]+"/bounding_boxes/frame_last_bbox.txt");
-		for(int i = 0; i < gt.size(); i++){
-			if(gt[i].second == WHITE_BALL){
-				groundTruthBboxWhite.push_back(gt[i]);
-			}
-			else if(gt[i].second == BLACK_BALL){
-				groundTruthBboxBlack.push_back(gt[i]);
-			}
-			else if(gt[i].second == SOLID_BALL){
-				groundTruthBboxSolid.push_back(gt[i]);
-			}
-			else if(gt[i].second == STRIPED_BALL){
-				groundTruthBboxStriped.push_back(gt[i]);
-			}
-		}
+		separateResultGT(gt, groundTruthBboxWhite, groundTruthBboxBlack, groundTruthBboxSolid, groundTruthBboxStriped);
 
 		// save result mIOU
 		metricsIoU = compareMetricsIoU(segmented, "../Dataset"+filename[i], LAST);
@@ -175,12 +121,12 @@ int main(){
 
 
 	// compute the mIoU
-	IoU_white /= 20;
-	IoU_black /= 20;
-	IoU_solid /= 20;
-	IoU_striped /= 20;
-	IoU_playingField /= 20;
-	IoU_background /= 20;
+	IoU_white /= filename.size()*2;
+	IoU_black /= filename.size()*2;
+	IoU_solid /= filename.size()*2;
+	IoU_striped /= filename.size()*2;
+	IoU_playingField /= filename.size()*2;
+	IoU_background /= filename.size()*2;
 	cout << "IoU white: " << IoU_white << endl;
 	cout << "IoU black: " << IoU_black << endl;
 	cout << "IoU solid: " << IoU_solid << endl;

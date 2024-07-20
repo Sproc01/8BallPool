@@ -106,17 +106,21 @@ void segmentBalls(const Mat &frame, const Ptr<vector<Ball>> balls, Mat& segmente
 	Scalar c = Scalar(0, 0, 0);
 	for (const Ball &ball : *balls){
 
-		if(ball.getCategory() == Category::BLACK_BALL)
-			c = BLACK_BGR_COLOR;
-		else if(ball.getCategory() == Category::WHITE_BALL)
-			c = WHITE_BGR_COLOR;
-		else if(ball.getCategory() == Category::SOLID_BALL)
-			c = SOLID_BGR_COLOR;
-		else if(ball.getCategory() == Category::STRIPED_BALL)
-			c = STRIPED_BGR_COLOR;
-		Rect b = ball.getBbox();
-		radius = b.width / 2;
-		center = Point(b.tl().x + radius, b.tl().y + radius);
-		circle(segmented, center, radius, c, -1);
+		if(ball.getVisibility())
+		{
+			if(ball.getCategory() == Category::BLACK_BALL)
+				c = BLACK_BGR_COLOR;
+			else if(ball.getCategory() == Category::WHITE_BALL)
+				c = WHITE_BGR_COLOR;
+			else if(ball.getCategory() == Category::SOLID_BALL)
+				c = SOLID_BGR_COLOR;
+			else if(ball.getCategory() == Category::STRIPED_BALL)
+				c = STRIPED_BGR_COLOR;
+			Rect b = ball.getBbox();
+			radius = b.width / 2;
+			center = Point(b.tl().x + radius, b.tl().y + radius);
+			circle(segmented, center, radius, c, -1);
+		}
+
 	}
 }

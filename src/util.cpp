@@ -273,3 +273,75 @@ void kMeansClustering(const Mat &inputImage, const vector<Vec3b> &colors, Mat &c
         }
     }
 }
+
+/**
+ * @brief push the elements of the first vector in the right vector according to the category.
+ * @param gt input vector containing the elements to be separated.
+ * @param white output vector containing the white elements.
+ * @param black output vector containing the black elements.
+ * @param solid output vector containing the solid elements.
+ * @param striped output vector containing the striped elements.
+ * @throw invalid_argument if gt is empty.
+ */
+void separateResultBalls(Ptr<vector<Ball>> balls, vector<Ball> &white, vector<Ball> &black,
+							vector<Ball> &solid, vector<Ball> &striped) {
+	if(balls == nullptr)
+		throw invalid_argument("Null balls vector");
+
+	if(balls->empty())
+		throw invalid_argument("Empty balls vector");
+
+	for(const Ball &ball : *balls) {
+		switch(ball.getCategory()) {
+			case WHITE_BALL:
+				white.push_back(ball);
+				break;
+			case BLACK_BALL:
+				black.push_back(ball);
+				break;
+			case SOLID_BALL:
+				solid.push_back(ball);
+				break;
+			case STRIPED_BALL:
+				striped.push_back(ball);
+				break;
+			default:
+				break;
+		}
+	}
+}
+
+/**
+ * @brief push the elements of the first vector in the right vector according to the category.
+ * @param balls input pointer to a vector a balls that needs to be separated.
+ * @param white output vector containing the white balls.
+ * @param black output vector containing the black balls.
+ * @param solid output vector containing the solid balls.
+ * @param striped output vector containing the striped balls.
+ * @throw invalid_argument if balls is nullptr or if balls point to an empty vector.
+ */
+void separateResultGT(vector<pair<Rect, Category>> gt, vector<pair<Rect, Category>> &white,
+						vector<pair<Rect, Category>> &black, vector<pair<Rect, Category>> &solid,
+						vector<pair<Rect, Category>> &striped) {
+	if (gt.empty())
+		throw invalid_argument("Empty ground truth vector");
+
+	for(const pair<Rect, Category> &pair : gt) {
+		switch(pair.second) {
+			case WHITE_BALL:
+				white.push_back(pair);
+				break;
+			case BLACK_BALL:
+				black.push_back(pair);
+				break;
+			case SOLID_BALL:
+				solid.push_back(pair);
+				break;
+			case STRIPED_BALL:
+				striped.push_back(pair);
+				break;
+			default:
+				break;
+		}
+	}
+}

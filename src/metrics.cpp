@@ -115,7 +115,6 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
 		IoUs.push_back(maxIoU);
 	}
 
-	// TODO: check if sorting by IoU is reasonable
 	// Sort the detections by decreasing IoU using a index vector
 	vector<int> indices(IoUs.size());
 	for (int i = 0; i < IoUs.size(); i++){
@@ -130,7 +129,6 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
 	// cout << tp.size() << endl;
 	// cout << fp.size() << endl;
 	// cout << indices.size() << endl;
-	// TODO REMOVE THIS LINE segmentation fault because indices and tp not the same size because some IoU can be 0
 	vector<unsigned short> tpSorted(tp.size());
 	for (int i = 0; i<indices.size(); i++){
 		tpSorted[i] = tp[indices[i]];
@@ -142,7 +140,6 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
 		fpSorted[i] = fp[indices[i]];
 	}
 	fp = fpSorted;
-	//sort(IoUs.begin(), IoUs.end(), greater<>()); // TODO necessary?
 
 	// cout<<tpSorted.size()<<endl;
 	// cout<<fpSorted.size()<<endl;

@@ -181,7 +181,7 @@ Vec2b mostFrequentHueColor(const Mat &img){
 
 	cvtColor(img, thisImg, COLOR_BGR2HSV);
 	const int numberOfBins = 8;
-	const float range[] = {0, 179+1}; // TODO write 180 instead of 179+1
+	const float range[] = {0, 179+1};
 	const float* histRange[] = {range};
 
 	// Evaluate only H channel

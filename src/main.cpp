@@ -21,6 +21,8 @@ using namespace std;
 using namespace cv;
 using namespace chrono;
 
+//TODO: remove folders Dataset/other_videos and output_detection
+
 /* 	Given a video it detects table and balls in the first frame and track the balls over different frame.
 	Using this information then it creates the output video with a minimap superimposed and then detect the balls
 	in the last frame. For the detection of the table and of the balls it computes also some performance metrics. */
@@ -66,14 +68,12 @@ int main(int argc, char* argv[]){
 	string outputVideoName = videoName + "_output.mp4";
 	outputPath = outputPath / outputVideoName;
 	++frameCount;
-	//TODO: check output in frame when the resolution is bigger (it is cropped)
 	//imshow("First frame", frame);
-	//TODO use minimap.h
+
 	filesystem::path tempOutputPath = filesystem::temp_directory_path() / outputVideoName;
 	int codec = VideoWriter::fourcc('m', 'p', '4', 'v');
 	VideoWriter vidOutput = VideoWriter();
 	double fps = vid.get(CAP_PROP_FPS);
-	//TODO: remove the video if some error occour, or if the execution is closed before end (it is corrupted)
 	vidOutput.open(tempOutputPath.string(), codec, fps, frame.size(), true);
 
 	//DETECT AND SEGMENT TABLE
@@ -107,12 +107,13 @@ int main(int argc, char* argv[]){
 	Mat minimap = imread(MINIMAP_PATH);
 	Mat minimap_with_track = minimap.clone();
 	Mat minimap_with_balls = minimap.clone();
+	//TODO use minimap.h
 	// vector<unsigned char> minimapVec(MINIMAP_DATA, MINIMAP_DATA + MINIMAP_DATA_SIZE);
 	// Mat minimap = imdecode(minimapVec, cv::IMREAD_UNCHANGED);
 	// Mat minimap = imread(MINIMAP_PATH);
 	// imshow("minimap", minimap);
 
-	Mat transform =  table.getTransform(); //TODO: change and return value (check if working)
+	Mat transform =  table.getTransform();
 	minimap_with_balls = drawMinimap(minimap_with_track, transform, table.ballsPtr());
 	//imshow("Minimap with balls", minimap_with_balls);
 	createOutputImage(frame, minimap_with_balls, res);

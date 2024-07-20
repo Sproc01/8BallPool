@@ -93,7 +93,7 @@ Mat computeTransformation(const Mat& img, Vec<Point2f, 4>  &img_corners) {
  * @throw invalid_argument if the balls pointer is a null pointer
  */
 //TODO: const ptr?
-Mat drawMinimap(Mat &minimap_with_track, const Mat &transform, Ptr<vector<Ball>> balls) {
+Mat drawMinimap(Mat &minimap_with_track, const Mat &transform, const Ptr<vector<Ball>> balls) {
     if(minimap_with_track.empty())
         throw invalid_argument("Empty image in input");
 
@@ -103,7 +103,7 @@ Mat drawMinimap(Mat &minimap_with_track, const Mat &transform, Ptr<vector<Ball>>
     if(balls == nullptr)
         throw invalid_argument("Null pointer");
 
-    if(balls->size() == 0 || balls.empty()) //TODO: if there are no balls the minimap is returned with nothing?
+    if(balls->size() == 0)
         return minimap_with_track;
 
     //compute balls and prec balls positions in the image

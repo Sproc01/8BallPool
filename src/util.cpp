@@ -277,7 +277,8 @@ bool isHorizontal(const Mat &img) {
 }
 
 void calculateInscriptionParameters(const Mat &img, int targetWidth, int targetHeight, bool &toRotate, bool &toResize, short &leftBorderLength, short &rightBorderLength) {
-	Mat test;
+	// TODO see if it is possible to avoid cloning the image so many times
+	Mat test = img.clone();
 
 	// skip if already has the target aspect
 	toRotate = false;
@@ -285,14 +286,14 @@ void calculateInscriptionParameters(const Mat &img, int targetWidth, int targetH
 	leftBorderLength = 0;
 	rightBorderLength = 0;
 
-	if (!isHorizontal(img)) {	// rotate if vertical
+	if (!isHorizontal(test)) {	// rotate if vertical
 		toRotate = true;
 
 		test = img.clone();
 		doInscript(test, targetHeight, targetWidth, toRotate, toResize, leftBorderLength, rightBorderLength);
 	}
 
-	if (img.cols != targetWidth && img.rows != targetHeight) {	// resize if not inscribed
+	if (test.cols != targetWidth && test.rows != targetHeight) {	// resize if not inscribed
 		toResize = true;
 
 		test = img.clone();
@@ -302,8 +303,8 @@ void calculateInscriptionParameters(const Mat &img, int targetWidth, int targetH
 	// parameters to center the image
 	test = img.clone();
 	doInscript(test, targetWidth, targetHeight, toRotate, toResize, leftBorderLength, rightBorderLength);
-	leftBorderLength = (targetWidth - img.cols) / 2;
-	rightBorderLength = targetWidth - img.cols - leftBorderLength;	// if the difference is odd, the right border will be one pixel longer than the left one
+	leftBorderLength = (targetWidth - test.cols) / 2;
+	rightBorderLength = targetWidth - test.cols - leftBorderLength;	// if the difference is odd, the right border will be one pixel longer than the left one
 }
 
 void doInscript(Mat &img, int targetWidth, int targetHeight, const bool &toRotate, const bool &toResize, const short &leftBorderLength, const short &rightBorderLength) {

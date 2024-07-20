@@ -56,7 +56,9 @@ Mat computeTransformation(const Mat& img, Vec<Point2f, 4>  &img_corners) {
 
     //apply transformation considering corners such as top-left is the first one, followed by a long table side
     Mat table_segmented_transformed = imgTransformedCropped(img, transform);
-    //imshow("Img transformed cropped", tableSegmentedTransformed);
+    imshow("Img transformed cropped", table_segmented_transformed);
+    imwrite("../Report/images/table_seg_trans.jpg", table_segmented_transformed);
+    //waitKey(0);
 
     Vec<Point2f, 4> table_segmented_transformed_corners =  {Point2f(0, 0),
                                 Point2f(table_segmented_transformed.cols, 0),

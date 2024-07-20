@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.3.14)  20 JUL 2024 14:45
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.3.14)  20 JUL 2024 16:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -368,31 +368,120 @@ ppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/Michela/AppData/Local
 
 
 ]) (section/tracking.tex)
-(section/minimap.tex) (section/video.tex [2])) (section/results.tex)
-(section/conclusions.tex) [3
+(section/minimap.tex
+Underfull \hbox (badness 10000) in paragraph at lines 16--17
+ \OT1/ptm/b/n/10 Com-pu-ta-tion of the trans-for-ma-tion ma-trix \OT1/ptm/m/n/1
+0 The
+ []
 
-] (main.aux)
+<images/g1_c1.jpg, id=9, 1027.84pt x 578.16pt>
+File: images/g1_c1.jpg Graphic file (type jpg)
+<use images/g1_c1.jpg>
+Package pdftex.def Info: images/g1_c1.jpg  used on input line 27.
+(pdftex.def)             Requested size: 227.64894pt x 128.05132pt.
+<images/g1_c1_mask.jpg, id=10, 839.135pt x 434.62375pt>
+File: images/g1_c1_mask.jpg Graphic file (type jpg)
+<use images/g1_c1_mask.jpg>
+Package pdftex.def Info: images/g1_c1_mask.jpg  used on input line 32.
+(pdftex.def)             Requested size: 227.64894pt x 117.90704pt.
+<images/g2_c1.jpg, id=11, 1027.84pt x 578.16pt>
+File: images/g2_c1.jpg Graphic file (type jpg)
+<use images/g2_c1.jpg>
+Package pdftex.def Info: images/g2_c1.jpg  used on input line 42.
+(pdftex.def)             Requested size: 227.64894pt x 128.05132pt.
+<images/g2_c1_mask.jpg, id=12, 839.135pt x 434.62375pt>
+File: images/g2_c1_mask.jpg Graphic file (type jpg)
+<use images/g2_c1_mask.jpg>
+Package pdftex.def Info: images/g2_c1_mask.jpg  used on input line 47.
+(pdftex.def)             Requested size: 227.64894pt x 117.90704pt.
+<images/g3_c1.jpg, id=13, 1027.84pt x 578.16pt>
+File: images/g3_c1.jpg Graphic file (type jpg)
+<use images/g3_c1.jpg>
+Package pdftex.def Info: images/g3_c1.jpg  used on input line 57.
+(pdftex.def)             Requested size: 227.64894pt x 128.05132pt.
+<images/g3_c1_mask.jpg, id=14, 839.135pt x 434.62375pt>
+File: images/g3_c1_mask.jpg Graphic file (type jpg)
+<use images/g3_c1_mask.jpg>
+Package pdftex.def Info: images/g3_c1_mask.jpg  used on input line 62.
+(pdftex.def)             Requested size: 227.64894pt x 117.90704pt.
+<images/g4_c1.jpg, id=15, 1027.84pt x 578.16pt>
+File: images/g4_c1.jpg Graphic file (type jpg)
+<use images/g4_c1.jpg>
+Package pdftex.def Info: images/g4_c1.jpg  used on input line 72.
+(pdftex.def)             Requested size: 227.64894pt x 128.05132pt.
+<images/g4_c1_mask.jpg, id=16, 839.135pt x 434.62375pt>
+File: images/g4_c1_mask.jpg Graphic file (type jpg)
+<use images/g4_c1_mask.jpg>
+Package pdftex.def Info: images/g4_c1_mask.jpg  used on input line 77.
+(pdftex.def)             Requested size: 227.64894pt x 117.90704pt.
+
+Package caption Warning: \label without proper reference on input line 48.
+See the caption package documentation for explanation.
+
+
+LaTeX Warning: Reference `fig:game2_clip1_orientation' on page 2 undefined on i
+nput line 84.
+
+
+Package caption Warning: \label without proper reference on input line 63.
+See the caption package documentation for explanation.
+
+
+LaTeX Warning: Reference `fig:game3_clip1_orientation' on page 2 undefined on i
+nput line 85.
+
+
+Package caption Warning: \label without proper reference on input line 78.
+See the caption package documentation for explanation.
+
+
+LaTeX Warning: Reference `fig:game4_clip1_orientation' on page 2 undefined on i
+nput line 85.
+
+
+Package caption Warning: \label without proper reference on input line 33.
+See the caption package documentation for explanation.
+
+
+LaTeX Warning: Reference `fig:game1_clip1_orientation' on page 2 undefined on i
+nput line 88.
+
+
+Underfull \hbox (badness 1314) in paragraph at lines 93--94
+\OT1/pcr/m/n/10 drawMinimap() \OT1/ptm/m/n/10 method. Ev-ery time this method i
+s
+ []
+
+[2]) (section/video.tex)) (section/results.tex) (section/conclusions.tex)
+[3 <./images/g1_c1.jpg> <./images/g1_c1_mask.jpg (PNG copy)> <./images/g2_c1.jp
+g> <./images/g2_c1_mask.jpg (PNG copy)>] [4 <./images/g3_c1.jpg> <./images/g3_c
+1_mask.jpg (PNG copy)> <./images/g4_c1.jpg> <./images/g4_c1_mask.jpg (PNG copy)
+>] (main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
  ***********
+
+
+LaTeX Warning: There were undefined references.
+
  ) 
 Here is how much of TeX's memory you used:
- 7440 strings out of 474485
- 129358 string characters out of 5742790
- 1943542 words of memory out of 5000000
- 29578 multiletter control sequences out of 15000+600000
- 574933 words of font info for 66 fonts, out of 8000000 for 9000
+ 7526 strings out of 474485
+ 131334 string characters out of 5742790
+ 1947542 words of memory out of 5000000
+ 29663 multiletter control sequences out of 15000+600000
+ 576518 words of font info for 68 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 69i,8n,79p,972b,265s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 69i,8n,81p,910b,566s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/Michela/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/c
 m/cmsy10.pfb><C:/Users/Michela/AppData/Local/Programs/MiKTeX/fonts/type1/urw/co
 urier/ucrr8a.pfb><C:/Users/Michela/AppData/Local/Programs/MiKTeX/fonts/type1/ur
 w/times/utmb8a.pfb><C:/Users/Michela/AppData/Local/Programs/MiKTeX/fonts/type1/
 urw/times/utmr8a.pfb>
-Output written on main.pdf (3 pages, 68019 bytes).
+Output written on main.pdf (4 pages, 418428 bytes).
 PDF statistics:
- 33 PDF objects out of 1000 (max. 8388607)
+ 44 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 41 words of extra memory for PDF output out of 10000 (max. 10000000)
 

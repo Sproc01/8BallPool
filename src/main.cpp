@@ -150,6 +150,8 @@ int main(int argc, char* argv[]){
 	cout << "Time to create the video: " << duration.count() <<" minutes" << endl;
 	vidOutput.release();
 
+	imwrite("../Output/minimap/" + videoName + "_minimap.png", minimap_with_balls);
+
 	// work on last frame
 	table.clearBalls();
 	detectBalls(previousFrame, table, detected);
@@ -166,6 +168,7 @@ int main(int argc, char* argv[]){
 
 	for(int i = 0; i < metricsIoU.size(); i++)
 		cout << "IoU for category " << static_cast<Category>(i) << ": " << metricsIoU[i] << endl;
+
 	// write to a temp file first, then rename to the final name
 	filesystem::copy(tempOutputPath, outputPath, filesystem::copy_options::overwrite_existing);
 	filesystem::remove(tempOutputPath);

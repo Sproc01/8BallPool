@@ -1,3 +1,5 @@
+// Author: Alberto Pasqualetto
+
 #include <opencv2/highgui.hpp>
 #include "ball.h"
 #include "table.h"

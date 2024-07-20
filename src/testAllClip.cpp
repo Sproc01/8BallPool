@@ -1,3 +1,5 @@
+// Author: Michele Sprocatti
+
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
 #include <iostream>

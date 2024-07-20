@@ -1,12 +1,12 @@
-// Author:
+// Author: Michele Sprocatti
 
 #include <opencv2/opencv.hpp>
 #include <iostream>
+#include <stdexcept>
 
 #include "segmentation.h"
 #include "ball.h"
 #include "table.h"
-#include "detection.h"
 #include "minimapConstants.h"
 #include "util.h"
 

@@ -171,6 +171,7 @@ int main(int argc, char* argv[]){
 		cout << "IoU for category " << static_cast<Category>(i) << ": " << metricsIoU[i] << endl;
 	waitKey(0);
 	// write to a temp file first, then rename to the final name
-	filesystem::rename(tempOutputPath, outputPath);
+	filesystem::copy(tempOutputPath, outputPath, filesystem::copy_options::overwrite_existing);
+	filesystem::remove(tempOutputPath);
 	return 0;
 }

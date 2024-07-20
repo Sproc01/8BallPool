@@ -22,24 +22,24 @@ void calculateInscriptionParameters(const Mat &img, int targetWidth, int targetH
 		toRotate = true;
 
 		test = img.clone();
-		doInscript(test, targetHeight, targetWidth, toRotate, toResize, leftBorderLength, rightBorderLength);
+		doInscriptImage(test, targetHeight, targetWidth, toRotate, toResize, leftBorderLength, rightBorderLength);
 	}
 
 	if (test.cols != targetWidth && test.rows != targetHeight) {	// resize if not inscribed
 		toResize = true;
 
 		test = img.clone();
-		doInscript(test, targetWidth, targetHeight, toRotate, toResize, leftBorderLength, rightBorderLength);
+		doInscriptImage(test, targetWidth, targetHeight, toRotate, toResize, leftBorderLength, rightBorderLength);
 	}
 
 	// parameters to center the image
 	test = img.clone();
-	doInscript(test, targetWidth, targetHeight, toRotate, toResize, leftBorderLength, rightBorderLength);
+	doInscriptImage(test, targetWidth, targetHeight, toRotate, toResize, leftBorderLength, rightBorderLength);
 	leftBorderLength = (targetWidth - test.cols) / 2;
 	rightBorderLength = targetWidth - test.cols - leftBorderLength;	// if the difference is odd, the right border will be one pixel longer than the left one
 }
 
-void doInscript(Mat &img, int targetWidth, int targetHeight, const bool &toRotate, const bool &toResize, const short &leftBorderLength, const short &rightBorderLength) {
+void doInscriptImage(Mat &img, int targetWidth, int targetHeight, const bool &toRotate, const bool &toResize, const short &leftBorderLength, const short &rightBorderLength) {
 	if (toRotate) {
 		rotate(img, img, ROTATE_90_CLOCKWISE);
 	}
@@ -53,7 +53,7 @@ void doInscript(Mat &img, int targetWidth, int targetHeight, const bool &toRotat
 	}
 }
 
-void undoInscript(Mat &img, int originalWidth, int originalHeight, const bool &toRotate, const bool &toResize, const short &leftBorderLength, const short &rightBorderLength) {
+void undoInscriptImage(Mat &img, int originalWidth, int originalHeight, const bool &toRotate, const bool &toResize, const short &leftBorderLength, const short &rightBorderLength) {
 	if (leftBorderLength > 0 || rightBorderLength > 0) {
 		img = img(Rect(leftBorderLength, 0, originalWidth, originalHeight));
 	}
@@ -121,38 +121,99 @@ Rect unrotateRect(Rect rect, int targetWidth, int targetHeight) {
 	return Rect(unrotatePoint(oldTR, targetWidth, targetHeight), unrotatePoint(oldBL, targetWidth, targetHeight));
 }
 
-void rotateTable(Table &table, int targetWidth, int targetHeight, bool changeBboxPrec /* = false */) {
+void doInscriptTableObject(Table &table, int targetWidth, int targetHeight, int originalWidth, int originalHeight, const bool &toRotate, const bool &toResize, const short &leftBorderLength, const short &rightBorderLength, bool changeBboxPrec /* = false */) {
 	Vec<Point2f, 4> boundaries = table.getBoundaries();
-	for (size_t i = 0; i < 4; ++i) {
-		boundaries[i] = rotatePoint(boundaries[i], targetWidth, targetHeight);
-	}
-	table.setBoundaries(boundaries);
-
-	// transform matrix is not being rotated
-
+		// transform matrix is not being inscripted
 	Ptr<vector<Ball>> balls = table.ballsPtr();
-	for (Ball &ball : *balls) {
-		ball.setBbox(rotateRect(ball.getBbox(), targetWidth, targetHeight));
-		if (changeBboxPrec) {
-			ball.setBbox_prec(rotateRect(ball.getBbox_prec(), targetWidth, targetHeight));
+
+	if (toRotate) {
+		for (size_t i = 0; i < 4; ++i) {
+			boundaries[i] = rotatePoint(boundaries[i], targetWidth, targetHeight);
+		}
+		table.setBoundaries(boundaries);
+
+		for (Ball &ball : *balls) {
+			ball.setBbox(rotateRect(ball.getBbox(), targetWidth, targetHeight));
+			if (changeBboxPrec) {
+				ball.setBbox_prec(rotateRect(ball.getBbox_prec(), targetWidth, targetHeight));
+			}
+		}
+	}
+
+	if (toResize) {
+		for (size_t i = 0; i < 4; ++i) {
+			boundaries[i].x = boundaries[i].x/originalHeight*targetHeight;
+			boundaries[i].y = boundaries[i].y/originalHeight*targetHeight;
+		}
+		table.setBoundaries(boundaries);
+
+		for (Ball &ball : *balls) {
+			ball.setBbox(Rect(ball.getBbox().tl().x/originalHeight*targetHeight, ball.getBbox().tl().y/originalHeight*targetHeight, ball.getBbox().width/originalHeight*targetHeight, ball.getBbox().height/originalHeight*targetHeight));
+			if (changeBboxPrec) {
+				ball.setBbox_prec(Rect(ball.getBbox_prec().tl().x/originalHeight*targetHeight, ball.getBbox_prec().tl().y/originalHeight*targetHeight, ball.getBbox_prec().width/originalHeight*targetHeight, ball.getBbox_prec().height/originalHeight*targetHeight));
+			}
+		}
+	}
+
+	if (leftBorderLength > 0) {
+		for (size_t i = 0; i < 4; ++i) {
+			boundaries[i].x += leftBorderLength;
+		}
+		table.setBoundaries(boundaries);
+
+		for (Ball &ball : *balls) {
+			ball.setBbox(Rect(ball.getBbox().tl().x + leftBorderLength, ball.getBbox().tl().y, ball.getBbox().width, ball.getBbox().height));
+			if (changeBboxPrec) {
+				ball.setBbox_prec(Rect(ball.getBbox_prec().tl().x + leftBorderLength, ball.getBbox_prec().tl().y, ball.getBbox_prec().width, ball.getBbox_prec().height));
+			}
 		}
 	}
 }
 
-void unrotateTable(Table &table, int targetWidth, int targetHeight, bool changeBboxPrec /* = false */) {
+void undoInscriptTableObject(Table &table, int targetWidth, int targetHeight, int originalWidth, int originalHeight, const bool &toRotate, const bool &toResize, const short &leftBorderLength, const short &rightBorderLength, bool changeBboxPrec /* = false */) {
 	Vec<Point2f, 4> boundaries = table.getBoundaries();
-	for (size_t i = 0; i < 4; ++i) {
-		boundaries[i] = unrotatePoint(boundaries[i], targetWidth, targetHeight);
-	}
-	table.setBoundaries(boundaries);
-
-	// transform matrix is not being (un)rotated
-
+	// transform matrix is not being (un)inscripted
 	Ptr<vector<Ball>> balls = table.ballsPtr();
-	for (Ball &ball : *balls) {
-		ball.setBbox(unrotateRect(ball.getBbox(), targetWidth, targetHeight));
-		if (changeBboxPrec) {
-			ball.setBbox_prec(unrotateRect(ball.getBbox_prec(), targetWidth, targetHeight));
+
+	if (leftBorderLength) {
+		for (size_t i = 0; i < 4; ++i) {
+			boundaries[i].x -= leftBorderLength;
+		}
+
+		for (Ball &ball : *balls) {
+			ball.setBbox(Rect(ball.getBbox().tl().x - leftBorderLength, ball.getBbox().tl().y, ball.getBbox().width, ball.getBbox().height));
+			if (changeBboxPrec) {
+				ball.setBbox_prec(Rect(ball.getBbox_prec().tl().x - leftBorderLength, ball.getBbox_prec().tl().y, ball.getBbox_prec().width, ball.getBbox_prec().height));
+			}
 		}
 	}
+
+	if (toResize) {
+		for (size_t i = 0; i < 4; ++i) {
+			boundaries[i].x = boundaries[i].x/targetHeight*originalHeight;
+			boundaries[i].y = boundaries[i].y/targetHeight*originalHeight;
+		}
+
+		for (Ball &ball : *balls) {
+			ball.setBbox(Rect(ball.getBbox().tl().x/targetHeight*originalHeight, ball.getBbox().tl().y/targetHeight*originalHeight, ball.getBbox().width/targetHeight*originalHeight, ball.getBbox().height/targetHeight*originalHeight));
+			if (changeBboxPrec) {
+				ball.setBbox_prec(Rect(ball.getBbox_prec().tl().x/targetHeight*originalHeight, ball.getBbox_prec().tl().y/targetHeight*originalHeight, ball.getBbox_prec().width/targetHeight*originalHeight, ball.getBbox_prec().height/targetHeight*originalHeight));
+			}
+		}
+	}
+
+	if (toRotate) {
+		for (size_t i = 0; i < 4; ++i) {
+			boundaries[i] = unrotatePoint(boundaries[i], targetWidth, targetHeight);
+		}
+		table.setBoundaries(boundaries);
+
+		for (Ball &ball : *balls) {
+			ball.setBbox(unrotateRect(ball.getBbox(), targetWidth, targetHeight));
+			if (changeBboxPrec) {
+				ball.setBbox_prec(unrotateRect(ball.getBbox_prec(), targetWidth, targetHeight));
+			}
+		}
+	}
+
 }

@@ -86,28 +86,26 @@ int main(int argc, char* argv[]){
 	vidOutput.open(tempOutputPath.string(), codec, fps, frame.size(), true);
 
 	//DETECT AND SEGMENT TABLE
-	doInscript(frame, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
+	doInscriptImage(frame, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	detectTable(frame, tableCorners, colorTable);
 	table = Table(tableCorners, colorTable);
 	segmentTable(frame, table, segmented);
-	undoInscript(segmented, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
+	undoInscriptImage(segmented, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	imshow("segmentedTable", segmented);
-	doInscript(segmented, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
+	doInscriptImage(segmented, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 
 	//DETECT AND SEGMENT BALLS
 	detectBalls(frame, table, detected);
-	undoInscript(detected, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
+	undoInscriptImage(detected, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	imshow("detectedBalls", detected);
 
 	segmentBalls(segmented, table.ballsPtr(), segmented);
-	undoInscript(segmented, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
+	undoInscriptImage(segmented, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	imshow("segmentedBalls", segmented);
 
 
 	cout << "Metrics first frame:" << endl;
-	if (toRotate) {
-		unrotateTable(table, ORIGINAL_WIDTH, ORIGINAL_HEIGHT);
-	}
+	undoInscriptTableObject(table, TABLE_WIDTH, TABLE_HEIGHT, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	metricsAP = compareMetricsAP(table, videoPath.parent_path().string(), FIRST);
 	metricsIoU = compareMetricsIoU(segmented, videoPath.parent_path().string(), FIRST);
 	for(int i = 0; i < metricsAP.size(); i++)
@@ -115,14 +113,12 @@ int main(int argc, char* argv[]){
 
 	for(int i = 0; i < metricsIoU.size(); i++)
 		cout << "IoU for category " << i << ": " << metricsIoU[i] << endl;
-	if (toRotate) {
-		rotateTable(table, TABLE_WIDTH, TABLE_HEIGHT);
-	}
+	doInscriptTableObject(table, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 
 
 	//TRANSFORMATION
 	Vec<Point2f, 4>  img_corners = table.getBoundaries();
-	doInscript(segmented, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
+	doInscriptImage(segmented, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	table.setTransform(computeTransformation(segmented, img_corners));
 	table.setBoundaries(img_corners);
 
@@ -139,14 +135,14 @@ int main(int argc, char* argv[]){
 	Mat transform =  table.getTransform();
 	minimap_with_balls = drawMinimap(minimap_with_track, transform, table.ballsPtr());
 	//imshow("Minimap with balls", minimap_with_balls);
-	undoInscript(frame, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
+	undoInscriptImage(frame, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	createOutputImage(frame, minimap_with_balls, res);
 	//imshow("result", res);
 	vidOutput.write(res);
 
 	//TRACKER
 	BallTracker tracker = BallTracker(table.ballsPtr());
-	doInscript(frame, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
+	doInscriptImage(frame, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	tracker.trackAll(frame);
 	// waitKey();
 
@@ -156,13 +152,13 @@ int main(int argc, char* argv[]){
 	while (vid.isOpened() && vid.read(frame)){  // work on middle frames
 		//cout << "Frame number: " << ++frameCount << endl;
 
-		doInscript(frame, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
+		doInscriptImage(frame, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 
  		//VIDEO WITH MINIMAP
 		tracker.trackAll(frame);
 		minimap_with_balls = drawMinimap(minimap_with_track, transform, table.ballsPtr());
 
-		undoInscript(frame, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
+		undoInscriptImage(frame, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 		createOutputImage(frame, minimap_with_balls, res);
 		//imshow("result", res);
 		vidOutput.write(res);
@@ -175,19 +171,19 @@ int main(int argc, char* argv[]){
 	vidOutput.release();
 
 	// work on last frame
-	doInscript(lastFrame, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
+	doInscriptImage(lastFrame, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	table.clearBalls();
 	detectBalls(lastFrame, table, detected);
 	segmentTable(lastFrame, table, segmented);
-	undoInscript(detected, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
+	undoInscriptImage(detected, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	imshow("detectedBalls", detected);
 	segmentBalls(segmented, table.ballsPtr(), segmented);
-	undoInscript(segmented, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
+	undoInscriptImage(segmented, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	imshow("segmentedBalls", segmented);
 
 	cout << "Metrics last frame:" << endl;
 	if (toRotate) {
-		unrotateTable(table, ORIGINAL_WIDTH, ORIGINAL_HEIGHT);
+		undoInscriptTableObject(table, ORIGINAL_WIDTH, ORIGINAL_HEIGHT);
 	}
 	metricsAP = compareMetricsAP(table, videoPath.parent_path().string(), LAST);
 	metricsIoU = compareMetricsIoU(segmented, videoPath.parent_path().string(), LAST);
@@ -198,7 +194,7 @@ int main(int argc, char* argv[]){
 	for(int i = 0; i < metricsIoU.size(); i++)
 		cout << "IoU for category " << static_cast<Category>(i) << ": " << metricsIoU[i] << endl;
 	if (toRotate) {
-		rotateTable(table, TABLE_WIDTH, TABLE_HEIGHT);
+		doInscriptTableObject(table, TABLE_WIDTH, TABLE_HEIGHT);
 	}
 
 

@@ -29,7 +29,6 @@ struct Edge{
  */
 bool compareByPercentile(const Edge &e1, const Edge &e2)
 {
-    //TODO: can be empty?
     return e1.background_percentile < e2.background_percentile;
 }
 
@@ -73,7 +72,6 @@ double computeTablePercentile(const Mat &mask_img, const Rect &rect) {
  * @return true if e1 and e2 are opposite to each other, false otherwise
  */
 bool oppositeEdges(const Edge &e1, const Edge &e2) {
-    //TODO: can be empty?
     if((e1.corner1 == e2.corner2)||
         e1.corner2 == e2.corner1 ||
         e1.corner1 == e2.corner1 ||

@@ -13,7 +13,7 @@ constexpr unsigned short MAX_BALLS = 16;
 
 
 class Table {
-	cv::Vec<cv::Point2f, 4> boundaries_;  // TODO define order of points
+	cv::Vec<cv::Point2f, 4> boundaries_;
 	cv::Vec2b colorRange_;
 	cv::Mat transform_;
 	cv::Ptr<std::vector<Ball>> balls_;

@@ -9,7 +9,7 @@ To create the mini-map are needed:
 
 \subsubsection{Empty mini-map image}
 
-As a first step, an image of an empty billiard table has been selected, and its corner positions and dimensions have been stored in constant variables.
+As a first step, an image of an empty billiard table has been selected, and its corner positions and dimensions have been stored in constant variables by testing different values. In particular we decided to use an header version of the image to have a self-contained executable without the need of the image. This version has been created with an online tool (ImageMagick - \url{https://imagemagick.org/}).
 
 \subsubsection{Computation of the transformation matrix}
 
@@ -111,4 +111,4 @@ Given the transformation matrix and the ball positions in the frame, it is possi
 	\label{fig:game2_clip1_balls_and_tracking}
 \end{figure}
 
-The ideas of using \texttt{getPerspectiveTransform()} and \texttt{perspectiveTransform()}, and how to check the orientation of the table were from Michela; the idea of drawing the balls on a copy of the mini-map image, rather than the one that contains the tracking, was from Alberto.
+The ideas of using \texttt{getPerspectiveTransform()} and \texttt{perspectiveTransform()}, and how to check the orientation of the table were from Michela; the ideas of using an header version of the mini-map image and of drawing the balls on a copy of the mini-map image, rather than the one that contains the tracking, were from Alberto.

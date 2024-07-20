@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.3.14)  20 JUL 2024 17:41
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.3.14)  20 JUL 2024 18:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -456,13 +456,14 @@ Underfull \hbox (badness 10000) in paragraph at lines 16--17
 0 The
  []
 
-<images/TableOrientation/g1_c1.jpg, id=9, 1027.84pt x 578.16pt>
+[2]
+<images/TableOrientation/g1_c1.jpg, id=14, 1027.84pt x 578.16pt>
 File: images/TableOrientation/g1_c1.jpg Graphic file (type jpg)
 <use images/TableOrientation/g1_c1.jpg>
 Package pdftex.def Info: images/TableOrientation/g1_c1.jpg  used on input line 
 32.
 (pdftex.def)             Requested size: 227.64894pt x 128.05132pt.
-<images/Segmentation/game1_clip1_segmented_balls_first_frame.jpg, id=10, 1027.8
+<images/Segmentation/game1_clip1_segmented_balls_first_frame.jpg, id=15, 1027.8
 4pt x 578.16pt>
 File: images/Segmentation/game1_clip1_segmented_balls_first_frame.jpg Graphic f
 ile (type jpg)
@@ -470,7 +471,6 @@ ile (type jpg)
 Package pdftex.def Info: images/Segmentation/game1_clip1_segmented_balls_first_
 frame.jpg  used on input line 38.
 (pdftex.def)             Requested size: 227.64894pt x 128.05132pt.
-[2]
 <images/TableOrientation/g2_c1.jpg, id=16, 1027.84pt x 578.16pt>
 File: images/TableOrientation/g2_c1.jpg Graphic file (type jpg)
 <use images/TableOrientation/g2_c1.jpg>
@@ -483,6 +483,9 @@ File: images/TableOrientation/g2_c1_mask.jpg Graphic file (type jpg)
 Package pdftex.def Info: images/TableOrientation/g2_c1_mask.jpg  used on input 
 line 56.
 (pdftex.def)             Requested size: 202.3529pt x 104.80258pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
 <images/TableOrientation/g3_c1.jpg, id=18, 1027.84pt x 578.16pt>
 File: images/TableOrientation/g3_c1.jpg Graphic file (type jpg)
 <use images/TableOrientation/g3_c1.jpg>
@@ -508,16 +511,17 @@ Package pdftex.def Info: images/TableOrientation/g4_c1_mask.jpg  used on input
 line 86.
 (pdftex.def)             Requested size: 202.3529pt x 104.80258pt.
 
+Underfull \vbox (badness 4454) has occurred while \output is active []
+
+ [3 <./images/TableOrientation/g1_c1.jpg> <./images/Segmentation/game1_clip1_se
+gmented_balls_first_frame.jpg> <./images/TableOrientation/g2_c1.jpg> <./images/
+TableOrientation/g2_c1_mask.jpg (PNG copy)> <./images/TableOrientation/g3_c1.jp
+g> <./images/TableOrientation/g3_c1_mask.jpg (PNG copy)>]
 Underfull \hbox (badness 1314) in paragraph at lines 94--95
 \OT1/pcr/m/n/10 drawMinimap() \OT1/ptm/m/n/10 method. Ev-ery time this method i
 s
  []
 
-[3 <./images/TableOrientation/g1_c1.jpg> <./images/Segmentation/game1_clip1_seg
-mented_balls_first_frame.jpg> <./images/TableOrientation/g2_c1.jpg> <./images/T
-ableOrientation/g2_c1_mask.jpg (PNG copy)> <./images/TableOrientation/g3_c1.jpg
-> <./images/TableOrientation/g3_c1_mask.jpg (PNG copy)> <./images/TableOrientat
-ion/g4_c1.jpg> <./images/TableOrientation/g4_c1_mask.jpg (PNG copy)>]
 <images/Minimap/g2_c1minimap_with_track.jpg, id=25, 970.62625pt x 562.1pt>
 File: images/Minimap/g2_c1minimap_with_track.jpg Graphic file (type jpg)
 <use images/Minimap/g2_c1minimap_with_track.jpg>
@@ -530,11 +534,15 @@ File: images/Minimap/g2_c1_minimap_with_balls.jpg Graphic file (type jpg)
 Package pdftex.def Info: images/Minimap/g2_c1_minimap_with_balls.jpg  used on i
 nput line 106.
 (pdftex.def)             Requested size: 202.3529pt x 117.1782pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
 )
-(section/video.tex) (section/metrics.tex)) (section/results.tex [4 <./images/Mi
-nimap/g2_c1minimap_with_track.jpg> <./images/Minimap/g2_c1_minimap_with_balls.j
-pg>]
-<images/Detection/game1_clip1_detected_balls_first_frame.jpg, id=31, 1027.84pt 
+(section/video.tex) (section/metrics.tex [4 <./images/TableOrientation/g4_c1.jp
+g> <./images/TableOrientation/g4_c1_mask.jpg (PNG copy)> <./images/Minimap/g2_c
+1minimap_with_track.jpg> <./images/Minimap/g2_c1_minimap_with_balls.jpg>]))
+(section/results.tex
+<images/Detection/game1_clip1_detected_balls_first_frame.jpg, id=30, 1027.84pt 
 x 578.16pt>
 File: images/Detection/game1_clip1_detected_balls_first_frame.jpg Graphic file 
 (type jpg)
@@ -548,7 +556,7 @@ ile (type jpg)
 Package pdftex.def Info: images/Segmentation/game1_clip1_segmented_balls_first_
 frame.jpg  used on input line 37.
 (pdftex.def)             Requested size: 202.3529pt x 113.82144pt.
-<images/Detection/game2_clip1_detected_balls_first_frame.jpg, id=32, 1027.84pt 
+<images/Detection/game2_clip1_detected_balls_first_frame.jpg, id=31, 1027.84pt 
 x 578.16pt>
 File: images/Detection/game2_clip1_detected_balls_first_frame.jpg Graphic file 
 (type jpg)
@@ -556,7 +564,7 @@ File: images/Detection/game2_clip1_detected_balls_first_frame.jpg Graphic file
 Package pdftex.def Info: images/Detection/game2_clip1_detected_balls_first_fram
 e.jpg  used on input line 49.
 (pdftex.def)             Requested size: 202.3529pt x 113.82144pt.
-<images/Segmentation/game2_clip1_segmented_balls_first_frame.jpg, id=33, 1027.8
+<images/Segmentation/game2_clip1_segmented_balls_first_frame.jpg, id=32, 1027.8
 4pt x 578.16pt>
 File: images/Segmentation/game2_clip1_segmented_balls_first_frame.jpg Graphic f
 ile (type jpg)
@@ -567,7 +575,8 @@ frame.jpg  used on input line 55.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-<images/Detection/game3_clip1_detected_balls_first_frame.jpg, id=34, 1027.84pt 
+ [5 <./images/Detection/game1_clip1_detected_balls_first_frame.jpg>]
+<images/Detection/game3_clip1_detected_balls_first_frame.jpg, id=37, 1027.84pt 
 x 578.16pt>
 File: images/Detection/game3_clip1_detected_balls_first_frame.jpg Graphic file 
 (type jpg)
@@ -575,7 +584,7 @@ File: images/Detection/game3_clip1_detected_balls_first_frame.jpg Graphic file
 Package pdftex.def Info: images/Detection/game3_clip1_detected_balls_first_fram
 e.jpg  used on input line 66.
 (pdftex.def)             Requested size: 202.3529pt x 113.82144pt.
-<images/Segmentation/game3_clip1_segmented_balls_first_frame.jpg, id=35, 1027.8
+<images/Segmentation/game3_clip1_segmented_balls_first_frame.jpg, id=38, 1027.8
 4pt x 578.16pt>
 File: images/Segmentation/game3_clip1_segmented_balls_first_frame.jpg Graphic f
 ile (type jpg)
@@ -583,7 +592,7 @@ ile (type jpg)
 Package pdftex.def Info: images/Segmentation/game3_clip1_segmented_balls_first_
 frame.jpg  used on input line 72.
 (pdftex.def)             Requested size: 202.3529pt x 113.82144pt.
-<images/Detection/game4_clip1_detected_balls_first_frame.jpg, id=36, 1027.84pt 
+<images/Detection/game4_clip1_detected_balls_first_frame.jpg, id=39, 1027.84pt 
 x 578.16pt>
 File: images/Detection/game4_clip1_detected_balls_first_frame.jpg Graphic file 
 (type jpg)
@@ -591,7 +600,7 @@ File: images/Detection/game4_clip1_detected_balls_first_frame.jpg Graphic file
 Package pdftex.def Info: images/Detection/game4_clip1_detected_balls_first_fram
 e.jpg  used on input line 83.
 (pdftex.def)             Requested size: 202.3529pt x 113.82144pt.
-<images/Segmentation/game4_clip1_segmented_balls_first_frame.jpg, id=37, 1027.8
+<images/Segmentation/game4_clip1_segmented_balls_first_frame.jpg, id=40, 1027.8
 4pt x 578.16pt>
 File: images/Segmentation/game4_clip1_segmented_balls_first_frame.jpg Graphic f
 ile (type jpg)
@@ -602,14 +611,13 @@ frame.jpg  used on input line 89.
 )
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [5 <./images/Detection/game1_clip1_detected_balls_first_frame.jpg> <./images/D
-etection/game2_clip1_detected_balls_first_frame.jpg> <./images/Segmentation/gam
-e2_clip1_segmented_balls_first_frame.jpg> <./images/Detection/game3_clip1_detec
-ted_balls_first_frame.jpg> <./images/Segmentation/game3_clip1_segmented_balls_f
-irst_frame.jpg>] (section/conclusions.tex) [6
 
- <./images/Detection/game4_clip1_detected_balls_first_frame.jpg> <./images/Segm
-entation/game4_clip1_segmented_balls_first_frame.jpg>] (main.aux)
+(section/conclusions.tex) [6 <./images/Detection/game2_clip1_detected_balls_fir
+st_frame.jpg> <./images/Segmentation/game2_clip1_segmented_balls_first_frame.jp
+g> <./images/Detection/game3_clip1_detected_balls_first_frame.jpg> <./images/Se
+gmentation/game3_clip1_segmented_balls_first_frame.jpg> <./images/Detection/gam
+e4_clip1_detected_balls_first_frame.jpg> <./images/Segmentation/game4_clip1_seg
+mented_balls_first_frame.jpg>] (main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
@@ -618,7 +626,7 @@ L3 programming layer <2024-01-04>
 Here is how much of TeX's memory you used:
  8448 strings out of 474485
  148746 string characters out of 5742790
- 1946542 words of memory out of 5000000
+ 1945542 words of memory out of 5000000
  30546 multiletter control sequences out of 15000+600000
  582317 words of font info for 88 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -631,7 +639,7 @@ eX/fonts/type1/urw/courier/ucrr8a.pfb><C:/Users/Michela/AppData/Local/Programs/
 MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/Michela/AppData/Local/Program
 s/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/Michela/AppData/Local/Progr
 ams/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (6 pages, 1048935 bytes).
+Output written on main.pdf (6 pages, 1049364 bytes).
 PDF statistics:
  74 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

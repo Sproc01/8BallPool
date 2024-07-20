@@ -4,12 +4,15 @@ At the beginning the function compute two values: the scaling factor for the min
 (the first row where the minimap is placed). For the scaling factor Michele thought that
 the minimap should have 0.3 of the total columns of the frame, so the scaling factor is computed as follows:
 \begin{equation}
-	scaling\_factor = \frac{0.3 \times frame.cols}{minimap\_with\_balls.cols}
+	scaling\_factor = \frac{(0.3 \times frame.col)}{minimap\_with\_balls.cols}
 \end{equation}
 Instead for the offset, Michele thought that the minimap should be placed at the bottom right of the frame
 and it must be attached to the bottom border so first a factor is computed as follows:
 \begin{equation}
-	percentage = \frac{(frame.rows - scaling\_factor \times minimap\_with\_balls.rows)}{frame.rows}
+    value = scaling\_factor \times minimap\_with\_balls.rows
+\end{equation}
+\begin{equation}
+    percentage = \frac{frame.rows - value}{frame.rows}
 \end{equation}
 Then the offset is computed as follows:
 \begin{equation}

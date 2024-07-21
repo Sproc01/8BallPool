@@ -378,6 +378,7 @@ void detectBalls(const Mat &frame, Table &table){
 	const int SIGMA_COLOR = 15;
 	const int SIGMA_SPACE = 70;
 	const float RANGE_RADIUS = 0.3;
+	const int RADIUS_CORNERS = 20;
 
 
 
@@ -413,7 +414,7 @@ void detectBalls(const Mat &frame, Table &table){
 		tableCornersInt.push_back(Point(static_cast<int>(tableCorners[i].x), static_cast<int>(tableCorners[i].y)));
 	fillConvexPoly(poly, tableCornersInt, 255);
 	for(int i = 0; i < tableCornersInt.size(); i++)
-		circle(poly, tableCornersInt[i], 20, 0, FILLED, 8, 0);
+		circle(poly, tableCornersInt[i], RADIUS_CORNERS, 0, FILLED, 8, 0);
 	kernelMorphological = getStructuringElement(MORPH_ELLIPSE, Size(5, 5));
 	morphologyEx(poly, poly, MORPH_ERODE, kernelMorphological, Point(-1,-1), 7);
 	//imshow("Poly eroded", poly);

@@ -38,6 +38,7 @@ int main(int argc, char *argv[]) {
 	Mat res;
 	vector<double> metricsAP;
 	vector<double> metricsIoU;
+	const int FRAME_VISUALITAION_STEP = 60;
 
 	//INPUT
 	if (argc == 2) {
@@ -54,7 +55,7 @@ int main(int argc, char *argv[]) {
 
 	//START THE VIDEO
 	VideoCapture vid = VideoCapture(videoPath.string());
-	
+
 	// work on first frame
 	if (!vid.isOpened() || !vid.read(frame)) {
 		cout << "Error opening video file" << endl;
@@ -81,10 +82,10 @@ int main(int argc, char *argv[]) {
 	//DETECT AND SEGMENT BALLS
 	detectBalls(frame, table);
 	drawBoundingBoxes(frame, table, detected);
-	imshow("detected balls", detected);
+	imshow("detected balls first frame", detected);
 
 	segmentBalls(segmented, table.ballsPtr(), segmented);
-	imshow("segmentedBalls", segmented);
+	imshow("segmented balls first frame", segmented);
 	cout << "Metrics first frame:" << endl;
 	metricsAP = compareMetricsAP(table, videoPath.parent_path().string(), FIRST);
 	metricsIoU = compareMetricsIoU(segmented, videoPath.parent_path().string(), FIRST);
@@ -93,6 +94,8 @@ int main(int argc, char *argv[]) {
 
 	for (int c = 0; c < metricsIoU.size(); c++)
 		cout << "IoU for category " << c << ": " << metricsIoU[c] << endl;
+
+	waitKey(0);
 
 	//TRANSFORMATION
 	Vec<Point2f, 4> imgCorners = table.getBoundaries();
@@ -134,7 +137,7 @@ int main(int argc, char *argv[]) {
 		//imshow("result", res);
 		vidOutput.write(res);
 		// show status every X frame
-		if (frameCount % 100 == 0) {
+		if (frameCount % FRAME_VISUALITAION_STEP == 0) {
 			// enlarge and shrink are needed because for the tracking
 			// we enlarge the bounding box to have a better detection
 			for(int i = 0; i < table.ballsPtr()->size(); i++){
@@ -145,10 +148,10 @@ int main(int argc, char *argv[]) {
 			segmentTable(frame, table, segmented);
 			segmentBalls(segmented, table.ballsPtr(), segmented);
 			drawBoundingBoxes(frame, table, detected);
-			imshow("frame " + to_string(frameCount), frame);
-			imshow("segmentedBalls " + to_string(frameCount), segmented);
-			imshow("detected balls " + to_string(frameCount), detected);
-			imshow("Minimap with balls " + to_string(frameCount), minimapWithBalls);
+			//imshow("frame " + to_string(frameCount), frame);
+			imshow("segmented balls " + to_string(frameCount) + " frame", segmented);
+			imshow("detected balls " + to_string(frameCount) + " frame", detected);
+			imshow("Minimap with balls " + to_string(frameCount) + " frame", minimapWithBalls);
 			for(int i = 0; i < table.ballsPtr()->size(); i++){
 				Rect r = table.ballsPtr()->at(i).getBbox();
 				enlargeRect(r, 10);
@@ -172,10 +175,10 @@ int main(int argc, char *argv[]) {
 	table.clearBalls();
 	detectBalls(previousFrame, table);
 	drawBoundingBoxes(previousFrame, table, detected);
-	imshow("detected balls", detected);
+	imshow("detected balls last frame", detected);
 	segmentTable(previousFrame, table, segmented);
 	segmentBalls(segmented, table.ballsPtr(), segmented);
-	imshow("segmentedBalls", segmented);
+	imshow("segmented balls last frame", segmented);
 	cout << "Metrics last frame:" << endl;
 	metricsAP = compareMetricsAP(table, videoPath.parent_path().string(), LAST);
 	metricsIoU = compareMetricsIoU(segmented, videoPath.parent_path().string(), LAST);

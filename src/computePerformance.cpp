@@ -61,12 +61,12 @@ int main(){
 		segmentTable(frame, table, segmented);
 		segmentBalls(frame, table.ballsPtr(), segmented);
 
-		// save the results mAP
+		// save the results for the mAP
 		separateResultBalls(table.ballsPtr(), detectedBallWhite, detectedBallBlack, detectedBallSolid, detectedBallStriped);
 		gt = readGroundTruthBboxFile("../Dataset"+filename[i]+"/bounding_boxes/frame_first_bbox.txt");
 		separateResultGT(gt, groundTruthBboxWhite, groundTruthBboxBlack, groundTruthBboxSolid, groundTruthBboxStriped);
 
-		// save result mIOU
+		// save result for the mIoU
 		metricsIoU = compareMetricsIoU(segmented, "../Dataset"+filename[i], FIRST);
 		IoU_background += metricsIoU[0];
 		IoU_white += metricsIoU[1];
@@ -91,12 +91,12 @@ int main(){
 		segmentTable(previousFrame, table, segmented);
 		segmentBalls(segmented, table.ballsPtr(), segmented);
 
-		// save the results mAP
+		// save the results for the mAP
 		separateResultBalls(table.ballsPtr(), detectedBallWhite, detectedBallBlack, detectedBallSolid, detectedBallStriped);
 		gt = readGroundTruthBboxFile("../Dataset"+filename[i]+"/bounding_boxes/frame_last_bbox.txt");
 		separateResultGT(gt, groundTruthBboxWhite, groundTruthBboxBlack, groundTruthBboxSolid, groundTruthBboxStriped);
 
-		// save result mIOU
+		// save result for the mIoU
 		metricsIoU = compareMetricsIoU(segmented, "../Dataset"+filename[i], LAST);
 		IoU_background += metricsIoU[0];
 		IoU_white += metricsIoU[1];
@@ -111,7 +111,6 @@ int main(){
 	Ptr<vector<Ball>> detectedBallBlackPtr = makePtr<vector<Ball>>(detectedBallBlack);
 	Ptr<vector<Ball>> detectedBallSolidPtr = makePtr<vector<Ball>>(detectedBallSolid);
 	Ptr<vector<Ball>> detectedBallStripedPtr = makePtr<vector<Ball>>(detectedBallStriped);
-
 	double AP_white = APBallCategory(detectedBallWhitePtr, groundTruthBboxWhite, WHITE_BALL, 0.5);
 	double AP_black = APBallCategory(detectedBallBlackPtr, groundTruthBboxBlack, BLACK_BALL, 0.5);
 	double AP_solid = APBallCategory(detectedBallSolidPtr, groundTruthBboxSolid, SOLID_BALL, 0.5);
@@ -125,7 +124,7 @@ int main(){
 
 
 	// compute the mIoU
-	IoU_white /= filename.size()*2;
+	IoU_white /= filename.size()*2; // first and last frame for each video
 	IoU_black /= filename.size()*2;
 	IoU_solid /= filename.size()*2;
 	IoU_striped /= filename.size()*2;

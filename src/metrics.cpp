@@ -112,7 +112,6 @@ vector<double> APDetection(const Ptr<vector<Ball>> &detectedBalls, const string 
 	vector<pair<Rect, Category>> groundTruthBboxes = readGroundTruthBboxFile(groundTruthBboxPath);
 	vector<double> APs;
 	for (Category cat = Category::WHITE_BALL; cat <= Category::STRIPED_BALL; cat = static_cast<Category>(cat + 1)) {
-		//std::cout<<"here"<<std::endl;
 		APs.push_back(APBallCategory(detectedBalls, groundTruthBboxes, cat, iouThreshold));
 	}
 
@@ -210,8 +209,6 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
 	vector<unsigned short> fp;
 
 	// Couple each detected ball with the ground truth ball using the highest IoU
-	// cout<<detectedBallsBboxesCat.size()<<endl;
-	// cout<<groundTruthBboxesCat.size()<<endl;
 	for (int i = 0; i < detectedBallsBboxesCat.size(); i++) {
 		double maxIoU = 0;
 		int maxIoUIndex = -1;
@@ -246,9 +243,6 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
 	});
 
 	// sort tp and fp according to the sorted indices "in place"
-	// cout << tp.size() << endl;
-	// cout << fp.size() << endl;
-	// cout << indices.size() << endl;
 	vector<unsigned short> tpSorted(tp.size());
 	for (int i = 0; i < indices.size(); i++) {
 		tpSorted[i] = tp[indices[i]];
@@ -260,12 +254,6 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
 		fpSorted[i] = fp[indices[i]];
 	}
 	fp = fpSorted;
-
-	// cout<<tpSorted.size()<<endl;
-	// cout<<fpSorted.size()<<endl;
-
-	//	double recall = sum(tp)[0] / groundTruthBboxesCat.size();
-	//	double precision = sum(tp)[0] / (sum(tp)[0] + sum(fp)[0]);
 
 	// Compute the cumulative TP and FP
 	vector<double> cumTP(tp.size());
@@ -324,7 +312,6 @@ double IoUCategory(const Mat &segmentedImage, const Mat &groundTruthMask, const 
 	// imshow("groundTruthMaskCat", groundTruthMaskCat);
 	//waitKey();
 	double iou = IoU(segmentedImageCat, groundTruthMaskCat);
-	//cout<< "cat: " << cat << '\t' << "iou: " << iou << endl;
 	return iou;
 }
 
@@ -339,6 +326,7 @@ double IoUCategory(const Mat &segmentedImage, const Mat &groundTruthMask, const 
 double IoU(const Rect &rect1, const Rect &rect2) {
 	if (rect1.empty() || rect2.empty())
 		throw invalid_argument("Empty rectangle");
+
 	Rect i = rect1 & rect2;
 	Rect u = rect1 | rect2;
 	return (u.area() != 0) ? static_cast<double>(i.area()) / static_cast<double>(u.area()) : 1.0;

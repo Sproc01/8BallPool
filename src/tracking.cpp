@@ -14,7 +14,6 @@ using namespace cv;
  * @param balls pointer to the vector of balls to track.
  */
 BilliardTracker::BilliardTracker(Ptr<std::vector<Ball>> balls) { // NOLINT(*-unnecessary-value-param)
-	//std::cout<<"constructor balltracker"<<std::endl;
 	isInitialized_ = false;
 
 	ballsVec_ = balls;
@@ -34,7 +33,6 @@ void BilliardTracker::createTrackers() {
 	}
 
 	ballTrackers_.shrink_to_fit();
-	//std::cout<<"trackers created"<<std::endl;
 }
 
 
@@ -67,7 +65,6 @@ Rect BilliardTracker::trackOne(unsigned short ballIndex, const Mat &frame, bool 
 			}
 		}
 	}
-	//std::cout<< "Ball " << ballIndex << " updated? " << isBboxUpdated << " current bbox: " << bbox << std::endl;
 
 	return bbox;
 }
@@ -81,7 +78,7 @@ Rect BilliardTracker::trackOne(unsigned short ballIndex, const Mat &frame, bool 
  * @return a pointer to the vector of the tracked balls. It is the same as the one provided to the constructor.
  */
 Ptr<std::vector<Ball>> BilliardTracker::trackAll(const Mat &frame) {
-	//std::cout<<"trackAll, initialized: "<<isInitialized_<<std::endl;
+	
 	if (!isInitialized_) {
 		createTrackers();
 		for (unsigned short i = 0; i < ballsVec_->size(); i++) {

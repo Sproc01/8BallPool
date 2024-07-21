@@ -38,16 +38,18 @@ int main(){
 				case Category::PLAYING_FIELD:
 					segmentedColored.at<Vec3b>(i, j) = PLAYING_FIELD_BGR_COLOR;
 					break;
-				default:    // in case of error
-					//segmentedColored.at<Vec3b>(i, j) = Vec3b(255, 255, 0);
+				default:
+					throw runtime_error("Error in the category of the pixel");
 					break;
 			}
 		}
 	}
 	imshow("segmentedColored", segmentedColored);
+
+	// test the metrics
 	const string str = "../Dataset/game2_clip1/bounding_boxes/frame_last_bbox.txt";
 	ifstream file(str);
-	Table table;
+	Table table; //corners not needed for the test
 	vector<Ball> bboxes;
 	string line;
 	while (getline(file, line)){

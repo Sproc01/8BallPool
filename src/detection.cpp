@@ -83,11 +83,6 @@ Category classificationBall(const Mat& img, double radius){
 	vector<double> mean, stddev;
 	cvtColor(img, hsv, COLOR_BGR2HSV);
 	meanStdDev(hsv, mean, stddev, mask);
-	// cout << val << endl;
-	// cout << argmax << endl;
-	// cout << val2 << endl;
-	// cout << argmax2 << endl;
-	// waitKey(0);
 
 	// classification
 	if(argmax.at<int>(0) < NUMBER_OF_BINS_BLACK
@@ -114,8 +109,6 @@ Category classificationBall(const Mat& img, double radius){
 	if(val2 > THRESHOLD_STRIPED_MAX * val
 		&& stddev[1] > THRESHOLD_DEV_STRIPED)
 			return STRIPED_BALL;
-
-
 
 	return SOLID_BALL;
 }
@@ -202,7 +195,7 @@ void nonMaximaSuppressionWhiteBlack(const Mat &img, Ptr<vector<Ball>> balls)
 
 			// in the provided dataset the light is on top of the table
 			// so the black ball reflect it in some videos
-			// so we need an higher standard deviation in the third channle
+			// so we need an higher standard deviation in the third channel
 			return meanA[2] < meanB[2] && stddevA[2] > stddevB[2];
 		});
 		for(int i = 1; i < blackFound.size(); i++)
@@ -226,7 +219,6 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
 
 	if(frame.empty())
 		throw invalid_argument("Empty image in input");
-
 	if(frame.channels() != 3)
 		throw invalid_argument("Invalid number of channels for the input image");
 
@@ -241,7 +233,7 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
 	const int CLOSE_POINT_THRESHOLD = 50;
 
 	// variables
-	Mat imgGray, imgLine, imgBorder, thisImg, mask, kernel;
+	Mat imgGray, imgBorder, thisImg, mask, kernel;
 	vector<Vec4i> lines;
 	int colsover4 = frame.cols/4;
 	Scalar line_color = Scalar(0, 0, 255);
@@ -267,7 +259,7 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
 	//imshow("Canny Result", imgBorder);
 
 	// Hough transform
-	imgLine = frame.clone();
+	// Mat imgLine = frame.clone();
 	HoughLinesP(imgBorder, lines, 1, CV_PI/180, THRESHOLD_HOUGH, MIN_LINE_LENGTH, MAX_LINE_GAP);
 
 	// lines drawing
@@ -278,7 +270,7 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
 		pt1.y = lines[i][1];
 		pt2.x = lines[i][2];
 		pt2.y = lines[i][3];
-		line(imgLine, pt1, pt2, line_color, 2, LINE_AA);
+		// line(imgLine, pt1, pt2, line_color, 2, LINE_AA);
 		equationFormula(pt1.x, pt1.y, pt2.x, pt2.y, aLine, bLine, cLine);
 		coefficients.push_back(Vec3f(aLine, bLine, cLine));
 	}
@@ -335,8 +327,8 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
 	});
 
 	vector<Scalar> colors = {Scalar(255, 0, 0), Scalar(0, 255, 0), Scalar(0, 0, 255), Scalar(255, 255, 0)};
-	for(size_t i = 0; i < 4; i++)
-		circle(imgLine, intersectionsGood[i], 10, colors[i], -1);
+	// for(size_t i = 0; i < 4; i++)
+	// 	circle(imgLine, intersectionsGood[i], 10, colors[i], -1);
 
 	for(size_t i = 0; i < 4; i++)
 		corners[i] = intersectionsGood[i];
@@ -380,15 +372,13 @@ void detectBalls(const Mat &frame, Table &table){
 	const float RANGE_RADIUS = 0.3;
 	const int RADIUS_CORNERS = 20;
 
-
-
 	vector<Vec3b> colors = {
 		Vec3b(0, 0, 255),
 		Vec3b(0, 255, 0),
 		Vec3b(255, 0, 0),
 		Vec3b(255, 255, 0),
 		Vec3b(0, 255, 255),
-	}; // needed as input for the clustering
+	}; // needed as input for the clustering (5 colors with different gray level)
 
 	// variables
 	Mat gray, HSVImg, mask, smooth, kernelMorphological, resClustering, resClusteringSmooth;
@@ -428,8 +418,8 @@ void detectBalls(const Mat &frame, Table &table){
 	// clustering
 	kMeansClustering(smooth, colors, resClustering);
 	cvtColor(resClustering, gray, COLOR_BGR2GRAY);
-	//imshow("Kmeans gray", gray);
-	//imshow("Kmeans", resClustering);
+	// imshow("Kmeans gray", gray);
+	// imshow("Kmeans", resClustering);
 
 	/*
 	float minRadius, maxRadius;
@@ -438,7 +428,6 @@ void detectBalls(const Mat &frame, Table &table){
 	// Hough transform
 	HoughCircles(gray, circles, HOUGH_GRADIENT, INVERSE_ACCUMULATOR_RESOLUTION,
 					MIN_DISTANCE, HOUGH_PARAM1, HOUGH_PARAM2, MIN_RADIUS, MAX_RADIUS);
-
 
 	// compute the mean of good circles
 	Category category;

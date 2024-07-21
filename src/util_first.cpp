@@ -95,7 +95,6 @@ Vec2b mostFrequentHueColor(const Mat &img){
 
 	if(img.empty())
 		throw invalid_argument("Empty input image");
-
 	if(img.channels() != 3)
 		throw invalid_argument("Invalid number of channels for the input image");
 

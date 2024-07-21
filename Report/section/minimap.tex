@@ -15,13 +15,13 @@ The byte array is then used to create a \texttt{Mat} object through the \texttt{
 The \texttt{computeTransformation} method has been written to compute the transformation matrix, which allows for the computation of the positions of the balls in the 2d table represented in the minimap. To do that, a relationship between the corners of the table in the frame and the corners of the table in the minimap has been found by the OpenCV \texttt{getPerspectiveTransform()} method, which “calculates a perspective transform from 4 pairs of the corresponding points” and returns a transformation matrix.
 At first, it is supposed that the corners are given in clockwise order and that the first corner is followed by a long table edge. To check this information, \texttt{checkHorizontalTable} has been written.
 
-\subsubsection{Check if the corners are in the required order}	% TODO pool -> pocket
+\subsubsection{Check if the corners are in the required order}
 The \texttt{checkHorizontalTable} method checks, using the image in input and the corners of the table in that image, if the corners are oriented such that the first corner is followed by a long table edge.
-To check this information, the “percentage of table” with respect to the pool in a rectangle placed in the center of the edge (with dimensions proportional to the real table and pool dimensions) has been computed for all the edges. This computation has been done in the table image previously transformed and cropped to the table dimensions; in this way, the center between two corners corresponds to the real one (otherwise, if the table has some perspective effect, the center between the two corners may not correspond to the real one). Then, the edges have been ordered by using this percentile. To understand how the corners were oriented, three cases have been considered:
+To check this information, the “percentage of table” with respect to the pocket in a rectangle placed in the center of the edge (with dimensions proportional to the real table and pocket dimensions) has been computed for all the edges. This computation has been done in the table image previously transformed and cropped to the table dimensions; in this way, the center between two corners corresponds to the real one (otherwise, if the table has some perspective effect, the center between the two corners may not correspond to the real one). Then, the edges have been ordered by using this percentile. To understand how the corners were oriented, three cases have been considered:
 \begin{itemize}
-	\item If the edges with "more pool" are opposite edges, then they are the longest edges; This happens, for example, in Figure \ref{fig:game2_clip1_orientation}.
-	\item If the edge with "more pool" is opposite to the one with "less pool", then they are not the longest edges; This happen, for example, in Figure \ref{fig:game3_clip1_orientation} and Figure \ref{fig:game4_clip1_orientation}, when there is an occlusion or much noise in the center of the edge with "more pool".
-	\item Otherwise, there is uncertainty, and then, probably, the one with "more pool" is the longest edge.
+	\item If the edges with "more pocket" are opposite edges, then they are the longest edges; This happens, for example, in Figure \ref{fig:game2_clip1_orientation}.
+	\item If the edge with "more pocket" is opposite to the one with "less pocket", then they are not the longest edges; This happen, for example, in Figure \ref{fig:game3_clip1_orientation} and Figure \ref{fig:game4_clip1_orientation}, when there is an occlusion or much noise in the center of the edge with "more pocket".
+	\item Otherwise, there is uncertainty, and then, probably, the one with "more pocket" is the longest edge.
 \end{itemize}
 If the table is not horizontal as expected (for example in Figure \ref{fig:game1_clip1_orientation}), then all the edges are rotated and the transformation matrix is re-computed.
 
@@ -39,7 +39,7 @@ If the table is not horizontal as expected (for example in Figure \ref{fig:game1
 		\caption{Transformation of the table to the minimap table size}
 		%\label{fig:game1_clip1_mask}
 	\end{subfigure}
-	\caption{game1\_clip1 first frame. The table is transformed in a wrong way, because the pools are located in the shortest edges rather than the longest ones.}
+	\caption{game1\_clip1 first frame. The table is transformed in a wrong way, because the pockets are located in the shortest edges rather than the longest ones.}
 	\label{fig:game1_clip1_orientation}
 \end{figure}
 
@@ -54,7 +54,7 @@ If the table is not horizontal as expected (for example in Figure \ref{fig:game1
 		%\label{fig:game2_clip1_mask}
 		\includegraphics[width=0.48\textwidth]{images/TableOrientation/g2_c1_mask.jpg}
 	}
-	\caption{game2\_clip1 first frame. The table is correctly transformed. In this case the pools are lightly visible, but they allow to detect the correct orientation.}
+	\caption{game2\_clip1 first frame. The table is correctly transformed. In this case the pockets are lightly visible, but they allow to detect the correct orientation.}
 	\label{fig:game2_clip1_orientation}
 \end{figure}
 

@@ -54,6 +54,7 @@ int main(int argc, char *argv[]) {
 
 	//START THE VIDEO
 	VideoCapture vid = VideoCapture(videoPath.string());
+	
 	// work on first frame
 	if (!vid.isOpened() || !vid.read(frame)) {
 		cout << "Error opening video file" << endl;
@@ -103,6 +104,8 @@ int main(int argc, char *argv[]) {
 	// Mat minimap = imread(MINIMAP_PATH);
 	vector<unsigned char> minimapVec(MINIMAP_DATA, MINIMAP_DATA + MINIMAP_DATA_SIZE);
 	Mat minimap = imdecode(minimapVec, IMREAD_COLOR);
+
+
 	Mat minimapWithTrack = minimap.clone();
 	Mat minimapWithBalls = minimap.clone();
 	// imshow("minimap", minimap);
@@ -122,7 +125,7 @@ int main(int argc, char *argv[]) {
 	time_point start = high_resolution_clock::now();
 	bool ret = vid.read(frame);
 	while (vid.isOpened() && ret) { // work on middle frames
-		//cout << "Frame number: " << ++frameCount << endl;
+
 		++frameCount;
  		//VIDEO WITH MINIMAP
 		tracker.trackAll(frame);

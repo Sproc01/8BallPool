@@ -1,2 +1,10 @@
 \section{Conclusions}
-Our approach demonstrates consistent performance across the dataset. Notably, table detection achieves high accuracy. However, ball classification presents some challenges due to their varying sizes and colors that sometimes are similar to the one of the playing field, also solid and striped balls are difficult to distinguish because % TODO riflessi e poca parte bianca visibile
+Our approach demonstrates consistent performance across the dataset. Notably, table detection achieves high accuracy.
+However, ball classification presents some challenges due to their varying sizes and colors that sometimes are similar to the one of the playing field, also solid and striped balls are difficult to distinguish, this happens because \texttt{HoughCircles} finds a smaller circle compared to the ball diameter which excludes too much white pixels of the ball, this problem is really hard to solve because footage with perspective requires a ranged radius to address balls at different distances from the camera.
+
+In other cases a striped ball can be detected as white if the \texttt{HoughCircles} output is smaller than the real ball and includes a lot of white pixels and few colored pixels, this problem has been mitigated by non-maximum suppression.
+
+Solid balls are much similar to the black ball if there is a large shadow inside the circle found by \texttt{HoughCircles}, this problem has been mitigated by non-maximum suppression.
+
+
+Detection and segmentation parameters are optimized for the provided dataset. The algorithm may require adjustments for different datasets, especially for videos with different aspect ratios or resolutions.

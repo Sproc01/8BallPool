@@ -2,7 +2,7 @@
 To create the output video Michele used the \texttt{VideoWriter} class of OpenCV.
 For each frame of the input video tracking is performed and the minimap is created, then the minimap is superimposed on the frame and the frame is saved in the output video.
 
-To avoid creating the output video file and then run in some exception resulting in a non-readable file, Alberto thought about using a temporary file and then renaming it to the output file only at the end if no exception has been thrown and the program is sure that the file is complete and readable.
+To avoid creating the output video file and then running in some exception resulting in a non-readable file, Alberto thought about using a temporary file and then renaming it to the output file only at the end if no exception has been thrown and the program is sure that the file is complete and readable.
 
 % To create the output video we take the minimap and the current frame and Michele decide to do as follows:
 % At the beginning the function computes two values: the scaling factor for the minimap and the offset (the first row where the minimap is placed). For the scaling factor Michele thought that the minimap should have 0.3 of the total columns of the frame, so the scaling factor is computed as follows:

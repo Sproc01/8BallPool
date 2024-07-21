@@ -1,10 +1,7 @@
 \section{Results}
 Table detection exhibits very high accuracy across the dataset, in particular for each initial frame of each video 4 corner points are always identified, the assumption that we made is that the camera does not move during a single clip so, once the table is detected in the first frame, we can use that information for all the other frames in the same video.
 
-In contrast, ball detection is influenced by k-means clustering. To achieve consistent and satisfactory results, a fixed random seed is incorporated into the code. %TODO scrivere perchè
-
-This method results in an average mAP of 0.51 for the dataset.	% TODO non molto alto, spiegare perchè
-% TODO more quantitative results
+In contrast, ball detection is influenced by k-means clustering. To achieve consistent and satisfactory results, a fixed random seed is incorporated into the code. The seed is fixed because the k-means++ algorithms used to initialize the centroids are, in this way, made reproducible and to be able to focus on optimizing the performance of the algorithm.
 
 
 \subsection{Quantitative results}
@@ -64,14 +61,11 @@ The \textit{computePerformance} executable calculates the detection and segmenta
 	\label{tab: performance across dataset}
 \end{table}
 
-% TODO tables per ogni video?
-
-While the algorithm successfully detects tables, backgrounds, and both white and black balls with high Intersection over Union (IoU), it struggles with solid and striped balls due to inaccurate distinction. % TODO "distinction" è la parola giusta? non credo
+While the algorithm successfully detects tables, backgrounds, and both white and black balls with high Intersection over Union (IoU), it struggles with solid and striped balls due to inaccurate distinction between the two.
 This leads to a lower overall mean Average Precision (mAP) that is focused only on balls, but a good mean Intersection over Union (mIoU) because the background and playing field are well segmented.
 
 \subsection{Qualitative results}
+Sometimes the detection finds some incorrect circles near hands; we tried to solve this problem by tuning the radius circle parameter, performing dilation on the color mask, and removing some false positive circles if they include pixels with colors very similar to hands skin one, but the problem is still present a few clips.
+
 Some qualitative results are presented below.
-
-% TOOD descrivere un minimo qualitativamente le immagini con qualcosa di vero su tutto il dataset (osservazioni sul funzionamento/qualità)
-
 \input{section/outputImages.tex}

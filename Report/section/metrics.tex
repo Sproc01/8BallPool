@@ -1,7 +1,6 @@
 \section{Metrics}
 The \texttt{computePerformance} executable handles both mAP and mIoU calculations.
 
-% TODO check if explanations are correct
 \noindent\textbf{\emph{mAP (mean Average Precision)}}:
 \begin{enumerate}
 	\item Predictions are performed for all first and last frames in a video.
@@ -12,9 +11,9 @@ The \texttt{computePerformance} executable handles both mAP and mIoU calculation
 
 \noindent\textbf{\emph{mIoU (mean Intersection over Union)}}:
 \begin{enumerate}
-	\item IoU is calculated for the first and the last frame for each video.
-	\item The average IoU is then computed for each object class across all 20 images (10 videos each one with 2 frame) in the dataset.
+	\item IoU is calculated for the first and the last frames of each video.
+	\item The average IoU is then computed for each object class across all 20 images (10 videos each one with 2 frames) in the dataset.
 	\item Finally, the mIoU is obtained by averaging the IoU values obtained in the last step.
 \end{enumerate}
 
-The 8BallPool executable displays the performance metrics (AP and IoU) achieved by the method for the specific input video.
+The \texttt{8BallPool} executable displays the performance metrics (AP and IoU) achieved by the method for the specific input video.

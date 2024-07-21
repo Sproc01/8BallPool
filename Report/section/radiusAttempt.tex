@@ -18,7 +18,7 @@ Then, a percentage of the slope between the camera direction and the table has b
 	\item Otherwise it is a value between 0 and 1, which indicates the percentage of slope between the camera and the table; for example, if the value is 0.5, then the camera is about 45° from the table.
 \end{itemize}
 
-To compute the final interval, the minimum and maximum values are computed by subtracting and incrementing a value, which increases with the percentage of slope (more the slope, more the variance) by multiplying the percentage of slope with the mean radius previously computed, and a precision value is added due to some other variables in the images.
+To compute the final interval, the minimum, and maximum values are computed by subtracting and incrementing a value, which increases with the percentage of slope (more the slope, more the variance) by multiplying the percentage of slope with the mean radius previously computed, and a precision value is added due to some other variables in the images.
 \begin{equation}
 	min\_radius = mean\_radius - mean\_radius \times percentage\_slope - precision
 \end{equation}

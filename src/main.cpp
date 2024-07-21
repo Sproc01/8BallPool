@@ -6,7 +6,7 @@
 #include <filesystem>
 #include <chrono>
 
-//#include "../img/minimap.h"
+#include "../img/minimap.h"
 #include "ball.h"
 #include "table.h"
 #include "detection.h"
@@ -21,8 +21,6 @@
 using namespace std;
 using namespace cv;
 using namespace chrono;
-
-//TODO: remove folders Dataset/other_videos and output_detection
 
 /* 	Given a video it detects table and balls in the first frame and track the balls over different frame.
 	Using this information then it creates the output video with a minimap superimposed and then detect the balls
@@ -123,13 +121,12 @@ int main(int argc, char* argv[]){
 	table.setBoundaries(img_corners);
 
 	//MINIMAP
-	Mat minimap = imread(MINIMAP_PATH);
+	// The original is the png provided but we converted it to an header
+	// Mat minimap = imread(MINIMAP_PATH);
+	vector<unsigned char> minimapVec(MINIMAP_DATA, MINIMAP_DATA + MINIMAP_DATA_SIZE);
+	Mat minimap = imdecode(minimapVec, IMREAD_COLOR);
 	Mat minimap_with_track = minimap.clone();
 	Mat minimap_with_balls = minimap.clone();
-	//TODO use minimap.h
-	// vector<unsigned char> minimapVec(MINIMAP_DATA, MINIMAP_DATA + MINIMAP_DATA_SIZE);
-	// Mat minimap = imdecode(minimapVec, cv::IMREAD_UNCHANGED);
-	// Mat minimap = imread(MINIMAP_PATH);
 	// imshow("minimap", minimap);
 
 	Mat transform =  table.getTransform();
@@ -165,10 +162,13 @@ int main(int argc, char* argv[]){
 
 		lastFrame = frame.clone();
 	}
+
 	time_point stop = high_resolution_clock::now();
 	minutes duration = duration_cast<minutes>(stop - start);
 	cout << "Time to create the video: " << duration.count() <<" minutes" << endl;
 	vidOutput.release();
+
+	imwrite("../Output/minimap/" + videoName + "_minimap.png", minimap_with_balls);
 
 	// work on last frame
 	doInscriptImage(lastFrame, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);

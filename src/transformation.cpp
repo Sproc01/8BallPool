@@ -56,7 +56,8 @@ Mat computeTransformation(const Mat& img, Vec<Point2f, 4>  &img_corners) {
 
     //apply transformation considering corners such as top-left is the first one, followed by a long table side
     Mat table_segmented_transformed = imgTransformedCropped(img, transform);
-    //imshow("Img transformed cropped", tableSegmentedTransformed);
+    //imshow("Img transformed cropped", table_segmented_transformed);
+    //waitKey(0);
 
     Vec<Point2f, 4> table_segmented_transformed_corners =  {Point2f(0, 0),
                                 Point2f(table_segmented_transformed.cols, 0),
@@ -91,8 +92,7 @@ Mat computeTransformation(const Mat& img, Vec<Point2f, 4>  &img_corners) {
  * @throw invalid_argument if the transformation matrix in input is empty
  * @throw invalid_argument if the balls pointer is a null pointer
  */
-//TODO: const ptr?
-Mat drawMinimap(Mat &minimap_with_track, const Mat &transform, const Ptr<vector<Ball>> balls) {
+Mat drawMinimap(Mat &minimap_with_track, const Mat &transform, Ptr<vector<Ball>> balls) {
     if(minimap_with_track.empty())
         throw invalid_argument("Empty image in input");
 

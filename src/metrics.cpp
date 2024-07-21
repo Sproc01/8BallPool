@@ -7,6 +7,7 @@
 #include "minimapConstants.h"
 #include <stdexcept>
 #include <filesystem>
+#include <stdexcept>
 #include <utility>
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -17,7 +18,17 @@
 using namespace std;
 using namespace cv;
 
+/**
+ * @brief compute the Intersection over Union between the segmented image and the ground truth mask.
+ * @param segmentedImage segmented image.
+ * @param folderPath path to the folder containing the ground truth masks.
+ * @param frameN Set to FIRST for the first frame, LAST for the last frame.
+ * @return std::vector<double> vector of IoU values for each category.
+ * @throw invalid_argument if segmentedImage is empty.
+ */
 vector<double> compareMetricsIoU(Mat &segmentedImage, const string &folderPath, FrameN frameN){
+	if(segmentedImage.empty())
+		throw invalid_argument("Empty segmentedImage");
 	filesystem::path groundTruthMaskPath;
 	switch (frameN) {
 		case FIRST:
@@ -31,15 +42,16 @@ vector<double> compareMetricsIoU(Mat &segmentedImage, const string &folderPath, 
 	}
 
 	// For ball localization, the mean Average Precision (mAP) calculated at IoU threshold 0.5
-	vector<double> IoUs = mIoUSegmentation(segmentedImage, groundTruthMaskPath.string());
+	vector<double> IoUs = IoUSegmentation(segmentedImage, groundTruthMaskPath.string());
 	return IoUs;
 }
+
 /**
- *
- * @param table
- * @param segmentedImage
- * @param folderPath
- * @param frameN Set to FIRST for the first frame, LAST for the last frame
+ * @brief compute the Average Precision (mAP) for ball detection.
+ * @param table table containing the detected balls.
+ * @param folderPath path to the folder containing the ground truth bounding boxes.
+ * @param frameN Set to FIRST for the first frame, LAST for the last frame.
+ * @return std::vector<double> vector of AP values for each category.
  */
 vector<double> compareMetricsAP(Table &table, const string &folderPath, FrameN frameN){
 	filesystem::path groundTruthBboxPath;
@@ -54,12 +66,26 @@ vector<double> compareMetricsAP(Table &table, const string &folderPath, FrameN f
 			throw invalid_argument("frameN must be FIRST or LAST");
 	}
 
-	vector<double> APs = mAPDetection(table.ballsPtr(), groundTruthBboxPath.string(), MAP_IOU_THRESHOLD);
+	vector<double> APs = APDetection(table.ballsPtr(), groundTruthBboxPath.string(), MAP_IOU_THRESHOLD);
 	return APs;
 }
 
-
+/**
+ * @brief compute the Average Precision (AP) for ball detection of a specific category.
+ * @param detectedBalls vector of detected balls.
+ * @param groundTruthBboxes vector of pairs of rectangles and categories that represent the ground truth bounding boxes.
+ * @param cat category.
+ * @param iouThreshold Intersection over Union threshold.
+ * @return double AP value.
+ * @throw invalid_argument if the vector of detected balls is empty or if the vector of ground truth bounding boxes is empty.
+ */
 double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect, Category>> &groundTruthBboxes, Category cat, float iouThreshold){
+	if(detectedBalls->size() == 0)
+		throw invalid_argument("Empty detectedBalls");
+
+	if(groundTruthBboxes.size() == 0)
+		throw invalid_argument("Empty groundTruthBboxes");
+
 	// Create a vector of bounding boxes only for the detected balls of the chosen category
 	vector<Rect> detectedBallsBboxesCat;
 	for (const Ball &ball : *detectedBalls){
@@ -188,8 +214,18 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
 	return AP;
 }
 
+/**
+ * @brief compute the Average Precision (AP) for ball detection.
+ * @param detectedBalls vector of detected balls.
+ * @param groundTruthBboxPath path to the file containing the ground truth bounding boxes.
+ * @param iouThreshold Intersection over Union threshold.
+ * @return std::vector<double> vector of AP values for each category.
+ * @throw invalid_argument if the vector of detected balls is empty.
+ */
+vector<double> APDetection(const Ptr<vector<Ball>> &detectedBalls, const string &groundTruthBboxPath, float iouThreshold /*= MAP_IOU_THRESHOLD*/){
+	if(detectedBalls->size() == 0)
+		throw invalid_argument("Empty detectedBalls");
 
-vector<double> mAPDetection(const Ptr<vector<Ball>> &detectedBalls, const string &groundTruthBboxPath, float iouThreshold /*= MAP_IOU_THRESHOLD*/){
 	vector<pair<Rect, Category>> groundTruthBboxes = readGroundTruthBboxFile(groundTruthBboxPath);
 	vector<double> APs;
 	for (Category cat=Category::WHITE_BALL; cat<=Category::STRIPED_BALL; cat=static_cast<Category>(cat+1)){
@@ -200,8 +236,18 @@ vector<double> mAPDetection(const Ptr<vector<Ball>> &detectedBalls, const string
 	return APs;
 }
 
+/**
+ * @brief compute the Intersection over Union between the segmented image and the ground truth mask of a specific category.
+ * @param segmentedImage segmented image.
+ * @param groundTruthMask ground truth mask.
+ * @param cat category.
+ * @return double IoU value.
+ * @throw invalid_argument if the segmented image is empty or if the ground truth mask is empty.
+ */
+double IoUCategory(const Mat &segmentedImage, const Mat &groundTruthMask, Category cat){
+	if(segmentedImage.empty() || groundTruthMask.empty())
+		throw invalid_argument("Empty image");
 
-double mIoUCategory(const Mat &segmentedImage, const Mat &groundTruthMask, Category cat){
 	Mat segmentedImageCat = (segmentedImage == static_cast<unsigned char>(cat));
 	Mat groundTruthMaskCat = (groundTruthMask == static_cast<unsigned char>(cat));
 	// imshow("segmentedImageCat", segmentedImageCat);
@@ -212,8 +258,17 @@ double mIoUCategory(const Mat &segmentedImage, const Mat &groundTruthMask, Categ
 	return iou;
 }
 
-// For balls and playing field segmentation, the mean Intersection over Union (mIoU) metric, that is the average of the IoU computed for each class (background, white ball, black ball, solid color, striped and playing field)
-vector<double> mIoUSegmentation(const Mat &segmentedImage, const string& groundTruthMaskPath){
+/**
+ * @brief compute the Intersection over Union between the segmented image and the ground truth mask.
+ * @param segmentedImage segmented image.
+ * @param groundTruthMaskPath path to the ground truth mask.
+ * @return std::vector<double> vector of IoU values for each category.
+ * @throw invalid_argument if the segmented image is empty.
+ */
+vector<double> IoUSegmentation(const Mat &segmentedImage, const string& groundTruthMaskPath){
+	if(segmentedImage.empty())
+		throw invalid_argument("Empty segmentedImage");
+
 	// Convert the segmented image from BGR colors to grayscale category-related colors
 	Mat segmentedImageGray = Mat::zeros(segmentedImage.size(), CV_8UC1);
 	for (int i = 0; i < segmentedImage.rows; i++){
@@ -247,26 +302,49 @@ vector<double> mIoUSegmentation(const Mat &segmentedImage, const string& groundT
 	vector<double> IoUs;
 
 	for (Category cat=Category::BACKGROUND; cat<=Category::PLAYING_FIELD; cat=static_cast<Category>(cat+1)){
-		IoUs.push_back(mIoUCategory(segmentedImageGray, groundTruthMask, cat));
+		IoUs.push_back(IoUCategory(segmentedImageGray, groundTruthMask, cat));
 	}
 
 	return IoUs;
 }
 
-
+/**
+ * @brief compute the Intersection over Union between two rectangles.
+ * @param rect1 first rectangle.
+ * @param rect2 second rectangle.
+ * @return double IoU value.
+ * @throw invalid_argument if one of the two rectangles is empty.
+ */
 double IoU(const Rect &rect1, const Rect &rect2){
+	if(rect1.empty() || rect2.empty())
+		throw invalid_argument("Empty rectangle");
 	Rect i = rect1 & rect2;
 	Rect u = rect1 | rect2;
 	return (u.area() != 0) ? static_cast<double>(i.area()) / static_cast<double>(u.area()) : 1.0;
 }
 
+/**
+ * @brief compute the Intersection over Union between two masks.
+ * @param mask1 first mask.
+ * @param mask2 second mask.
+ * @return double IoU value.
+ * @throw invalid_argument if one of the two masks is empty.
+ */
 double IoU(const Mat &mask1, const Mat &mask2){
+	if(mask1.empty() || mask2.empty())
+		throw invalid_argument("Empty mask");
+
 	Mat i = mask1 & mask2;
 	Mat u = mask1 | mask2;
 	return (countNonZero(u) != 0) ? static_cast<double>(countNonZero(i)) / static_cast<double>(countNonZero(u)) : 1.0;
 }
 
-
+/**
+ * @brief read the ground truth mask from a file.
+ * @param filename path to the file.
+ * @return std::vector<std::pair<cv::Rect, Category>> vector of pairs of rectangles and categories that represent the ground truth bounding boxes.
+ * @throw invalid_argument if the file does not exist.
+ */
 vector<pair<Rect, Category>> readGroundTruthBboxFile(const string &filename) {
 	ifstream file(filename);
 	if (!file.is_open()){

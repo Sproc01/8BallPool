@@ -43,7 +43,7 @@ bool compareByPercentile(const Edge &e1, const Edge &e2)
  * @throw invalid_argument if the rect in input is empty
  */
 double computeTablePercentile(const Mat &mask_img, const Rect &rect) {
-    //TODO: check mask_img and colors
+
 	if(mask_img.empty())
         throw invalid_argument("Empty image in input");
 
@@ -133,15 +133,15 @@ bool checkHorizontalTable(const Mat &table_img, Vec<Point2f, 4> corners){
     inRange(frameHSV, Scalar(background_color[0], 50, 90),
                 Scalar(background_color[1], 255, 255), mask_img);
     //imshow("Mask img", mask_img);
+    //waitKey(0);
 
 	//print the rectangles on the pool of the masked img (just for testing)
-    /*
+
     Mat mask_img_rectangles = mask_img.clone();
     for(int i = 0; i < 4; i++) {
         rectangle(mask_img_rectangles, edges[i].center_rect, Scalar(0, 0, 255), 1, LINE_AA);
     }
     //imshow("Rectangles on pools (mask)", mask_img_rectangles);
-    */
 
     //compute the rects with and without the pools
     //compute the percentile of rectangle with color close to the table background

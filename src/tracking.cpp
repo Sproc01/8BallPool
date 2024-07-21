@@ -35,18 +35,19 @@ Rect BallTracker::trackOne(unsigned short ballIndex, const Mat &frame, bool call
 	ballsVec_->at(ballIndex).setBbox_prec(bbox);
 
 	bool isBboxUpdated = false;
-	// TODO check if ball is visible
 	if (callInit) {
 		enlargeRect(bbox, 10);  // enlarge bbox to enhance tracking performance
 		ballTrackers_[ballIndex]->init(frame, bbox);
 	} else {
-		isBboxUpdated = ballTrackers_[ballIndex]->update(frame, bbox);
-		const float IOU_THRESHOLD = 0.9;    // TODO tune IoU threshold for updating ball position
-		if (isBboxUpdated && IoU(ballsVec_->at(ballIndex).getBbox_prec(), bbox) > IOU_THRESHOLD) {  // if IoU is too high, do not update: the shift is not significant
-			isBboxUpdated = false;
-			// TODO check if not updating the bbox makes the tracker lose the ball
-		} else {
-			ballsVec_->at(ballIndex).setBbox(bbox); // do not update if shift is too little (use IoU)
+		if(ballsVec_->at(ballIndex).getVisibility())
+		{
+			isBboxUpdated = ballTrackers_[ballIndex]->update(frame, bbox);
+			const float IOU_THRESHOLD = 0.7;
+			if (isBboxUpdated && IoU(ballsVec_->at(ballIndex).getBbox_prec(), bbox) > IOU_THRESHOLD) {  // if IoU is too high, do not update: the shift is not significant
+				isBboxUpdated = false;
+			} else {
+				ballsVec_->at(ballIndex).setBbox(bbox); // do not update if shift is too little (use IoU)
+			}
 		}
 	}
 	//std::cout<< "Ball " << ballIndex << " updated? " << isBboxUpdated << " current bbox: " << bbox << std::endl;

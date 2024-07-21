@@ -34,7 +34,7 @@ void segmentTable(const Mat &frame, const Table& table, Mat& segmented){
 	vector<Point> tableCornersInt;
 
 	// table properties
-	Vec2b colorTable = table.getColor();
+	Vec2b colorTable = table.getColorRange();
 	Vec<Point2f, 4> tableCorners = table.getBoundaries();
 
 	// needed otherwise error

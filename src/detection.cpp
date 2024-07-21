@@ -367,7 +367,7 @@ void detectBalls(const Mat &frame, Table &table, Mat &frameRect){
 
 	//table properties
 	const int NUMBER_CORNERS = 4;
-	Vec2b colorTable = table.getColor();
+	Vec2b colorTable = table.getColorRange();
 	Vec<Point2f, NUMBER_CORNERS> tableCorners = table.getBoundaries();
 	Ptr<vector<Ball>> balls = table.ballsPtr();
 

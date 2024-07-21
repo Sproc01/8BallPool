@@ -44,9 +44,6 @@ int main(int argc, char *argv[]) {
 	if (argc == 2) {
 		videoPath = filesystem::path(argv[1]);
 	}
-	else if (argc == 1) { //TODO: remove at the end
-		videoPath = filesystem::path("../Dataset/game2_clip1/game2_clip1.mp4");
-	}
 	else {
 		cout << "Error of number of parameters: insert one parameter" << endl;
 		return -1;

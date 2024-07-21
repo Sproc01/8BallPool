@@ -8,7 +8,7 @@
 #include "ball.h"
 #include "detection.h"
 #include "util.h"
-#include "minimap.h"
+#include "constants.h"
 
 using namespace cv;
 using namespace std;

@@ -4,7 +4,7 @@
 #include "category.h"
 #include "table.h"
 #include "ball.h"
-#include "minimap.h"
+#include "constants.h"
 #include <stdexcept>
 #include <filesystem>
 #include <stdexcept>

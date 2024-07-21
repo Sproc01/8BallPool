@@ -6,7 +6,7 @@
 #include <filesystem>
 #include <chrono>
 
-#include "../img/minimap.h"
+#include "minimap.h"
 #include "ball.h"
 #include "table.h"
 #include "detection.h"

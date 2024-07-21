@@ -1,7 +1,7 @@
 // Author: Michela Schibuola
 
 #include "transformation.h"
-#include "minimap.h"
+#include "constants.h"
 #include "tableOrientation.h"
 #include "util.h"
 

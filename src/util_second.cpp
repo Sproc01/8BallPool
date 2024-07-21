@@ -2,7 +2,7 @@
 
 #include <opencv2/opencv.hpp>
 #include "util.h"
-#include "minimap.h"
+#include "constants.h"
 
 using namespace std;
 using namespace cv;

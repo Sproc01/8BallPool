@@ -2,7 +2,7 @@
 
 #include <opencv2/opencv.hpp>
 #include "tableOrientation.h"
-#include "minimap.h"
+#include "constants.h"
 #include "util.h"
 
 #include "detection.h"

@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <opencv2/opencv.hpp>
 #include "util.h"
-#include "minimap.h"
+#include "constants.h"
 #include "ball.h"
 #include "table.h"
 

@@ -6,7 +6,7 @@
 #include "segmentation.h"
 #include "ball.h"
 #include "table.h"
-#include "minimap.h"
+#include "constants.h"
 #include "util.h"
 
 using namespace cv;

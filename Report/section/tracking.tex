@@ -1,1 +1,14 @@
 \subsection{Tracking}
+The tracking has been performed exploiting the \texttt{TrackerCSRT} class of the OpenCV library.
+
+In our application a new class \texttt{BilliardTracker} has been implemented, which is responsible for the tracking of all the balls on the billiard table while adding the lower level implementation of OpenCV \texttt{TrackerCSRT}. The class works by creating a new \texttt{TrackerCSRT} object for each ball to be tracked.
+
+During the tracking process, at every frame, the tracker updates the global \texttt{Ball} vector with the new position of the ball through a pointer which will be used to draw the ball and its trace on the minimap.
+The position of the ball is only updated if the updated bounding box is moved by at least a certain threshold, which is set to the 70\% of the IoU between the previous and the new bounding box. This is done to avoid some false positives that may occur during the tracking which lead to small wiggles in the ball position, even if they are steady.
+The IoU threshold value is a trade off between the wiggle reduction and the time frequency sampling of the ball position, used to draw the trace of the ball on the minimap.
+
+If the ball is no more visible since it has been scored, then the relative tracking is stopped.
+
+Based on our experiments the tracking is performed on a 10 pixels padded version of the ball's bounding box since the tracker gains much more performances in its ability to track the ball, even without occlusions.
+
+This tracking implementation reveals to be very robust and accurate on all the frames of all videos of the dataset, but it is also very slow; this is the bottlneck of the application, since the tracking is performed on every frame of the video, and the tracking of each ball is performed independently from the others.

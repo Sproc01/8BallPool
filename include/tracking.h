@@ -10,7 +10,7 @@
 /**
  * @brief Class that tracks all the balls in the input image, it relies on OpenCV TrackerCSRT class.
  */
-class BallTracker {
+class BilliardTracker {
 	std::vector<cv::Ptr<cv::Tracker>> ballTrackers_;	// vector of OpenCV Tracker objects, one for each ball. The index in the vector is the same as the index in ballsVec_.
 	cv::Ptr<std::vector<Ball>> ballsVec_;	// pointer to the vector of balls to track.
 	bool isInitialized_;	// flag that indicates if the trackers have already been initialized.
@@ -25,7 +25,7 @@ public:
 	 * @brief Constructor.
 	 * @param balls pointer to the vector of balls to track.
 	 */
-	explicit BallTracker(cv::Ptr<std::vector<Ball>> balls);
+	explicit BilliardTracker(cv::Ptr<std::vector<Ball>> balls);
 
 	/**
 	 * @brief Track the ball with the given index in the input frame.

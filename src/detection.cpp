@@ -15,10 +15,10 @@ using namespace std;
 
 /**
  * @brief classify the ball inside the image passed as argument
- * It mask the image using a circle of the specified radius centered in the center of the image, it evaluates
+ * It masks the image using a circle of the specified radius centered in the center of the image, it evaluates
  * the histogram and compute the two max values, using some conditions then it determines the class.
  * @param img image that contains only one ball centered in the center of the ball, BGR format requested.
- * @param radius radius of the circle that correspond to the ball.
+ * @param radius radius of the circle that corresponds to the ball.
  * @return Category class of the ball.
  * @throw invalid_argument if img is empty
  * 			or if the radius is <=0 or if img has a number of channels different from 3.

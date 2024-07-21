@@ -101,7 +101,7 @@ public:
 
 	/**
 	 * @brief Add a Ball to the set of balls.
-	 * @param ball object Ball.
+	 * @param ball Ball object.
 	 */
 	void addBall(Ball ball);
 

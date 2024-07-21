@@ -10,7 +10,7 @@ using namespace cv;
 
 /**
  * @brief Return the boundaries of the Table.
- * @return the boudaries of the table.
+ * @return the boundaries of the table.
  * @throw runtime_error if the boundaries are uninitialized.
  */
 Vec<Point2f, 4> Table::getBoundaries() const {
@@ -78,7 +78,7 @@ void Table::setTransform(const Mat &transform) {
 
 /**
  * @brief Add a Ball to the set of balls.
- * @param ball object Ball.
+ * @param ball Ball object.
  */
 void Table::addBall(Ball ball) {
 	balls_->push_back(ball);

@@ -14,8 +14,8 @@ using namespace std;
 
 /**
  * @brief segment the table in the input image: To do this firstly the image is clustered using kmeans
- * with 2 cluster,Then two mask are created: one using the corners of the table to isolate it
- * and one using the color of it. Then all the information is put togheter to create the output image.
+ * with 2 clusters,Then two masks are created: one using the corners of the table to isolate it
+ * and one using the color of it. Then all the information is put together to create the output image.
  * @param frame input image.
  * @param table initialized object containing information about the table in the input image.
  * @param segmented output image where the table is green.
@@ -79,11 +79,11 @@ void segmentTable(const Mat &frame, const Table& table, Mat& segmented){
 }
 
 /**
- * @brief segment the input image by highlight the balls. Using the informatin from each specific ball colors
+ * @brief segment the input image by highlight the balls. Using the information from each specific ball colors
  * the corresponding pixels with the correct color.
- * @param frame input image
- * @param balls vector of the balls in the image
- * @param segmented output image where each category of the ball correspond to a different color
+ * @param frame input image.
+ * @param balls vector of the balls in the image.
+ * @param segmented output image where each category of the ball corresponds to a different color.
  * @throw invalid_argument if frame is empty, if frame has less than 3 channels, if balls is nullptr, if balls point to an empty vector.
  */
 void segmentBalls(const Mat &frame, Ptr<vector<Ball>> balls, Mat& segmented){

@@ -105,7 +105,7 @@ vector<pair<Rect, Category>> readGroundTruthBboxFile(const string &filename) {
  * @return std::vector<double> vector of AP values for each category.
  * @throw invalid_argument if the vector of detected balls is empty.
  */
-vector<double> APDetection(const Ptr<vector<Ball>> &detectedBalls, const string &groundTruthBboxPath, float iouThreshold /*= MAP_IOU_THRESHOLD*/){
+vector<double> APDetection(Ptr<vector<Ball>> &detectedBalls, const string &groundTruthBboxPath, float iouThreshold /*= MAP_IOU_THRESHOLD*/){
 	if(detectedBalls->empty())
 		throw invalid_argument("Empty detectedBalls");
 
@@ -171,7 +171,7 @@ vector<double> IoUSegmentation(const Mat &segmentedImage, const string &groundTr
  * @return double AP value.
  * @throw invalid_argument if the vector of detected balls is empty or if the vector of ground truth bounding boxes is empty.
  */
-double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect, Category>> &groundTruthBboxes, Category cat, float iouThreshold){
+double APBallCategory(Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect, Category>> &groundTruthBboxes, Category cat, float iouThreshold){
 	if(detectedBalls->empty())
 		throw invalid_argument("Empty detectedBalls");
 

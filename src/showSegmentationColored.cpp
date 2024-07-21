@@ -3,13 +3,8 @@
 #include <opencv2/highgui.hpp>
 #include "ball.h"
 #include "table.h"
-#include "detection.h"
-#include "segmentation.h"
-#include "transformation.h"
-#include "minimapConstants.h"
-#include "tracking.h"
+#include "minimap.h"
 #include "metrics.h"
-#include "util.h"
 #include <iostream>
 #include <fstream>
 
@@ -65,11 +60,11 @@ int main(){
 	table.addBalls(bboxes);
 	metricsAP = compareMetricsAP(table, "../Dataset/game2_clip1", LAST);
 	metricsIoU = compareMetricsIoU(segmentedColored, "../Dataset/game2_clip1", LAST);
-	for(int i = 0; i < metricsAP.size(); i++)
-		cout << "AP for category " << static_cast<Category>(i+1) << ": " << metricsAP[i] << endl;
+	for(int c = 0; c < metricsAP.size(); c++)
+		cout << "AP for category " << c+1 << ": " << metricsAP[c] << endl;
 
-	for(int i = 0; i < metricsIoU.size(); i++)
-		cout << "IoU for category " << static_cast<Category>(i) << ": " << metricsIoU[i] << endl;
+	for(int c = 0; c < metricsIoU.size(); c++)
+		cout << "IoU for category " << c << ": " << metricsIoU[c] << endl;
 	waitKey();
 	return 0;
 }

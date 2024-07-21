@@ -2,7 +2,7 @@
 
 #include <opencv2/opencv.hpp>
 #include "util.h"
-#include "minimapConstants.h"
+#include "minimap.h"
 
 using namespace std;
 using namespace cv;
@@ -14,15 +14,13 @@ using namespace cv;
  * @return the point which is the center of p1 and p2.
  */
 Point2f getCenter(const Point2f &p1, const Point2f &p2) {
-    Point2f center;
-    int dx_half = abs(p1.x - p2.x)/2;
-    int dy_half = abs(p1.y - p2.y)/2;
-    if(p1.x > p2.x)
-        dx_half *= -1;
-    if(p1.y > p2.y)
-        dy_half *= -1;
-    center = Point2f(p1.x + dx_half, p1.y + dy_half);
-    return center;
+	int dx_half = abs(p1.x - p2.x)/2;
+	int dy_half = abs(p1.y - p2.y)/2;
+	if(p1.x > p2.x)
+		dx_half *= -1;
+	if(p1.y > p2.y)
+		dy_half *= -1;
+	return Point2f(p1.x + dx_half, p1.y + dy_half);
 }
 
 /**
@@ -30,14 +28,14 @@ Point2f getCenter(const Point2f &p1, const Point2f &p2) {
  * @param category element of type Category.
  * @return the color associated to the category in input.
  */
-Vec3b getColorFromCategory(Category category) {
+Vec3b getColorFromCategory(const Category &category) {
 	switch (category) {
 		case BLACK_BALL: return BLACK_BGR_COLOR; break;
 		case WHITE_BALL: return WHITE_BGR_COLOR; break;
 		case STRIPED_BALL: return STRIPED_BGR_COLOR; break;
 		case SOLID_BALL: return SOLID_BGR_COLOR; break;
 		case BACKGROUND: return BACKGROUND_BGR_COLOR; break;
-		case PLAYING_FIELD: return BACKGROUND_BGR_COLOR; break;
+		case PLAYING_FIELD: return PLAYING_FIELD_BGR_COLOR; break;
 		default:
 			throw invalid_argument("Not correct category");
 		break;

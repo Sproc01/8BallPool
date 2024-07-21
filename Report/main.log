@@ -1,350 +1,291 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.3.14)  21 JUL 2024 11:41
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.7.17)  21 JUL 2024 15:02
 entering extended mode
  restricted \write18 enabled.
+ file:line:error style messages enabled.
  %&-line parsing enabled.
-**./main.tex
-(main.tex
-LaTeX2e <2023-11-01> patch level 1
-L3 programming layer <2024-01-04>
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
-Document Class: article 2023/05/17 v1.4n Standard LaTeX document class
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/base\size12.clo
-File: size12.clo 2023/05/17 v1.4n Standard LaTeX file (size option)
+**"c:/Users/alber/Desktop/Computer Vision/8BallPool/Report/main.tex"
+(c:/Users/alber/Desktop/Computer Vision/8BallPool/Report/main.tex
+LaTeX2e <2024-06-01> patch level 2
+L3 programming layer <2024-05-27>
+(C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
+Document Class: article 2024/02/08 v1.4n Standard LaTeX document class
+(C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/base\size12.clo
+File: size12.clo 2024/02/08 v1.4n Standard LaTeX file (size option)
 )
-\c@part=\count187
-\c@section=\count188
-\c@subsection=\count189
-\c@subsubsection=\count190
-\c@paragraph=\count191
-\c@subparagraph=\count192
-\c@figure=\count193
-\c@table=\count194
-\abovecaptionskip=\skip48
-\belowcaptionskip=\skip49
-\bibindent=\dimen140
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
-Package: amsmath 2023/05/13 v2.17o AMS math features
-\@mathmargin=\skip50
+\c@part=\count194
+\c@section=\count195
+\c@subsection=\count196
+\c@subsubsection=\count197
+\c@paragraph=\count198
+\c@subparagraph=\count199
+\c@figure=\count266
+\c@table=\count267
+\abovecaptionskip=\skip49
+\belowcaptionskip=\skip50
+\bibindent=\dimen141
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+Package: amsmath 2024/05/23 v2.17q AMS math features
+\@mathmargin=\skip51
 
 For additional information on amsmath, use the `?' option.
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
+(C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
 Package: amstext 2021/08/26 v2.01 AMS text
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
 \@emptytoks=\toks17
-\ex@=\dimen141
-))
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty
+\ex@=\dimen142
+)) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
-\pmbraise@=\dimen142
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty
+\pmbraise@=\dimen143
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty
 Package: amsopn 2022/04/08 v2.04 operator names
 )
-\inf@bad=\count195
-LaTeX Info: Redefining \frac on input line 234.
-\uproot@=\count196
-\leftroot@=\count197
-LaTeX Info: Redefining \overline on input line 399.
-LaTeX Info: Redefining \colon on input line 410.
-\classnum@=\count198
-\DOTSCASE@=\count199
-LaTeX Info: Redefining \ldots on input line 496.
-LaTeX Info: Redefining \dots on input line 499.
-LaTeX Info: Redefining \cdots on input line 620.
-\Mathstrutbox@=\box51
-\strutbox@=\box52
-LaTeX Info: Redefining \big on input line 722.
-LaTeX Info: Redefining \Big on input line 723.
-LaTeX Info: Redefining \bigg on input line 724.
-LaTeX Info: Redefining \Bigg on input line 725.
-\big@size=\dimen143
-LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
-LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
-\macc@depth=\count266
-LaTeX Info: Redefining \bmod on input line 905.
-LaTeX Info: Redefining \pmod on input line 910.
-LaTeX Info: Redefining \smash on input line 940.
-LaTeX Info: Redefining \relbar on input line 970.
-LaTeX Info: Redefining \Relbar on input line 971.
-\c@MaxMatrixCols=\count267
-\dotsspace@=\muskip16
-\c@parentequation=\count268
-\dspbrk@lvl=\count269
+\inf@bad=\count268
+LaTeX Info: Redefining \frac on input line 233.
+\uproot@=\count269
+\leftroot@=\count270
+LaTeX Info: Redefining \overline on input line 398.
+LaTeX Info: Redefining \colon on input line 409.
+\classnum@=\count271
+\DOTSCASE@=\count272
+LaTeX Info: Redefining \ldots on input line 495.
+LaTeX Info: Redefining \dots on input line 498.
+LaTeX Info: Redefining \cdots on input line 619.
+\Mathstrutbox@=\box52
+\strutbox@=\box53
+LaTeX Info: Redefining \big on input line 721.
+LaTeX Info: Redefining \Big on input line 722.
+LaTeX Info: Redefining \bigg on input line 723.
+LaTeX Info: Redefining \Bigg on input line 724.
+\big@size=\dimen144
+LaTeX Font Info:    Redeclaring font encoding OML on input line 742.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 743.
+\macc@depth=\count273
+LaTeX Info: Redefining \bmod on input line 904.
+LaTeX Info: Redefining \pmod on input line 909.
+LaTeX Info: Redefining \smash on input line 939.
+LaTeX Info: Redefining \relbar on input line 969.
+LaTeX Info: Redefining \Relbar on input line 970.
+\c@MaxMatrixCols=\count274
+\dotsspace@=\muskip17
+\c@parentequation=\count275
+\dspbrk@lvl=\count276
 \tag@help=\toks18
-\row@=\count270
-\column@=\count271
-\maxfields@=\count272
+\row@=\count277
+\column@=\count278
+\maxfields@=\count279
 \andhelp@=\toks19
-\eqnshift@=\dimen144
-\alignsep@=\dimen145
-\tagshift@=\dimen146
-\tagwidth@=\dimen147
-\totwidth@=\dimen148
-\lineht@=\dimen149
+\eqnshift@=\dimen145
+\alignsep@=\dimen146
+\tagshift@=\dimen147
+\tagwidth@=\dimen148
+\totwidth@=\dimen149
+\lineht@=\dimen150
 \@envbody=\toks20
-\multlinegap=\skip51
-\multlinetaggap=\skip52
+\multlinegap=\skip52
+\multlinetaggap=\skip53
 \mathdisplay@stack=\toks21
 LaTeX Info: Redefining \[ on input line 2953.
 LaTeX Info: Redefining \] on input line 2954.
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty
 Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 \symAMSa=\mathgroup4
 \symAMSb=\mathgroup5
 LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
-) (C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\times.sty
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\times.sty
 Package: times 2020/03/25 PSNFSS-v9.3 (SPQR) 
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\helvet.sty
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\helvet.sty
 Package: helvet 2020/03/25 PSNFSS-v9.3 (WaS) 
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
 Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
 \KV@toks@=\toks22
-)) (C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\courier.sty
+)) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\courier.sty
 Package: courier 2020/03/25 PSNFSS-v9.3 (WaS) 
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
-\Urlmuskip=\muskip17
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
+\Urlmuskip=\muskip18
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
 Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
-Package: graphics 2022/03/10 v1.4e Standard LaTeX Graphics (DPC,SPQR)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty
-Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics
-.cfg
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
+Package: graphics 2024/05/23 v1.4g Standard LaTeX Graphics (DPC,SPQR)
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty
+Package: trig 2023/12/02 v1.11 sin cos tan (DPC)
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.cfg
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
-Package graphics Info: Driver file: pdftex.def on input line 107.
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.d
-ef
-File: pdftex.def 2022/09/22 v1.2b Graphics/color driver for pdftex
+Package graphics Info: Driver file: pdftex.def on input line 106.
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.def
+File: pdftex.def 2024/04/13 v1.2c Graphics/color driver for pdftex
 ))
-\Gin@req@height=\dimen150
-\Gin@req@width=\dimen151
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/natbib\natbib.sty
+\Gin@req@height=\dimen151
+\Gin@req@width=\dimen152
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/natbib\natbib.sty
 Package: natbib 2010/09/13 8.31b (PWD, AO)
-\bibhang=\skip53
-\bibsep=\skip54
+\bibhang=\skip54
+\bibsep=\skip55
 LaTeX Info: Redefining \cite on input line 694.
-\c@NAT@ctr=\count273
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption.sty
+\c@NAT@ctr=\count280
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption.sty
 Package: caption 2023/08/05 v3.6o Customizing captions (AR)
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption3.sty
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption3.sty
 Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
-\caption@tempdima=\dimen152
-\captionmargin=\dimen153
-\caption@leftmargin=\dimen154
-\caption@rightmargin=\dimen155
-\caption@width=\dimen156
-\caption@indent=\dimen157
-\caption@parindent=\dimen158
-\caption@hangindent=\dimen159
+\caption@tempdima=\dimen153
+\captionmargin=\dimen154
+\caption@leftmargin=\dimen155
+\caption@rightmargin=\dimen156
+\caption@width=\dimen157
+\caption@indent=\dimen158
+\caption@parindent=\dimen159
+\caption@hangindent=\dimen160
 Package caption Info: Standard document class detected.
 )
-\c@caption@flags=\count274
-\c@continuedfloat=\count275
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/caption\subcaption.st
-y
+\c@caption@flags=\count281
+\c@continuedfloat=\count282
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/caption\subcaption.sty
 Package: subcaption 2023/07/28 v1.6b Sub-captions (AR)
 Package caption Info: New subtype `subfigure' on input line 238.
-\c@subfigure=\count276
+\c@subfigure=\count283
 Package caption Info: New subtype `subtable' on input line 238.
-\c@subtable=\count277
-) (C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty
-Package: array 2023/10/16 v2.5g Tabular extension package (FMi)
-\col@sep=\dimen160
-\ar@mcellbox=\box53
-\extrarowheight=\dimen161
+\c@subtable=\count284
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty
+Package: array 2024/06/14 v2.6d Tabular extension package (FMi)
+\col@sep=\dimen161
+\ar@mcellbox=\box54
+\extrarowheight=\dimen162
 \NC@list=\toks23
-\extratabsurround=\skip55
-\backup@length=\skip56
-\ar@cellbox=\box54
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/algorithms\algorithm.
-sty
-Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
-nment
- (C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty
+\extratabsurround=\skip56
+\backup@length=\skip57
+\ar@cellbox=\box55
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/algorithms\algorithm.sty
+Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating environment
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count278
+\c@float@type=\count285
 \float@exts=\toks24
-\float@box=\box55
+\float@box=\box56
 \@float@everytoks=\toks25
-\@floatcapt=\box56
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty
-Package: ifthen 2022/04/13 v1.1d Standard LaTeX ifthen package (DPC)
+\@floatcapt=\box57
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty
+Package: ifthen 2024/03/16 v1.1e Standard LaTeX ifthen package (DPC)
 )
 \@float@every@algorithm=\toks26
-\c@algorithm=\count279
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/algorithms\algorithmi
-c.sty
+\c@algorithm=\count286
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/algorithms\algorithmic.sty
 Package: algorithmic 2009/08/24 v0.1 Document Style `algorithmic'
-\c@ALC@unique=\count280
-\c@ALC@line=\count281
-\c@ALC@rem=\count282
-\c@ALC@depth=\count283
-\ALC@tlm=\skip57
-\algorithmicindent=\skip58
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/preprint\fullpage.sty
+\c@ALC@unique=\count287
+\c@ALC@line=\count288
+\c@ALC@rem=\count289
+\c@ALC@depth=\count290
+\ALC@tlm=\skip58
+\algorithmicindent=\skip59
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/preprint\fullpage.sty
 Package: fullpage 1999/02/23 1.1 (PWD)
-\FP@margin=\skip59
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/newfloat\newfloat.sty
+\FP@margin=\skip60
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/newfloat\newfloat.sty
 Package: newfloat 2023/10/01 v1.2 Defining new floating environments (AR)
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.sty
-\lst@mode=\count284
-\lst@gtempboxa=\box57
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.sty
+\lst@mode=\count291
+\lst@gtempboxa=\box58
 \lst@token=\toks27
-\lst@length=\count285
-\lst@currlwidth=\dimen162
-\lst@column=\count286
-\lst@pos=\count287
-\lst@lostspace=\dimen163
-\lst@width=\dimen164
-\lst@newlines=\count288
-\lst@lineno=\count289
-\lst@maxwidth=\dimen165
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmisc.sty
-File: lstmisc.sty 2023/02/27 1.9 (Carsten Heinz)
-\c@lstnumber=\count290
-\lst@skipnumbers=\count291
-\lst@framebox=\box58
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.cfg
-File: listings.cfg 2023/02/27 1.9 listings configuration
+\lst@length=\count292
+\lst@currlwidth=\dimen163
+\lst@column=\count293
+\lst@pos=\count294
+\lst@lostspace=\dimen164
+\lst@width=\dimen165
+\lst@newlines=\count295
+\lst@lineno=\count296
+\lst@maxwidth=\dimen166
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstpatch.sty
+File: lstpatch.sty 2024/05/25 1.10b (Carsten Heinz)
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmisc.sty
+File: lstmisc.sty 2024/05/25 1.10b (Carsten Heinz)
+\c@lstnumber=\count297
+\lst@skipnumbers=\count298
+\lst@framebox=\box59
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.cfg
+File: listings.cfg 2024/05/25 1.10b listings configuration
 ))
-Package: listings 2023/02/27 1.9 (Carsten Heinz)
+Package: listings 2024/05/25 1.10b (Carsten Heinz)
 \@float@every@listing=\toks28
-\c@listing=\count292
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/enumitem\enumitem.sty
+\c@listing=\count299
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/enumitem\enumitem.sty
 Package: enumitem 2019/06/20 v3.9 Customized lists
-\labelindent=\skip60
-\enit@outerparindent=\dimen166
+\labelindent=\skip61
+\enit@outerparindent=\dimen167
 \enit@toks=\toks29
-\enit@inbox=\box59
-\enit@count@id=\count293
-\enitdp@description=\count294
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
+\enit@inbox=\box60
+\enit@count@id=\count300
+\enitdp@description=\count301
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
 Package: nameref 2023-11-26 v2.56 Cross-referencing by name of section
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty
 Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty
 Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr
-.sty
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.sty
 Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
-))
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\gett
-itlestring.sty
+)) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.s
-ty
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.sty
 Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.s
-ty
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.sty
 Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
 )))
-\c@section@level=\count295
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/adjustbox\adjustbox.s
-ty
+\c@section@level=\count302
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/adjustbox\adjustbox.sty
 Package: adjustbox 2022/10/17 v1.3a Adjusting TeX boxes (trim, clip, ...)
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/xkeyval\xkeyval.sty
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/xkeyval\xkeyval.sty
 Package: xkeyval 2022/06/16 v2.9 package option processing (HA)
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkeyval.tex
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkvutils.te
-x
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkeyval.tex (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkvutils.tex
 \XKV@toks=\toks30
 \XKV@tempa@toks=\toks31
 )
-\XKV@depth=\count296
+\XKV@depth=\count303
 File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
-))
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/adjustbox\adjcalc.sty
-Package: adjcalc 2012/05/16 v1.1 Provides advanced setlength with multiple back
--ends (calc, etex, pgfmath)
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/adjustbox\trimclip.st
-y
+)) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/adjustbox\adjcalc.sty
+Package: adjcalc 2012/05/16 v1.1 Provides advanced setlength with multiple back-ends (calc, etex, pgfmath)
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/adjustbox\trimclip.sty
 Package: trimclip 2020/08/19 v1.2 Trim and clip general TeX material
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/collectbox\collectbox
-.sty
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/collectbox\collectbox.sty
 Package: collectbox 2022/10/17 v0.4c Collect macro arguments as boxes
-\collectedbox=\box60
+\collectedbox=\box61
 )
-\tc@llx=\dimen167
-\tc@lly=\dimen168
-\tc@urx=\dimen169
-\tc@ury=\dimen170
+\tc@llx=\dimen168
+\tc@lly=\dimen169
+\tc@urx=\dimen170
+\tc@ury=\dimen171
 Package trimclip Info: Using driver 'tc-pdftex.def'.
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/adjustbox\tc-pdftex.d
-ef
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/adjustbox\tc-pdftex.def
 File: tc-pdftex.def 2019/01/04 v2.2 Clipping driver for pdftex
 ))
-\adjbox@Width=\dimen171
-\adjbox@Height=\dimen172
-\adjbox@Depth=\dimen173
-\adjbox@Totalheight=\dimen174
-\adjbox@pwidth=\dimen175
-\adjbox@pheight=\dimen176
-\adjbox@pdepth=\dimen177
-\adjbox@ptotalheight=\dimen178
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/ifoddpage\ifoddpage.s
-ty
+\adjbox@Width=\dimen172
+\adjbox@Height=\dimen173
+\adjbox@Depth=\dimen174
+\adjbox@Totalheight=\dimen175
+\adjbox@pwidth=\dimen176
+\adjbox@pheight=\dimen177
+\adjbox@pdepth=\dimen178
+\adjbox@ptotalheight=\dimen179
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/ifoddpage\ifoddpage.sty
 Package: ifoddpage 2022/10/18 v1.2 Conditionals for odd/even page detection
-\c@checkoddpage=\count297
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/varwidth\varwidth.sty
+\c@checkoddpage=\count304
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/varwidth\varwidth.sty
 Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
-\@vwid@box=\box61
-\sift@deathcycles=\count298
-\@vwid@loff=\dimen179
-\@vwid@roff=\dimen180
+\@vwid@box=\box62
+\sift@deathcycles=\count305
+\@vwid@loff=\dimen180
+\@vwid@roff=\dimen181
 ))
-LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 1
-14.
- (C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1ptm.fd
+LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 114.
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-p
-dftex.def
-File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count299
-\l__pdf_internal_box=\box62
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
+File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count306
+\l__pdf_internal_box=\box63
 ) (main.aux
 
 LaTeX Warning: Label `fig: game1_clip1_video' multiply defined.
@@ -369,30 +310,23 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 114.
 LaTeX Font Info:    ... okay on input line 114.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 114.
 LaTeX Font Info:    ... okay on input line 114.
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.
-mkii
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count300
-\scratchdimen=\dimen181
-\scratchbox=\box63
-\nofMPsegments=\count301
-\nofMParguments=\count302
+\scratchcounter=\count307
+\scratchdimen=\dimen182
+\scratchbox=\box64
+\nofMPsegments=\count308
+\nofMParguments=\count309
 \everyMPshowfont=\toks32
-\MPscratchCnt=\count303
-\MPscratchDim=\dimen182
-\MPnumerator=\count304
-\makeMPintoPDFobject=\count305
+\MPscratchCnt=\count310
+\MPscratchDim=\dimen183
+\MPnumerator=\count311
+\makeMPintoPDFobject=\count312
 \everyMPtoPDFconversion=\toks33
-)
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf
--base.sty
+) (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
-Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
-85.
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys
-.cfg
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
 Package caption Info: Begin \AtBeginDocument code.
@@ -400,623 +334,446 @@ Package caption Info: float package is loaded.
 Package caption Info: listings package is loaded.
 Package caption Info: End \AtBeginDocument code.
 Package newfloat Info: `float' package detected.
-\c@lstlisting=\count306
-LaTeX Font Info:    Trying to load font information for U+msa on input line 116
-.
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
+\c@lstlisting=\count313
+LaTeX Font Info:    Trying to load font information for U+msa on input line 116.
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 116
-.
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
+LaTeX Font Info:    Trying to load font information for U+msb on input line 116.
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for OMS+ptm on input line 1
-23.
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omsptm.fd
+LaTeX Font Info:    Trying to load font information for OMS+ptm on input line 123.
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <12> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 123.
+ (section/introduction.tex) (section/workload.tex) (section/elements.tex (section/executables.tex
 
-(section/introduction.tex) (section/workload.tex) (section/elements.tex
-(section/executables.tex [1
+[1
 
-{C:/Users/Michela/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/Mi
-chela/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}]
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 4
-.
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
+{C:/Users/alber/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/alber/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}]
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 4.
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 4
-.
-
-(C:\Users\Michela\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1pcr.fd
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 4.
+ (C:\Users\alber\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-))
-(section/tableDetection.tex) (section/tableSegmentation.tex)
-(section/ballsDetection.tex) (section/radiusAttempt.tex [2] [3])
-(section/tracking.tex) (section/minimap.tex [4]
+)) (section/tableDetection.tex) (section/tableSegmentation.tex) (section/ballsDetection.tex) (section/radiusAttempt.tex
+
+[2]
+
+[3]) (section/tracking.tex) (section/minimap.tex
+
+[4]
 <images/TableOrientation/g1_c1.jpg, id=20, 1027.84pt x 578.16pt>
 File: images/TableOrientation/g1_c1.jpg Graphic file (type jpg)
 <use images/TableOrientation/g1_c1.jpg>
-Package pdftex.def Info: images/TableOrientation/g1_c1.jpg  used on input line 
-32.
+Package pdftex.def Info: images/TableOrientation/g1_c1.jpg  used on input line 32.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Segmentation/game1_clip1_segmented_balls_first_frame.jpg, id=21, 1027.8
-4pt x 578.16pt>
-File: images/Segmentation/game1_clip1_segmented_balls_first_frame.jpg Graphic f
-ile (type jpg)
+<images/Segmentation/game1_clip1_segmented_balls_first_frame.jpg, id=21, 1027.84pt x 578.16pt>
+File: images/Segmentation/game1_clip1_segmented_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game1_clip1_segmented_balls_first_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game1_clip1_segmented_balls_first_
-frame.jpg  used on input line 38.
+Package pdftex.def Info: images/Segmentation/game1_clip1_segmented_balls_first_frame.jpg  used on input line 38.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
 <images/TableOrientation/g2_c1.jpg, id=22, 1027.84pt x 578.16pt>
 File: images/TableOrientation/g2_c1.jpg Graphic file (type jpg)
 <use images/TableOrientation/g2_c1.jpg>
-Package pdftex.def Info: images/TableOrientation/g2_c1.jpg  used on input line 
-51.
+Package pdftex.def Info: images/TableOrientation/g2_c1.jpg  used on input line 51.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
 <images/TableOrientation/g2_c1_mask.jpg, id=23, 839.135pt x 434.62375pt>
 File: images/TableOrientation/g2_c1_mask.jpg Graphic file (type jpg)
 <use images/TableOrientation/g2_c1_mask.jpg>
-Package pdftex.def Info: images/TableOrientation/g2_c1_mask.jpg  used on input 
-line 56.
+Package pdftex.def Info: images/TableOrientation/g2_c1_mask.jpg  used on input line 56.
 (pdftex.def)             Requested size: 225.4804pt x 116.78627pt.
- [5 <./images/TableOrientation/g1_c1.jpg> <./images/Segmentation/game1_clip1_se
-gmented_balls_first_frame.jpg>]
+
+
+[5 <./images/TableOrientation/g1_c1.jpg> <./images/Segmentation/game1_clip1_segmented_balls_first_frame.jpg>]
 <images/TableOrientation/g3_c1.jpg, id=27, 1027.84pt x 578.16pt>
 File: images/TableOrientation/g3_c1.jpg Graphic file (type jpg)
 <use images/TableOrientation/g3_c1.jpg>
-Package pdftex.def Info: images/TableOrientation/g3_c1.jpg  used on input line 
-66.
+Package pdftex.def Info: images/TableOrientation/g3_c1.jpg  used on input line 66.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
 <images/TableOrientation/g3_c1_mask.jpg, id=28, 839.135pt x 434.62375pt>
 File: images/TableOrientation/g3_c1_mask.jpg Graphic file (type jpg)
 <use images/TableOrientation/g3_c1_mask.jpg>
-Package pdftex.def Info: images/TableOrientation/g3_c1_mask.jpg  used on input 
-line 71.
+Package pdftex.def Info: images/TableOrientation/g3_c1_mask.jpg  used on input line 71.
 (pdftex.def)             Requested size: 225.4804pt x 116.78627pt.
 <images/TableOrientation/g4_c1.jpg, id=29, 1027.84pt x 578.16pt>
 File: images/TableOrientation/g4_c1.jpg Graphic file (type jpg)
 <use images/TableOrientation/g4_c1.jpg>
-Package pdftex.def Info: images/TableOrientation/g4_c1.jpg  used on input line 
-81.
+Package pdftex.def Info: images/TableOrientation/g4_c1.jpg  used on input line 81.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
 <images/TableOrientation/g4_c1_mask.jpg, id=30, 839.135pt x 434.62375pt>
 File: images/TableOrientation/g4_c1_mask.jpg Graphic file (type jpg)
 <use images/TableOrientation/g4_c1_mask.jpg>
-Package pdftex.def Info: images/TableOrientation/g4_c1_mask.jpg  used on input 
-line 86.
+Package pdftex.def Info: images/TableOrientation/g4_c1_mask.jpg  used on input line 86.
 (pdftex.def)             Requested size: 225.4804pt x 116.78627pt.
 
-[6 <./images/TableOrientation/g2_c1.jpg> <./images/TableOrientation/g2_c1_mask.
-jpg (PNG copy)> <./images/TableOrientation/g3_c1.jpg> <./images/TableOrientatio
-n/g3_c1_mask.jpg (PNG copy)>]
+
+[6 <./images/TableOrientation/g2_c1.jpg> <./images/TableOrientation/g2_c1_mask.jpg (PNG copy)> <./images/TableOrientation/g3_c1.jpg> <./images/TableOrientation/g3_c1_mask.jpg (PNG copy)>]
 Overfull \hbox (79.36226pt too wide) in paragraph at lines 94--95
-\OT1/ptm/m/n/12 vi-ous frame (if they have been com-puted by the tracker) are c
-om-puted by us-ing the \OT1/pcr/m/n/12 perspectiveTransform()
+\OT1/ptm/m/n/12 vi-ous frame (if they have been com-puted by the tracker) are com-puted by us-ing the \OT1/pcr/m/n/12 perspectiveTransform()
  []
 
 <images/Minimap/g2_c1minimap_with_track.jpg, id=34, 970.62625pt x 562.1pt>
 File: images/Minimap/g2_c1minimap_with_track.jpg Graphic file (type jpg)
 <use images/Minimap/g2_c1minimap_with_track.jpg>
-Package pdftex.def Info: images/Minimap/g2_c1minimap_with_track.jpg  used on in
-put line 100.
+Package pdftex.def Info: images/Minimap/g2_c1minimap_with_track.jpg  used on input line 100.
 (pdftex.def)             Requested size: 225.4804pt x 130.5754pt.
 <images/Minimap/g2_c1_minimap_with_balls.jpg, id=35, 970.62625pt x 562.1pt>
 File: images/Minimap/g2_c1_minimap_with_balls.jpg Graphic file (type jpg)
 <use images/Minimap/g2_c1_minimap_with_balls.jpg>
-Package pdftex.def Info: images/Minimap/g2_c1_minimap_with_balls.jpg  used on i
-nput line 106.
+Package pdftex.def Info: images/Minimap/g2_c1_minimap_with_balls.jpg  used on input line 106.
 (pdftex.def)             Requested size: 225.4804pt x 130.5754pt.
-) (section/video.tex [7 <./images/TableOrientation/g4_c1.jpg> <./images/TableOr
-ientation/g4_c1_mask.jpg (PNG copy)> <./images/Minimap/g2_c1minimap_with_track.
-jpg> <./images/Minimap/g2_c1_minimap_with_balls.jpg>]) (section/metrics.tex))
+) (section/video.tex
+
+[7 <./images/TableOrientation/g4_c1.jpg> <./images/TableOrientation/g4_c1_mask.jpg (PNG copy)> <./images/Minimap/g2_c1minimap_with_track.jpg> <./images/Minimap/g2_c1_minimap_with_balls.jpg>]) (section/metrics.tex))
+
 [8] (section/results.tex
-<images/Detection/game1_clip1_detected_balls_first_frame.jpg, id=44, 1027.84pt 
-x 578.16pt>
-File: images/Detection/game1_clip1_detected_balls_first_frame.jpg Graphic file 
-(type jpg)
+<images/Detection/game1_clip1_detected_balls_first_frame.jpg, id=44, 1027.84pt x 578.16pt>
+File: images/Detection/game1_clip1_detected_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Detection/game1_clip1_detected_balls_first_frame.jpg>
-Package pdftex.def Info: images/Detection/game1_clip1_detected_balls_first_fram
-e.jpg  used on input line 12.
+Package pdftex.def Info: images/Detection/game1_clip1_detected_balls_first_frame.jpg  used on input line 12.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-File: images/Segmentation/game1_clip1_segmented_balls_first_frame.jpg Graphic f
-ile (type jpg)
+File: images/Segmentation/game1_clip1_segmented_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game1_clip1_segmented_balls_first_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game1_clip1_segmented_balls_first_
-frame.jpg  used on input line 18.
+Package pdftex.def Info: images/Segmentation/game1_clip1_segmented_balls_first_frame.jpg  used on input line 18.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Detection/game1_clip1_detected_balls_last_frame.jpg, id=45, 1027.84pt x
- 578.16pt>
-File: images/Detection/game1_clip1_detected_balls_last_frame.jpg Graphic file (
-type jpg)
+<images/Detection/game1_clip1_detected_balls_last_frame.jpg, id=45, 1027.84pt x 578.16pt>
+File: images/Detection/game1_clip1_detected_balls_last_frame.jpg Graphic file (type jpg)
 <use images/Detection/game1_clip1_detected_balls_last_frame.jpg>
-Package pdftex.def Info: images/Detection/game1_clip1_detected_balls_last_frame
-.jpg  used on input line 24.
+Package pdftex.def Info: images/Detection/game1_clip1_detected_balls_last_frame.jpg  used on input line 24.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Segmentation/game1_clip1_segmented_balls_last_frame.jpg, id=46, 1027.84
-pt x 578.16pt>
-File: images/Segmentation/game1_clip1_segmented_balls_last_frame.jpg Graphic fi
-le (type jpg)
+<images/Segmentation/game1_clip1_segmented_balls_last_frame.jpg, id=46, 1027.84pt x 578.16pt>
+File: images/Segmentation/game1_clip1_segmented_balls_last_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game1_clip1_segmented_balls_last_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game1_clip1_segmented_balls_last_f
-rame.jpg  used on input line 30.
+Package pdftex.def Info: images/Segmentation/game1_clip1_segmented_balls_last_frame.jpg  used on input line 30.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
 <images/AllMinimap/game1_clip1_minimap.png, id=47, 970.62625pt x 562.1pt>
 File: images/AllMinimap/game1_clip1_minimap.png Graphic file (type png)
 <use images/AllMinimap/game1_clip1_minimap.png>
-Package pdftex.def Info: images/AllMinimap/game1_clip1_minimap.png  used on inp
-ut line 36.
+Package pdftex.def Info: images/AllMinimap/game1_clip1_minimap.png  used on input line 36.
 (pdftex.def)             Requested size: 225.4804pt x 130.5754pt.
 <images/Video/game1_clip1_video.jpg, id=48, 1027.84pt x 578.16pt>
 File: images/Video/game1_clip1_video.jpg Graphic file (type jpg)
 <use images/Video/game1_clip1_video.jpg>
-Package pdftex.def Info: images/Video/game1_clip1_video.jpg  used on input line
- 42.
+Package pdftex.def Info: images/Video/game1_clip1_video.jpg  used on input line 42.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
- [9]
-<images/Detection/game1_clip2_detected_balls_first_frame.jpg, id=52, 1027.84pt 
-x 578.16pt>
-File: images/Detection/game1_clip2_detected_balls_first_frame.jpg Graphic file 
-(type jpg)
+
+
+[9]
+<images/Detection/game1_clip2_detected_balls_first_frame.jpg, id=52, 1027.84pt x 578.16pt>
+File: images/Detection/game1_clip2_detected_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Detection/game1_clip2_detected_balls_first_frame.jpg>
-Package pdftex.def Info: images/Detection/game1_clip2_detected_balls_first_fram
-e.jpg  used on input line 54.
+Package pdftex.def Info: images/Detection/game1_clip2_detected_balls_first_frame.jpg  used on input line 54.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Segmentation/game1_clip2_segmented_balls_first_frame.jpg, id=53, 1027.8
-4pt x 578.16pt>
-File: images/Segmentation/game1_clip2_segmented_balls_first_frame.jpg Graphic f
-ile (type jpg)
+<images/Segmentation/game1_clip2_segmented_balls_first_frame.jpg, id=53, 1027.84pt x 578.16pt>
+File: images/Segmentation/game1_clip2_segmented_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game1_clip2_segmented_balls_first_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game1_clip2_segmented_balls_first_
-frame.jpg  used on input line 60.
+Package pdftex.def Info: images/Segmentation/game1_clip2_segmented_balls_first_frame.jpg  used on input line 60.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Detection/game1_clip2_detected_balls_last_frame.jpg, id=54, 1027.84pt x
- 578.16pt>
-File: images/Detection/game1_clip2_detected_balls_last_frame.jpg Graphic file (
-type jpg)
+<images/Detection/game1_clip2_detected_balls_last_frame.jpg, id=54, 1027.84pt x 578.16pt>
+File: images/Detection/game1_clip2_detected_balls_last_frame.jpg Graphic file (type jpg)
 <use images/Detection/game1_clip2_detected_balls_last_frame.jpg>
-Package pdftex.def Info: images/Detection/game1_clip2_detected_balls_last_frame
-.jpg  used on input line 66.
+Package pdftex.def Info: images/Detection/game1_clip2_detected_balls_last_frame.jpg  used on input line 66.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Segmentation/game1_clip2_segmented_balls_last_frame.jpg, id=55, 1027.84
-pt x 578.16pt>
-File: images/Segmentation/game1_clip2_segmented_balls_last_frame.jpg Graphic fi
-le (type jpg)
+<images/Segmentation/game1_clip2_segmented_balls_last_frame.jpg, id=55, 1027.84pt x 578.16pt>
+File: images/Segmentation/game1_clip2_segmented_balls_last_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game1_clip2_segmented_balls_last_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game1_clip2_segmented_balls_last_f
-rame.jpg  used on input line 72.
+Package pdftex.def Info: images/Segmentation/game1_clip2_segmented_balls_last_frame.jpg  used on input line 72.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
 <images/AllMinimap/game1_clip2_minimap.png, id=56, 970.62625pt x 562.1pt>
 File: images/AllMinimap/game1_clip2_minimap.png Graphic file (type png)
 <use images/AllMinimap/game1_clip2_minimap.png>
-Package pdftex.def Info: images/AllMinimap/game1_clip2_minimap.png  used on inp
-ut line 78.
+Package pdftex.def Info: images/AllMinimap/game1_clip2_minimap.png  used on input line 78.
 (pdftex.def)             Requested size: 225.4804pt x 130.5754pt.
 <images/Video/game1_clip2_video.jpg, id=57, 1027.84pt x 578.16pt>
 File: images/Video/game1_clip2_video.jpg Graphic file (type jpg)
 <use images/Video/game1_clip2_video.jpg>
-Package pdftex.def Info: images/Video/game1_clip2_video.jpg  used on input line
- 84.
+Package pdftex.def Info: images/Video/game1_clip2_video.jpg  used on input line 84.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
- [10 <./images/Detection/game1_clip1_detected_balls_first_frame.jpg> <./images/
-Detection/game1_clip1_detected_balls_last_frame.jpg> <./images/Segmentation/gam
-e1_clip1_segmented_balls_last_frame.jpg> <./images/AllMinimap/game1_clip1_minim
-ap.png (PNG copy)> <./images/Video/game1_clip1_video.jpg>]
-<images/Detection/game1_clip3_detected_balls_first_frame.jpg, id=61, 1027.84pt 
-x 578.16pt>
-File: images/Detection/game1_clip3_detected_balls_first_frame.jpg Graphic file 
-(type jpg)
+
+
+[10 <./images/Detection/game1_clip1_detected_balls_first_frame.jpg> <./images/Detection/game1_clip1_detected_balls_last_frame.jpg> <./images/Segmentation/game1_clip1_segmented_balls_last_frame.jpg> <./images/AllMinimap/game1_clip1_minimap.png (PNG copy)> <./images/Video/game1_clip1_video.jpg>]
+<images/Detection/game1_clip3_detected_balls_first_frame.jpg, id=61, 1027.84pt x 578.16pt>
+File: images/Detection/game1_clip3_detected_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Detection/game1_clip3_detected_balls_first_frame.jpg>
-Package pdftex.def Info: images/Detection/game1_clip3_detected_balls_first_fram
-e.jpg  used on input line 96.
+Package pdftex.def Info: images/Detection/game1_clip3_detected_balls_first_frame.jpg  used on input line 96.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Segmentation/game1_clip3_segmented_balls_first_frame.jpg, id=62, 1027.8
-4pt x 578.16pt>
-File: images/Segmentation/game1_clip3_segmented_balls_first_frame.jpg Graphic f
-ile (type jpg)
+<images/Segmentation/game1_clip3_segmented_balls_first_frame.jpg, id=62, 1027.84pt x 578.16pt>
+File: images/Segmentation/game1_clip3_segmented_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game1_clip3_segmented_balls_first_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game1_clip3_segmented_balls_first_
-frame.jpg  used on input line 102.
+Package pdftex.def Info: images/Segmentation/game1_clip3_segmented_balls_first_frame.jpg  used on input line 102.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Detection/game1_clip3_detected_balls_last_frame.jpg, id=63, 1027.84pt x
- 578.16pt>
-File: images/Detection/game1_clip3_detected_balls_last_frame.jpg Graphic file (
-type jpg)
+<images/Detection/game1_clip3_detected_balls_last_frame.jpg, id=63, 1027.84pt x 578.16pt>
+File: images/Detection/game1_clip3_detected_balls_last_frame.jpg Graphic file (type jpg)
 <use images/Detection/game1_clip3_detected_balls_last_frame.jpg>
-Package pdftex.def Info: images/Detection/game1_clip3_detected_balls_last_frame
-.jpg  used on input line 108.
+Package pdftex.def Info: images/Detection/game1_clip3_detected_balls_last_frame.jpg  used on input line 108.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Segmentation/game1_clip3_segmented_balls_last_frame.jpg, id=64, 1027.84
-pt x 578.16pt>
-File: images/Segmentation/game1_clip3_segmented_balls_last_frame.jpg Graphic fi
-le (type jpg)
+<images/Segmentation/game1_clip3_segmented_balls_last_frame.jpg, id=64, 1027.84pt x 578.16pt>
+File: images/Segmentation/game1_clip3_segmented_balls_last_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game1_clip3_segmented_balls_last_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game1_clip3_segmented_balls_last_f
-rame.jpg  used on input line 114.
+Package pdftex.def Info: images/Segmentation/game1_clip3_segmented_balls_last_frame.jpg  used on input line 114.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
 <images/AllMinimap/game1_clip3_minimap.png, id=65, 970.62625pt x 562.1pt>
 File: images/AllMinimap/game1_clip3_minimap.png Graphic file (type png)
 <use images/AllMinimap/game1_clip3_minimap.png>
-Package pdftex.def Info: images/AllMinimap/game1_clip3_minimap.png  used on inp
-ut line 120.
+Package pdftex.def Info: images/AllMinimap/game1_clip3_minimap.png  used on input line 120.
 (pdftex.def)             Requested size: 225.4804pt x 130.5754pt.
 <images/Video/game1_clip3_video.jpg, id=66, 1027.84pt x 578.16pt>
 File: images/Video/game1_clip3_video.jpg Graphic file (type jpg)
 <use images/Video/game1_clip3_video.jpg>
-Package pdftex.def Info: images/Video/game1_clip3_video.jpg  used on input line
- 126.
+Package pdftex.def Info: images/Video/game1_clip3_video.jpg  used on input line 126.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
- [11 <./images/Detection/game1_clip2_detected_balls_first_frame.jpg> <./images/
-Segmentation/game1_clip2_segmented_balls_first_frame.jpg> <./images/Detection/g
-ame1_clip2_detected_balls_last_frame.jpg> <./images/Segmentation/game1_clip2_se
-gmented_balls_last_frame.jpg> <./images/AllMinimap/game1_clip2_minimap.png (PNG
- copy)> <./images/Video/game1_clip2_video.jpg>]
-<images/Detection/game1_clip4_detected_balls_first_frame.jpg, id=70, 1027.84pt 
-x 578.16pt>
-File: images/Detection/game1_clip4_detected_balls_first_frame.jpg Graphic file 
-(type jpg)
+
+
+[11 <./images/Detection/game1_clip2_detected_balls_first_frame.jpg> <./images/Segmentation/game1_clip2_segmented_balls_first_frame.jpg> <./images/Detection/game1_clip2_detected_balls_last_frame.jpg> <./images/Segmentation/game1_clip2_segmented_balls_last_frame.jpg> <./images/AllMinimap/game1_clip2_minimap.png (PNG copy)> <./images/Video/game1_clip2_video.jpg>]
+<images/Detection/game1_clip4_detected_balls_first_frame.jpg, id=70, 1027.84pt x 578.16pt>
+File: images/Detection/game1_clip4_detected_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Detection/game1_clip4_detected_balls_first_frame.jpg>
-Package pdftex.def Info: images/Detection/game1_clip4_detected_balls_first_fram
-e.jpg  used on input line 138.
+Package pdftex.def Info: images/Detection/game1_clip4_detected_balls_first_frame.jpg  used on input line 138.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Segmentation/game1_clip4_segmented_balls_first_frame.jpg, id=71, 1027.8
-4pt x 578.16pt>
-File: images/Segmentation/game1_clip4_segmented_balls_first_frame.jpg Graphic f
-ile (type jpg)
+<images/Segmentation/game1_clip4_segmented_balls_first_frame.jpg, id=71, 1027.84pt x 578.16pt>
+File: images/Segmentation/game1_clip4_segmented_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game1_clip4_segmented_balls_first_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game1_clip4_segmented_balls_first_
-frame.jpg  used on input line 144.
+Package pdftex.def Info: images/Segmentation/game1_clip4_segmented_balls_first_frame.jpg  used on input line 144.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Detection/game1_clip4_detected_balls_last_frame.jpg, id=72, 1027.84pt x
- 578.16pt>
-File: images/Detection/game1_clip4_detected_balls_last_frame.jpg Graphic file (
-type jpg)
+<images/Detection/game1_clip4_detected_balls_last_frame.jpg, id=72, 1027.84pt x 578.16pt>
+File: images/Detection/game1_clip4_detected_balls_last_frame.jpg Graphic file (type jpg)
 <use images/Detection/game1_clip4_detected_balls_last_frame.jpg>
-Package pdftex.def Info: images/Detection/game1_clip4_detected_balls_last_frame
-.jpg  used on input line 150.
+Package pdftex.def Info: images/Detection/game1_clip4_detected_balls_last_frame.jpg  used on input line 150.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Segmentation/game1_clip4_segmented_balls_last_frame.jpg, id=73, 1027.84
-pt x 578.16pt>
-File: images/Segmentation/game1_clip4_segmented_balls_last_frame.jpg Graphic fi
-le (type jpg)
+<images/Segmentation/game1_clip4_segmented_balls_last_frame.jpg, id=73, 1027.84pt x 578.16pt>
+File: images/Segmentation/game1_clip4_segmented_balls_last_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game1_clip4_segmented_balls_last_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game1_clip4_segmented_balls_last_f
-rame.jpg  used on input line 156.
+Package pdftex.def Info: images/Segmentation/game1_clip4_segmented_balls_last_frame.jpg  used on input line 156.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
 <images/AllMinimap/game1_clip4_minimap.png, id=74, 970.62625pt x 562.1pt>
 File: images/AllMinimap/game1_clip4_minimap.png Graphic file (type png)
 <use images/AllMinimap/game1_clip4_minimap.png>
-Package pdftex.def Info: images/AllMinimap/game1_clip4_minimap.png  used on inp
-ut line 162.
+Package pdftex.def Info: images/AllMinimap/game1_clip4_minimap.png  used on input line 162.
 (pdftex.def)             Requested size: 225.4804pt x 130.5754pt.
 <images/Video/game1_clip4_video.jpg, id=75, 1027.84pt x 578.16pt>
 File: images/Video/game1_clip4_video.jpg Graphic file (type jpg)
 <use images/Video/game1_clip4_video.jpg>
-Package pdftex.def Info: images/Video/game1_clip4_video.jpg  used on input line
- 168.
+Package pdftex.def Info: images/Video/game1_clip4_video.jpg  used on input line 168.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
- [12 <./images/Detection/game1_clip3_detected_balls_first_frame.jpg> <./images/
-Segmentation/game1_clip3_segmented_balls_first_frame.jpg> <./images/Detection/g
-ame1_clip3_detected_balls_last_frame.jpg> <./images/Segmentation/game1_clip3_se
-gmented_balls_last_frame.jpg> <./images/AllMinimap/game1_clip3_minimap.png (PNG
- copy)> <./images/Video/game1_clip3_video.jpg>]
-<images/Detection/game2_clip1_detected_balls_first_frame.jpg, id=79, 1027.84pt 
-x 578.16pt>
-File: images/Detection/game2_clip1_detected_balls_first_frame.jpg Graphic file 
-(type jpg)
+
+
+[12 <./images/Detection/game1_clip3_detected_balls_first_frame.jpg> <./images/Segmentation/game1_clip3_segmented_balls_first_frame.jpg> <./images/Detection/game1_clip3_detected_balls_last_frame.jpg> <./images/Segmentation/game1_clip3_segmented_balls_last_frame.jpg> <./images/AllMinimap/game1_clip3_minimap.png (PNG copy)> <./images/Video/game1_clip3_video.jpg>]
+<images/Detection/game2_clip1_detected_balls_first_frame.jpg, id=79, 1027.84pt x 578.16pt>
+File: images/Detection/game2_clip1_detected_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Detection/game2_clip1_detected_balls_first_frame.jpg>
-Package pdftex.def Info: images/Detection/game2_clip1_detected_balls_first_fram
-e.jpg  used on input line 181.
+Package pdftex.def Info: images/Detection/game2_clip1_detected_balls_first_frame.jpg  used on input line 181.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Segmentation/game2_clip1_segmented_balls_first_frame.jpg, id=80, 1027.8
-4pt x 578.16pt>
-File: images/Segmentation/game2_clip1_segmented_balls_first_frame.jpg Graphic f
-ile (type jpg)
+<images/Segmentation/game2_clip1_segmented_balls_first_frame.jpg, id=80, 1027.84pt x 578.16pt>
+File: images/Segmentation/game2_clip1_segmented_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game2_clip1_segmented_balls_first_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game2_clip1_segmented_balls_first_
-frame.jpg  used on input line 187.
+Package pdftex.def Info: images/Segmentation/game2_clip1_segmented_balls_first_frame.jpg  used on input line 187.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Detection/game2_clip1_detected_balls_last_frame.jpg, id=81, 1027.84pt x
- 578.16pt>
-File: images/Detection/game2_clip1_detected_balls_last_frame.jpg Graphic file (
-type jpg)
+<images/Detection/game2_clip1_detected_balls_last_frame.jpg, id=81, 1027.84pt x 578.16pt>
+File: images/Detection/game2_clip1_detected_balls_last_frame.jpg Graphic file (type jpg)
 <use images/Detection/game2_clip1_detected_balls_last_frame.jpg>
-Package pdftex.def Info: images/Detection/game2_clip1_detected_balls_last_frame
-.jpg  used on input line 194.
+Package pdftex.def Info: images/Detection/game2_clip1_detected_balls_last_frame.jpg  used on input line 194.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Segmentation/game2_clip1_segmented_balls_last_frame.jpg, id=82, 1027.84
-pt x 578.16pt>
-File: images/Segmentation/game2_clip1_segmented_balls_last_frame.jpg Graphic fi
-le (type jpg)
+<images/Segmentation/game2_clip1_segmented_balls_last_frame.jpg, id=82, 1027.84pt x 578.16pt>
+File: images/Segmentation/game2_clip1_segmented_balls_last_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game2_clip1_segmented_balls_last_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game2_clip1_segmented_balls_last_f
-rame.jpg  used on input line 200.
+Package pdftex.def Info: images/Segmentation/game2_clip1_segmented_balls_last_frame.jpg  used on input line 200.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
 <images/AllMinimap/game2_clip1_minimap.png, id=83, 970.62625pt x 562.1pt>
 File: images/AllMinimap/game2_clip1_minimap.png Graphic file (type png)
 <use images/AllMinimap/game2_clip1_minimap.png>
-Package pdftex.def Info: images/AllMinimap/game2_clip1_minimap.png  used on inp
-ut line 206.
+Package pdftex.def Info: images/AllMinimap/game2_clip1_minimap.png  used on input line 206.
 (pdftex.def)             Requested size: 225.4804pt x 130.5754pt.
 <images/Video/game2_clip1_video.jpg, id=84, 1027.84pt x 578.16pt>
 File: images/Video/game2_clip1_video.jpg Graphic file (type jpg)
 <use images/Video/game2_clip1_video.jpg>
-Package pdftex.def Info: images/Video/game2_clip1_video.jpg  used on input line
- 212.
+Package pdftex.def Info: images/Video/game2_clip1_video.jpg  used on input line 212.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
- [13 <./images/Detection/game1_clip4_detected_balls_first_frame.jpg> <./images/
-Segmentation/game1_clip4_segmented_balls_first_frame.jpg> <./images/Detection/g
-ame1_clip4_detected_balls_last_frame.jpg> <./images/Segmentation/game1_clip4_se
-gmented_balls_last_frame.jpg> <./images/AllMinimap/game1_clip4_minimap.png (PNG
- copy)> <./images/Video/game1_clip4_video.jpg>]
-<images/Detection/game2_clip2_detected_balls_first_frame.jpg, id=89, 1027.84pt 
-x 578.16pt>
-File: images/Detection/game2_clip2_detected_balls_first_frame.jpg Graphic file 
-(type jpg)
+
+
+[13 <./images/Detection/game1_clip4_detected_balls_first_frame.jpg> <./images/Segmentation/game1_clip4_segmented_balls_first_frame.jpg> <./images/Detection/game1_clip4_detected_balls_last_frame.jpg> <./images/Segmentation/game1_clip4_segmented_balls_last_frame.jpg> <./images/AllMinimap/game1_clip4_minimap.png (PNG copy)> <./images/Video/game1_clip4_video.jpg>]
+<images/Detection/game2_clip2_detected_balls_first_frame.jpg, id=89, 1027.84pt x 578.16pt>
+File: images/Detection/game2_clip2_detected_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Detection/game2_clip2_detected_balls_first_frame.jpg>
-Package pdftex.def Info: images/Detection/game2_clip2_detected_balls_first_fram
-e.jpg  used on input line 225.
+Package pdftex.def Info: images/Detection/game2_clip2_detected_balls_first_frame.jpg  used on input line 225.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Segmentation/game2_clip2_segmented_balls_first_frame.jpg, id=90, 1027.8
-4pt x 578.16pt>
-File: images/Segmentation/game2_clip2_segmented_balls_first_frame.jpg Graphic f
-ile (type jpg)
+<images/Segmentation/game2_clip2_segmented_balls_first_frame.jpg, id=90, 1027.84pt x 578.16pt>
+File: images/Segmentation/game2_clip2_segmented_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game2_clip2_segmented_balls_first_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game2_clip2_segmented_balls_first_
-frame.jpg  used on input line 231.
+Package pdftex.def Info: images/Segmentation/game2_clip2_segmented_balls_first_frame.jpg  used on input line 231.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Detection/game2_clip2_detected_balls_last_frame.jpg, id=91, 1027.84pt x
- 578.16pt>
-File: images/Detection/game2_clip2_detected_balls_last_frame.jpg Graphic file (
-type jpg)
+<images/Detection/game2_clip2_detected_balls_last_frame.jpg, id=91, 1027.84pt x 578.16pt>
+File: images/Detection/game2_clip2_detected_balls_last_frame.jpg Graphic file (type jpg)
 <use images/Detection/game2_clip2_detected_balls_last_frame.jpg>
-Package pdftex.def Info: images/Detection/game2_clip2_detected_balls_last_frame
-.jpg  used on input line 237.
+Package pdftex.def Info: images/Detection/game2_clip2_detected_balls_last_frame.jpg  used on input line 237.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Segmentation/game2_clip2_segmented_balls_last_frame.jpg, id=92, 1027.84
-pt x 578.16pt>
-File: images/Segmentation/game2_clip2_segmented_balls_last_frame.jpg Graphic fi
-le (type jpg)
+<images/Segmentation/game2_clip2_segmented_balls_last_frame.jpg, id=92, 1027.84pt x 578.16pt>
+File: images/Segmentation/game2_clip2_segmented_balls_last_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game2_clip2_segmented_balls_last_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game2_clip2_segmented_balls_last_f
-rame.jpg  used on input line 243.
+Package pdftex.def Info: images/Segmentation/game2_clip2_segmented_balls_last_frame.jpg  used on input line 243.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
 <images/AllMinimap/game2_clip2_minimap.png, id=93, 970.62625pt x 562.1pt>
 File: images/AllMinimap/game2_clip2_minimap.png Graphic file (type png)
 <use images/AllMinimap/game2_clip2_minimap.png>
-Package pdftex.def Info: images/AllMinimap/game2_clip2_minimap.png  used on inp
-ut line 249.
+Package pdftex.def Info: images/AllMinimap/game2_clip2_minimap.png  used on input line 249.
 (pdftex.def)             Requested size: 225.4804pt x 130.5754pt.
 <images/Video/game2_clip2_video.jpg, id=94, 1027.84pt x 578.16pt>
 File: images/Video/game2_clip2_video.jpg Graphic file (type jpg)
 <use images/Video/game2_clip2_video.jpg>
-Package pdftex.def Info: images/Video/game2_clip2_video.jpg  used on input line
- 255.
+Package pdftex.def Info: images/Video/game2_clip2_video.jpg  used on input line 255.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
- [14 <./images/Detection/game2_clip1_detected_balls_first_frame.jpg> <./images/
-Segmentation/game2_clip1_segmented_balls_first_frame.jpg> <./images/Detection/g
-ame2_clip1_detected_balls_last_frame.jpg> <./images/Segmentation/game2_clip1_se
-gmented_balls_last_frame.jpg> <./images/AllMinimap/game2_clip1_minimap.png (PNG
- copy)> <./images/Video/game2_clip1_video.jpg>]
-<images/Detection/game3_clip1_detected_balls_first_frame.jpg, id=98, 1027.84pt 
-x 578.16pt>
-File: images/Detection/game3_clip1_detected_balls_first_frame.jpg Graphic file 
-(type jpg)
+
+
+[14 <./images/Detection/game2_clip1_detected_balls_first_frame.jpg> <./images/Segmentation/game2_clip1_segmented_balls_first_frame.jpg> <./images/Detection/game2_clip1_detected_balls_last_frame.jpg> <./images/Segmentation/game2_clip1_segmented_balls_last_frame.jpg> <./images/AllMinimap/game2_clip1_minimap.png (PNG copy)> <./images/Video/game2_clip1_video.jpg>]
+<images/Detection/game3_clip1_detected_balls_first_frame.jpg, id=98, 1027.84pt x 578.16pt>
+File: images/Detection/game3_clip1_detected_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Detection/game3_clip1_detected_balls_first_frame.jpg>
-Package pdftex.def Info: images/Detection/game3_clip1_detected_balls_first_fram
-e.jpg  used on input line 267.
+Package pdftex.def Info: images/Detection/game3_clip1_detected_balls_first_frame.jpg  used on input line 267.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Segmentation/game3_clip1_segmented_balls_first_frame.jpg, id=99, 1027.8
-4pt x 578.16pt>
-File: images/Segmentation/game3_clip1_segmented_balls_first_frame.jpg Graphic f
-ile (type jpg)
+<images/Segmentation/game3_clip1_segmented_balls_first_frame.jpg, id=99, 1027.84pt x 578.16pt>
+File: images/Segmentation/game3_clip1_segmented_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game3_clip1_segmented_balls_first_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game3_clip1_segmented_balls_first_
-frame.jpg  used on input line 273.
+Package pdftex.def Info: images/Segmentation/game3_clip1_segmented_balls_first_frame.jpg  used on input line 273.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Detection/game3_clip1_detected_balls_last_frame.jpg, id=100, 1027.84pt 
-x 578.16pt>
-File: images/Detection/game3_clip1_detected_balls_last_frame.jpg Graphic file (
-type jpg)
+<images/Detection/game3_clip1_detected_balls_last_frame.jpg, id=100, 1027.84pt x 578.16pt>
+File: images/Detection/game3_clip1_detected_balls_last_frame.jpg Graphic file (type jpg)
 <use images/Detection/game3_clip1_detected_balls_last_frame.jpg>
-Package pdftex.def Info: images/Detection/game3_clip1_detected_balls_last_frame
-.jpg  used on input line 279.
+Package pdftex.def Info: images/Detection/game3_clip1_detected_balls_last_frame.jpg  used on input line 279.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Segmentation/game3_clip1_segmented_balls_last_frame.jpg, id=101, 1027.8
-4pt x 578.16pt>
-File: images/Segmentation/game3_clip1_segmented_balls_last_frame.jpg Graphic fi
-le (type jpg)
+<images/Segmentation/game3_clip1_segmented_balls_last_frame.jpg, id=101, 1027.84pt x 578.16pt>
+File: images/Segmentation/game3_clip1_segmented_balls_last_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game3_clip1_segmented_balls_last_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game3_clip1_segmented_balls_last_f
-rame.jpg  used on input line 285.
+Package pdftex.def Info: images/Segmentation/game3_clip1_segmented_balls_last_frame.jpg  used on input line 285.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
 <images/AllMinimap/game3_clip1_minimap.png, id=102, 970.62625pt x 562.1pt>
 File: images/AllMinimap/game3_clip1_minimap.png Graphic file (type png)
 <use images/AllMinimap/game3_clip1_minimap.png>
-Package pdftex.def Info: images/AllMinimap/game3_clip1_minimap.png  used on inp
-ut line 291.
+Package pdftex.def Info: images/AllMinimap/game3_clip1_minimap.png  used on input line 291.
 (pdftex.def)             Requested size: 225.4804pt x 130.5754pt.
 <images/Video/game3_clip1_video.jpg, id=103, 1027.84pt x 578.16pt>
 File: images/Video/game3_clip1_video.jpg Graphic file (type jpg)
 <use images/Video/game3_clip1_video.jpg>
-Package pdftex.def Info: images/Video/game3_clip1_video.jpg  used on input line
- 297.
+Package pdftex.def Info: images/Video/game3_clip1_video.jpg  used on input line 297.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
- [15 <./images/Detection/game2_clip2_detected_balls_first_frame.jpg> <./images/
-Segmentation/game2_clip2_segmented_balls_first_frame.jpg> <./images/Detection/g
-ame2_clip2_detected_balls_last_frame.jpg> <./images/Segmentation/game2_clip2_se
-gmented_balls_last_frame.jpg> <./images/AllMinimap/game2_clip2_minimap.png (PNG
- copy)> <./images/Video/game2_clip2_video.jpg>]
-<images/Detection/game3_clip2_detected_balls_first_frame.jpg, id=107, 1027.84pt
- x 578.16pt>
-File: images/Detection/game3_clip2_detected_balls_first_frame.jpg Graphic file 
-(type jpg)
+
+
+[15 <./images/Detection/game2_clip2_detected_balls_first_frame.jpg> <./images/Segmentation/game2_clip2_segmented_balls_first_frame.jpg> <./images/Detection/game2_clip2_detected_balls_last_frame.jpg> <./images/Segmentation/game2_clip2_segmented_balls_last_frame.jpg> <./images/AllMinimap/game2_clip2_minimap.png (PNG copy)> <./images/Video/game2_clip2_video.jpg>]
+<images/Detection/game3_clip2_detected_balls_first_frame.jpg, id=107, 1027.84pt x 578.16pt>
+File: images/Detection/game3_clip2_detected_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Detection/game3_clip2_detected_balls_first_frame.jpg>
-Package pdftex.def Info: images/Detection/game3_clip2_detected_balls_first_fram
-e.jpg  used on input line 309.
+Package pdftex.def Info: images/Detection/game3_clip2_detected_balls_first_frame.jpg  used on input line 309.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Segmentation/game3_clip2_segmented_balls_first_frame.jpg, id=108, 1027.
-84pt x 578.16pt>
-File: images/Segmentation/game3_clip2_segmented_balls_first_frame.jpg Graphic f
-ile (type jpg)
+<images/Segmentation/game3_clip2_segmented_balls_first_frame.jpg, id=108, 1027.84pt x 578.16pt>
+File: images/Segmentation/game3_clip2_segmented_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game3_clip2_segmented_balls_first_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game3_clip2_segmented_balls_first_
-frame.jpg  used on input line 315.
+Package pdftex.def Info: images/Segmentation/game3_clip2_segmented_balls_first_frame.jpg  used on input line 315.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Detection/game3_clip2_detected_balls_last_frame.jpg, id=109, 1027.84pt 
-x 578.16pt>
-File: images/Detection/game3_clip2_detected_balls_last_frame.jpg Graphic file (
-type jpg)
+<images/Detection/game3_clip2_detected_balls_last_frame.jpg, id=109, 1027.84pt x 578.16pt>
+File: images/Detection/game3_clip2_detected_balls_last_frame.jpg Graphic file (type jpg)
 <use images/Detection/game3_clip2_detected_balls_last_frame.jpg>
-Package pdftex.def Info: images/Detection/game3_clip2_detected_balls_last_frame
-.jpg  used on input line 321.
+Package pdftex.def Info: images/Detection/game3_clip2_detected_balls_last_frame.jpg  used on input line 321.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Segmentation/game3_clip2_segmented_balls_last_frame.jpg, id=110, 1027.8
-4pt x 578.16pt>
-File: images/Segmentation/game3_clip2_segmented_balls_last_frame.jpg Graphic fi
-le (type jpg)
+<images/Segmentation/game3_clip2_segmented_balls_last_frame.jpg, id=110, 1027.84pt x 578.16pt>
+File: images/Segmentation/game3_clip2_segmented_balls_last_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game3_clip2_segmented_balls_last_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game3_clip2_segmented_balls_last_f
-rame.jpg  used on input line 327.
+Package pdftex.def Info: images/Segmentation/game3_clip2_segmented_balls_last_frame.jpg  used on input line 327.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
 <images/AllMinimap/game3_clip2_minimap.png, id=111, 970.62625pt x 562.1pt>
 File: images/AllMinimap/game3_clip2_minimap.png Graphic file (type png)
 <use images/AllMinimap/game3_clip2_minimap.png>
-Package pdftex.def Info: images/AllMinimap/game3_clip2_minimap.png  used on inp
-ut line 333.
+Package pdftex.def Info: images/AllMinimap/game3_clip2_minimap.png  used on input line 333.
 (pdftex.def)             Requested size: 225.4804pt x 130.5754pt.
 <images/Video/game3_clip2_video.jpg, id=112, 1027.84pt x 578.16pt>
 File: images/Video/game3_clip2_video.jpg Graphic file (type jpg)
 <use images/Video/game3_clip2_video.jpg>
-Package pdftex.def Info: images/Video/game3_clip2_video.jpg  used on input line
- 339.
+Package pdftex.def Info: images/Video/game3_clip2_video.jpg  used on input line 339.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
- [16 <./images/Detection/game3_clip1_detected_balls_first_frame.jpg> <./images/
-Segmentation/game3_clip1_segmented_balls_first_frame.jpg> <./images/Detection/g
-ame3_clip1_detected_balls_last_frame.jpg> <./images/Segmentation/game3_clip1_se
-gmented_balls_last_frame.jpg> <./images/AllMinimap/game3_clip1_minimap.png (PNG
- copy)> <./images/Video/game3_clip1_video.jpg>]
-<images/Detection/game4_clip1_detected_balls_first_frame.jpg, id=116, 1027.84pt
- x 578.16pt>
-File: images/Detection/game4_clip1_detected_balls_first_frame.jpg Graphic file 
-(type jpg)
+
+
+[16 <./images/Detection/game3_clip1_detected_balls_first_frame.jpg> <./images/Segmentation/game3_clip1_segmented_balls_first_frame.jpg> <./images/Detection/game3_clip1_detected_balls_last_frame.jpg> <./images/Segmentation/game3_clip1_segmented_balls_last_frame.jpg> <./images/AllMinimap/game3_clip1_minimap.png (PNG copy)> <./images/Video/game3_clip1_video.jpg>]
+<images/Detection/game4_clip1_detected_balls_first_frame.jpg, id=116, 1027.84pt x 578.16pt>
+File: images/Detection/game4_clip1_detected_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Detection/game4_clip1_detected_balls_first_frame.jpg>
-Package pdftex.def Info: images/Detection/game4_clip1_detected_balls_first_fram
-e.jpg  used on input line 351.
+Package pdftex.def Info: images/Detection/game4_clip1_detected_balls_first_frame.jpg  used on input line 351.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Segmentation/game4_clip1_segmented_balls_first_frame.jpg, id=117, 1027.
-84pt x 578.16pt>
-File: images/Segmentation/game4_clip1_segmented_balls_first_frame.jpg Graphic f
-ile (type jpg)
+<images/Segmentation/game4_clip1_segmented_balls_first_frame.jpg, id=117, 1027.84pt x 578.16pt>
+File: images/Segmentation/game4_clip1_segmented_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game4_clip1_segmented_balls_first_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game4_clip1_segmented_balls_first_
-frame.jpg  used on input line 357.
+Package pdftex.def Info: images/Segmentation/game4_clip1_segmented_balls_first_frame.jpg  used on input line 357.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Detection/game4_clip1_detected_balls_last_frame.jpg, id=118, 1027.84pt 
-x 578.16pt>
-File: images/Detection/game4_clip1_detected_balls_last_frame.jpg Graphic file (
-type jpg)
+<images/Detection/game4_clip1_detected_balls_last_frame.jpg, id=118, 1027.84pt x 578.16pt>
+File: images/Detection/game4_clip1_detected_balls_last_frame.jpg Graphic file (type jpg)
 <use images/Detection/game4_clip1_detected_balls_last_frame.jpg>
-Package pdftex.def Info: images/Detection/game4_clip1_detected_balls_last_frame
-.jpg  used on input line 363.
+Package pdftex.def Info: images/Detection/game4_clip1_detected_balls_last_frame.jpg  used on input line 363.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Segmentation/game4_clip1_segmented_balls_last_frame.jpg, id=119, 1027.8
-4pt x 578.16pt>
-File: images/Segmentation/game4_clip1_segmented_balls_last_frame.jpg Graphic fi
-le (type jpg)
+<images/Segmentation/game4_clip1_segmented_balls_last_frame.jpg, id=119, 1027.84pt x 578.16pt>
+File: images/Segmentation/game4_clip1_segmented_balls_last_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game4_clip1_segmented_balls_last_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game4_clip1_segmented_balls_last_f
-rame.jpg  used on input line 369.
+Package pdftex.def Info: images/Segmentation/game4_clip1_segmented_balls_last_frame.jpg  used on input line 369.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
 <images/AllMinimap/game4_clip1_minimap.png, id=120, 970.62625pt x 562.1pt>
 File: images/AllMinimap/game4_clip1_minimap.png Graphic file (type png)
 <use images/AllMinimap/game4_clip1_minimap.png>
-Package pdftex.def Info: images/AllMinimap/game4_clip1_minimap.png  used on inp
-ut line 375.
+Package pdftex.def Info: images/AllMinimap/game4_clip1_minimap.png  used on input line 375.
 (pdftex.def)             Requested size: 225.4804pt x 130.5754pt.
 <images/Video/game4_clip1_video.jpg, id=121, 1027.84pt x 578.16pt>
 File: images/Video/game4_clip1_video.jpg Graphic file (type jpg)
 <use images/Video/game4_clip1_video.jpg>
-Package pdftex.def Info: images/Video/game4_clip1_video.jpg  used on input line
- 381.
+Package pdftex.def Info: images/Video/game4_clip1_video.jpg  used on input line 381.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
- [17 <./images/Detection/game3_clip2_detected_balls_first_frame.jpg> <./images/
-Segmentation/game3_clip2_segmented_balls_first_frame.jpg> <./images/Detection/g
-ame3_clip2_detected_balls_last_frame.jpg> <./images/Segmentation/game3_clip2_se
-gmented_balls_last_frame.jpg> <./images/AllMinimap/game3_clip2_minimap.png (PNG
- copy)> <./images/Video/game3_clip2_video.jpg>]
-<images/Detection/game4_clip2_detected_balls_first_frame.jpg, id=125, 1027.84pt
- x 578.16pt>
-File: images/Detection/game4_clip2_detected_balls_first_frame.jpg Graphic file 
-(type jpg)
+
+
+[17 <./images/Detection/game3_clip2_detected_balls_first_frame.jpg> <./images/Segmentation/game3_clip2_segmented_balls_first_frame.jpg> <./images/Detection/game3_clip2_detected_balls_last_frame.jpg> <./images/Segmentation/game3_clip2_segmented_balls_last_frame.jpg> <./images/AllMinimap/game3_clip2_minimap.png (PNG copy)> <./images/Video/game3_clip2_video.jpg>]
+<images/Detection/game4_clip2_detected_balls_first_frame.jpg, id=125, 1027.84pt x 578.16pt>
+File: images/Detection/game4_clip2_detected_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Detection/game4_clip2_detected_balls_first_frame.jpg>
-Package pdftex.def Info: images/Detection/game4_clip2_detected_balls_first_fram
-e.jpg  used on input line 394.
+Package pdftex.def Info: images/Detection/game4_clip2_detected_balls_first_frame.jpg  used on input line 394.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Segmentation/game4_clip2_segmented_balls_first_frame.jpg, id=126, 1027.
-84pt x 578.16pt>
-File: images/Segmentation/game4_clip2_segmented_balls_first_frame.jpg Graphic f
-ile (type jpg)
+<images/Segmentation/game4_clip2_segmented_balls_first_frame.jpg, id=126, 1027.84pt x 578.16pt>
+File: images/Segmentation/game4_clip2_segmented_balls_first_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game4_clip2_segmented_balls_first_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game4_clip2_segmented_balls_first_
-frame.jpg  used on input line 400.
+Package pdftex.def Info: images/Segmentation/game4_clip2_segmented_balls_first_frame.jpg  used on input line 400.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Detection/game4_clip2_detected_balls_last_frame.jpg, id=127, 1027.84pt 
-x 578.16pt>
-File: images/Detection/game4_clip2_detected_balls_last_frame.jpg Graphic file (
-type jpg)
+<images/Detection/game4_clip2_detected_balls_last_frame.jpg, id=127, 1027.84pt x 578.16pt>
+File: images/Detection/game4_clip2_detected_balls_last_frame.jpg Graphic file (type jpg)
 <use images/Detection/game4_clip2_detected_balls_last_frame.jpg>
-Package pdftex.def Info: images/Detection/game4_clip2_detected_balls_last_frame
-.jpg  used on input line 406.
+Package pdftex.def Info: images/Detection/game4_clip2_detected_balls_last_frame.jpg  used on input line 406.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
-<images/Segmentation/game4_clip2_segmented_balls_last_frame.jpg, id=128, 1027.8
-4pt x 578.16pt>
-File: images/Segmentation/game4_clip2_segmented_balls_last_frame.jpg Graphic fi
-le (type jpg)
+<images/Segmentation/game4_clip2_segmented_balls_last_frame.jpg, id=128, 1027.84pt x 578.16pt>
+File: images/Segmentation/game4_clip2_segmented_balls_last_frame.jpg Graphic file (type jpg)
 <use images/Segmentation/game4_clip2_segmented_balls_last_frame.jpg>
-Package pdftex.def Info: images/Segmentation/game4_clip2_segmented_balls_last_f
-rame.jpg  used on input line 412.
+Package pdftex.def Info: images/Segmentation/game4_clip2_segmented_balls_last_frame.jpg  used on input line 412.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
 <images/AllMinimap/game4_clip2_minimap.png, id=129, 970.62625pt x 562.1pt>
 File: images/AllMinimap/game4_clip2_minimap.png Graphic file (type png)
 <use images/AllMinimap/game4_clip2_minimap.png>
-Package pdftex.def Info: images/AllMinimap/game4_clip2_minimap.png  used on inp
-ut line 418.
+Package pdftex.def Info: images/AllMinimap/game4_clip2_minimap.png  used on input line 418.
 (pdftex.def)             Requested size: 225.4804pt x 130.5754pt.
 <images/Video/game4_clip2_video.jpg, id=130, 1027.84pt x 578.16pt>
 File: images/Video/game4_clip2_video.jpg Graphic file (type jpg)
 <use images/Video/game4_clip2_video.jpg>
-Package pdftex.def Info: images/Video/game4_clip2_video.jpg  used on input line
- 424.
+Package pdftex.def Info: images/Video/game4_clip2_video.jpg  used on input line 424.
 (pdftex.def)             Requested size: 225.4804pt x 126.82506pt.
- [18 <./images/Detection/game4_clip1_detected_balls_first_frame.jpg> <./images/
-Segmentation/game4_clip1_segmented_balls_first_frame.jpg> <./images/Detection/g
-ame4_clip1_detected_balls_last_frame.jpg> <./images/Segmentation/game4_clip1_se
-gmented_balls_last_frame.jpg> <./images/AllMinimap/game4_clip1_minimap.png (PNG
- copy)> <./images/Video/game4_clip1_video.jpg>]
-Overfull \hbox (0.46045pt too wide) in paragraph at lines 434--446
-\OT1/ptm/m/n/12 The \OT1/ptm/m/it/12 com-pute-Per-for-mance \OT1/ptm/m/n/12 ex-
-e-cutable cal-cu-lates the de-tec-tion and seg-men-ta-tion per-for-mance across
 
+
+[18 <./images/Detection/game4_clip1_detected_balls_first_frame.jpg> <./images/Segmentation/game4_clip1_segmented_balls_first_frame.jpg> <./images/Detection/game4_clip1_detected_balls_last_frame.jpg> <./images/Segmentation/game4_clip1_segmented_balls_last_frame.jpg> <./images/AllMinimap/game4_clip1_minimap.png (PNG copy)> <./images/Video/game4_clip1_video.jpg>]
+Overfull \hbox (0.46045pt too wide) in paragraph at lines 434--446
+\OT1/ptm/m/n/12 The \OT1/ptm/m/it/12 com-pute-Per-for-mance \OT1/ptm/m/n/12 ex-e-cutable cal-cu-lates the de-tec-tion and seg-men-ta-tion per-for-mance across
  []
 
-) [19 <./images/Detection/game4_clip2_detected_balls_first_frame.jpg> <./images
-/Segmentation/game4_clip2_segmented_balls_first_frame.jpg> <./images/Detection/
-game4_clip2_detected_balls_last_frame.jpg> <./images/Segmentation/game4_clip2_s
-egmented_balls_last_frame.jpg> <./images/AllMinimap/game4_clip2_minimap.png (PN
-G copy)> <./images/Video/game4_clip2_video.jpg>] (section/conclusions.tex)
+)
+
+[19 <./images/Detection/game4_clip2_detected_balls_first_frame.jpg> <./images/Segmentation/game4_clip2_segmented_balls_first_frame.jpg> <./images/Detection/game4_clip2_detected_balls_last_frame.jpg> <./images/Segmentation/game4_clip2_segmented_balls_last_frame.jpg> <./images/AllMinimap/game4_clip2_minimap.png (PNG copy)> <./images/Video/game4_clip2_video.jpg>] (section/conclusions.tex)
+
 [20] (main.aux)
  ***********
-LaTeX2e <2023-11-01> patch level 1
-L3 programming layer <2024-01-04>
+LaTeX2e <2024-06-01> patch level 2
+L3 programming layer <2024-05-27>
  ***********
 
 
@@ -1024,21 +781,14 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 8891 strings out of 474485
- 173555 string characters out of 5742790
- 1934542 words of memory out of 5000000
- 30989 multiletter control sequences out of 15000+600000
+ 8905 strings out of 475512
+ 173609 string characters out of 5765492
+ 1935908 words of memory out of 5000000
+ 31386 multiletter control sequences out of 15000+600000
  583228 words of font info for 90 fonts, out of 8000000 for 9000
- 1141 hyphenation exceptions out of 8191
- 69i,10n,81p,981b,609s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<C:/Users/Michela/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/c
-m/cmmi12.pfb><C:/Users/Michela/AppData/Local/Programs/MiKTeX/fonts/type1/public
-/amsfonts/cm/cmr12.pfb><C:/Users/Michela/AppData/Local/Programs/MiKTeX/fonts/ty
-pe1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Michela/AppData/Local/Programs/MiKT
-eX/fonts/type1/urw/courier/ucrr8a.pfb><C:/Users/Michela/AppData/Local/Programs/
-MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/Michela/AppData/Local/Program
-s/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/Michela/AppData/Local/Progr
-ams/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
+ 131 hyphenation exceptions out of 8191
+ 69i,10n,81p,1037b,609s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/alber/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/alber/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/alber/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/alber/AppData/Local/Programs/MiKTeX/fonts/type1/urw/courier/ucrr8a.pfb><C:/Users/alber/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/alber/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/alber/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
 Output written on main.pdf (20 pages, 4581764 bytes).
 PDF statistics:
  172 PDF objects out of 1000 (max. 8388607)

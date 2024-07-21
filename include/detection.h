@@ -4,7 +4,6 @@
 #define DETECTION_H
 
 #include <opencv2/opencv.hpp>
-#include "ball.h"
 #include "table.h"
 
 /**
@@ -15,7 +14,7 @@
  * @throw runtime_error if it does not find enough lines or if it does not find enough interceptions.
  * @throw invalid_argument if frame is empty or if frame has a number of channels different from 3.
  */
-void detectTable(const cv::Mat &frame, cv::Vec<cv::Point2f, 4> &tableCorners, cv::Vec2b &colorTable);
+void detectTable(const cv::Mat &frame, cv::Vec<cv::Point2f, 4> &corners, cv::Vec2b &colorRange);
 
 /**
  * @brief detect balls in an image given some information about the table.

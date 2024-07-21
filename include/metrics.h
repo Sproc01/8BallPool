@@ -28,7 +28,7 @@ const float MAP_IOU_THRESHOLD = 0.5;
  * @return std::vector<double> vector of IoU values for each category.
  * @throw invalid_argument if segmentedImage is empty.
  */
-std::vector<double> compareMetricsIoU(cv::Mat &segmentedImage, const std::string &folderPath, FrameN frameN);
+std::vector<double> compareMetricsIoU(const cv::Mat &segmentedImage, const std::string &folderPath, const FrameN &frameN);
 
 /**
  * @brief Compute the Average Precision (mAP) for ball detection.
@@ -37,7 +37,7 @@ std::vector<double> compareMetricsIoU(cv::Mat &segmentedImage, const std::string
  * @param frameN Set to FIRST for the first frame, LAST for the last frame.
  * @return std::vector<double> vector of AP values for each category.
  */
-std::vector<double> compareMetricsAP(Table &table, const std::string &folderPath, FrameN frameN);
+std::vector<double> compareMetricsAP(Table &table, const std::string &folderPath, const FrameN &frameN);
 
 
 /**
@@ -88,7 +88,7 @@ double APBallCategory(const cv::Ptr<std::vector<Ball>> &detectedBalls, const std
  * @return double IoU value.
  * @throw invalid_argument if the segmented image is empty or if the ground truth mask is empty.
  */
-double IoUCategory(const cv::Mat &segmentedImage, const cv::Mat &groundTruthMask, Category cat);
+double IoUCategory(const cv::Mat &segmentedImage, const cv::Mat &groundTruthMask, const Category &cat);
 
 
 /**

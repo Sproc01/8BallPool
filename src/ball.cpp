@@ -71,7 +71,7 @@ bool Ball::getVisibility() const {
  * @brief Set a value to the rectangle of the ball.
  * @param bbox the new bbox position.
  */
-void Ball::setBbox(Rect bbox) {
+void Ball::setBbox(const Rect &bbox) {
 	bbox_ = bbox;
 }
 
@@ -79,7 +79,7 @@ void Ball::setBbox(Rect bbox) {
  * @brief Set a value to the rectangle of the ball in the previous frame.
  * @param bbox_prec the new bbox position of the previous frame.
  */
-void Ball::setBbox_prec(Rect bbox_prec) {
+void Ball::setBbox_prec(const Rect &bbox_prec) {
 	bbox_prec_ = bbox_prec;
 }
 

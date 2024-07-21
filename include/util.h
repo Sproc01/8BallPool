@@ -20,7 +20,7 @@ cv::Point2f getCenter(const cv::Point2f &p1, const cv::Point2f &p2);
  * @param category element of type Category.
  * @return the color associated to the category in input.
  */
-cv::Vec3b getColorFromCategory(Category category);
+cv::Vec3b getColorFromCategory(const Category &category);
 
 /**
  * @brief Rotate the corners of the table clockwise.
@@ -94,9 +94,12 @@ void kMeansClustering(const cv::Mat &inputImage, const std::vector<cv::Vec3b> &c
  * @param striped output vector containing the striped elements.
  * @throw invalid_argument if gt is empty.
  */
-void separateResultGT(std::vector<std::pair<cv::Rect, Category>> gt, std::vector<std::pair<cv::Rect, Category>> &white,
-						std::vector<std::pair<cv::Rect, Category>> &black, std::vector<std::pair<cv::Rect, Category>> &solid,
-						std::vector<std::pair<cv::Rect, Category>> &striped);
+void separateResultGT(const std::vector<std::pair<cv::Rect_<int>, Category>> &gt,
+                      std::vector<std::pair<cv::Rect, Category>> &white,
+                      std::vector<std::pair<cv::Rect, Category>> &black,
+                      std::vector<std::pair<cv::Rect, Category>> &solid,
+                      std::vector<std::pair<cv::Rect, Category>> &striped);
+
 /**
  * @brief push the elements of the first vector in the right vector according to the category.
  * @param balls input pointer to a vector a balls that needs to be separated.

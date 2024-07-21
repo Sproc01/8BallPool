@@ -4,7 +4,6 @@
 
 #include <stdexcept>
 #include <utility>
-#include <iostream>
 #include <opencv2/core.hpp>
 
 using namespace cv;

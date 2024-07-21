@@ -4,7 +4,7 @@
 #include "category.h"
 #include "table.h"
 #include "ball.h"
-#include "minimapConstants.h"
+#include "minimap.h"
 #include <stdexcept>
 #include <filesystem>
 #include <stdexcept>
@@ -12,8 +12,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <fstream>
-#include <iostream>
-#include <opencv2/highgui.hpp>
+
 
 using namespace std;
 using namespace cv;
@@ -27,8 +26,8 @@ using namespace cv;
  * @return std::vector<double> vector of IoU values for each category.
  * @throw invalid_argument if segmentedImage is empty.
  */
-vector<double> compareMetricsIoU(Mat &segmentedImage, const string &folderPath, FrameN frameN){
-	if(segmentedImage.empty())
+vector<double> compareMetricsIoU(const Mat &segmentedImage, const string &folderPath, const FrameN &frameN) {
+	if (segmentedImage.empty())
 		throw invalid_argument("Empty segmentedImage");
 	filesystem::path groundTruthMaskPath;
 	switch (frameN) {
@@ -54,7 +53,7 @@ vector<double> compareMetricsIoU(Mat &segmentedImage, const string &folderPath, 
  * @param frameN Set to FIRST for the first frame, LAST for the last frame.
  * @return std::vector<double> vector of AP values for each category.
  */
-vector<double> compareMetricsAP(Table &table, const string &folderPath, FrameN frameN){
+vector<double> compareMetricsAP(Table &table, const string &folderPath, const FrameN &frameN) {
 	filesystem::path groundTruthBboxPath;
 	switch (frameN) {
 		case FIRST:
@@ -80,13 +79,13 @@ vector<double> compareMetricsAP(Table &table, const string &folderPath, FrameN f
  */
 vector<pair<Rect, Category>> readGroundTruthBboxFile(const string &filename) {
 	ifstream file(filename);
-	if (!file.is_open()){
+	if (!file.is_open()) {
 		throw invalid_argument("File not found");
 	}
 
 	vector<pair<Rect, Category>> bboxes;
 	string line;
-	while (getline(file, line)){
+	while (getline(file, line)) {
 		istringstream iss(line);
 		int x, y, w, h;
 		short cat;
@@ -107,12 +106,12 @@ vector<pair<Rect, Category>> readGroundTruthBboxFile(const string &filename) {
  * @throw invalid_argument if the vector of detected balls is empty.
  */
 vector<double> APDetection(const Ptr<vector<Ball>> &detectedBalls, const string &groundTruthBboxPath, float iouThreshold /*= MAP_IOU_THRESHOLD*/){
-	if(detectedBalls->size() == 0)
+	if(detectedBalls->empty())
 		throw invalid_argument("Empty detectedBalls");
 
 	vector<pair<Rect, Category>> groundTruthBboxes = readGroundTruthBboxFile(groundTruthBboxPath);
 	vector<double> APs;
-	for (Category cat=Category::WHITE_BALL; cat<=Category::STRIPED_BALL; cat=static_cast<Category>(cat+1)){
+	for (Category cat = Category::WHITE_BALL; cat <= Category::STRIPED_BALL; cat = static_cast<Category>(cat + 1)) {
 		//std::cout<<"here"<<std::endl;
 		APs.push_back(APBallCategory(detectedBalls, groundTruthBboxes, cat, iouThreshold));
 	}
@@ -127,33 +126,27 @@ vector<double> APDetection(const Ptr<vector<Ball>> &detectedBalls, const string 
  * @return std::vector<double> vector of IoU values for each category.
  * @throw invalid_argument if the segmented image is empty.
  */
-vector<double> IoUSegmentation(const Mat &segmentedImage, const string& groundTruthMaskPath){
-	if(segmentedImage.empty())
+vector<double> IoUSegmentation(const Mat &segmentedImage, const string &groundTruthMaskPath) {
+	if (segmentedImage.empty())
 		throw invalid_argument("Empty segmentedImage");
 
 	// Convert the segmented image from BGR colors to grayscale category-related colors
 	Mat segmentedImageGray = Mat::zeros(segmentedImage.size(), CV_8UC1);
-	for (int i = 0; i < segmentedImage.rows; i++){
-		for (int j = 0; j < segmentedImage.cols; j++){
-			if (segmentedImage.at<Vec3b>(i,j) == BACKGROUND_BGR_COLOR){
+	for (int i = 0; i < segmentedImage.rows; i++) {
+		for (int j = 0; j < segmentedImage.cols; j++) {
+			if (segmentedImage.at<Vec3b>(i, j) == BACKGROUND_BGR_COLOR) {
 				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::BACKGROUND);
-			}
-			else if (segmentedImage.at<Vec3b>(i,j) == WHITE_BGR_COLOR){
+			} else if (segmentedImage.at<Vec3b>(i, j) == WHITE_BGR_COLOR) {
 				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::WHITE_BALL);
-			}
-			else if (segmentedImage.at<Vec3b>(i,j) == BLACK_BGR_COLOR){
+			} else if (segmentedImage.at<Vec3b>(i, j) == BLACK_BGR_COLOR) {
 				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::BLACK_BALL);
-			}
-			else if (segmentedImage.at<Vec3b>(i,j) == SOLID_BGR_COLOR){
+			} else if (segmentedImage.at<Vec3b>(i, j) == SOLID_BGR_COLOR) {
 				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::SOLID_BALL);
-			}
-			else if (segmentedImage.at<Vec3b>(i,j) == STRIPED_BGR_COLOR){
+			} else if (segmentedImage.at<Vec3b>(i, j) == STRIPED_BGR_COLOR) {
 				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::STRIPED_BALL);
-			}
-			else if (segmentedImage.at<Vec3b>(i,j) == PLAYING_FIELD_BGR_COLOR){
+			} else if (segmentedImage.at<Vec3b>(i, j) == PLAYING_FIELD_BGR_COLOR) {
 				segmentedImageGray.at<uchar>(i, j) = static_cast<uchar>(Category::PLAYING_FIELD);
-			}
-			else{
+			} else {
 				throw invalid_argument("Invalid color");
 			}
 		}
@@ -163,13 +156,12 @@ vector<double> IoUSegmentation(const Mat &segmentedImage, const string& groundTr
 
 	vector<double> IoUs;
 
-	for (Category cat=Category::BACKGROUND; cat<=Category::PLAYING_FIELD; cat=static_cast<Category>(cat+1)){
+	for (Category cat = Category::BACKGROUND; cat <= Category::PLAYING_FIELD; cat = static_cast<Category>(cat + 1)) {
 		IoUs.push_back(IoUCategory(segmentedImageGray, groundTruthMask, cat));
 	}
 
 	return IoUs;
 }
-
 
 /**
  * @brief Compute the Average Precision (AP) for ball detection of a specific category.
@@ -181,39 +173,38 @@ vector<double> IoUSegmentation(const Mat &segmentedImage, const string& groundTr
  * @throw invalid_argument if the vector of detected balls is empty or if the vector of ground truth bounding boxes is empty.
  */
 double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<Rect, Category>> &groundTruthBboxes, Category cat, float iouThreshold){
-	if(detectedBalls->size() == 0)
+	if(detectedBalls->empty())
 		throw invalid_argument("Empty detectedBalls");
 
-	if(groundTruthBboxes.size() == 0)
+	if (groundTruthBboxes.empty())
 		throw invalid_argument("Empty groundTruthBboxes");
 
 	// Create a vector of bounding boxes only for the detected balls of the chosen category
 	vector<Rect> detectedBallsBboxesCat;
-	for (const Ball &ball : *detectedBalls){
-		if (ball.getCategory() == cat){
+	for (const Ball &ball : *detectedBalls) {
+		if (ball.getCategory() == cat) {
 			detectedBallsBboxesCat.push_back(ball.getBbox());
 		}
 	}
 
 	// Create a vector of bounding boxes only for the ground truths of the chosen category
 	vector<Rect> groundTruthBboxesCat;
-	for (const pair<Rect, Category> &groundTruthBall : groundTruthBboxes){
-		if (groundTruthBall.second == cat){
+	for (const pair<Rect, Category> &groundTruthBall : groundTruthBboxes) {
+		if (groundTruthBall.second == cat) {
 			groundTruthBboxesCat.push_back(get<Rect>(groundTruthBall));
 		}
 	}
 
-	if(detectedBallsBboxesCat.size() == 0 && groundTruthBboxesCat.size() == 0)
+	if (detectedBallsBboxesCat.empty() && groundTruthBboxesCat.empty())
 		return 1; // if there are no balls with that category in both gt and detected return 1
 
-
-	if(detectedBallsBboxesCat.size() == 0 && groundTruthBboxesCat.size() != 0)
+	if (detectedBallsBboxesCat.empty() && groundTruthBboxesCat.empty())
 		return 0; // if there are no balls with that category in detected but not in gt return 0
 
 	vector<bool> assignedGroundTruths(groundTruthBboxesCat.size(), false);
 
 	// IoUs, tp and fp vectors share the same indexing
-	vector<double> IoUs;  // if 0, the ground truth ball has not been assigned to any detected ball
+	vector<double> IoUs; // if 0, the ground truth ball has not been assigned to any detected ball
 
 	vector<unsigned short> tp;
 	vector<unsigned short> fp;
@@ -221,22 +212,23 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
 	// Couple each detected ball with the ground truth ball using the highest IoU
 	// cout<<detectedBallsBboxesCat.size()<<endl;
 	// cout<<groundTruthBboxesCat.size()<<endl;
-	for (int i = 0; i < detectedBallsBboxesCat.size(); i++){
+	for (int i = 0; i < detectedBallsBboxesCat.size(); i++) {
 		double maxIoU = 0;
 		int maxIoUIndex = -1;
-		for (int j = 0; j < groundTruthBboxesCat.size(); j++){	// if there are more ground truths than detected balls, the unassigned ones will be false negatives
+		for (int j = 0; j < groundTruthBboxesCat.size(); j++) {
+			// if there are more ground truths than detected balls, the unassigned ones will be false negatives
 			double iou = IoU(detectedBallsBboxesCat[i], groundTruthBboxesCat[j]);
-			if (iou > maxIoU){
+			if (iou > maxIoU) {
 				maxIoU = iou;
 				maxIoUIndex = j;
 			}
 		}
-		if ((maxIoUIndex != -1 && !assignedGroundTruths[maxIoUIndex]) && maxIoU > iouThreshold){	// if there is a ground truth which is not already assigned and true positive
+		if ((maxIoUIndex != -1 && !assignedGroundTruths[maxIoUIndex]) && maxIoU > iouThreshold) {
+			// if there is a ground truth which is not already assigned and true positive
 			assignedGroundTruths[maxIoUIndex] = true;
 			tp.push_back(1);
 			fp.push_back(0);
-		}
-		else{
+		} else {
 			tp.push_back(0);
 			fp.push_back(1);
 		}
@@ -245,7 +237,7 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
 
 	// Sort the detections by decreasing IoU using a index vector
 	vector<int> indices(IoUs.size());
-	for (int i = 0; i < IoUs.size(); i++){
+	for (int i = 0; i < IoUs.size(); i++) {
 		indices[i] = i;
 	}
 	sort(indices.begin(), indices.end(),
@@ -258,13 +250,13 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
 	// cout << fp.size() << endl;
 	// cout << indices.size() << endl;
 	vector<unsigned short> tpSorted(tp.size());
-	for (int i = 0; i<indices.size(); i++){
+	for (int i = 0; i < indices.size(); i++) {
 		tpSorted[i] = tp[indices[i]];
 	}
 	tp = tpSorted;
 
 	vector<unsigned short> fpSorted(fp.size());
-	for (int i = 0; i<indices.size(); i++){
+	for (int i = 0; i < indices.size(); i++) {
 		fpSorted[i] = fp[indices[i]];
 	}
 	fp = fpSorted;
@@ -272,15 +264,15 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
 	// cout<<tpSorted.size()<<endl;
 	// cout<<fpSorted.size()<<endl;
 
-//	double recall = sum(tp)[0] / groundTruthBboxesCat.size();
-//	double precision = sum(tp)[0] / (sum(tp)[0] + sum(fp)[0]);
+	//	double recall = sum(tp)[0] / groundTruthBboxesCat.size();
+	//	double precision = sum(tp)[0] / (sum(tp)[0] + sum(fp)[0]);
 
 	// Compute the cumulative TP and FP
 	vector<double> cumTP(tp.size());
 	vector<double> cumFP(fp.size());
 
 	cumTP[0] = tp[0];
-	for (int i = 1; i < tp.size(); i++){
+	for (int i = 1; i < tp.size(); i++) {
 		cumTP[i] = cumTP[i - 1] + tp[i];
 	}
 	cumFP[0] = fp[0];
@@ -290,22 +282,21 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
 
 	// Compute the precision and recall for each detection
 	vector<double> precisionVec(tp.size());
-	for (int i = 0; i<tp.size(); i++){
+	for (int i = 0; i < tp.size(); i++) {
 		precisionVec[i] = (cumTP[i] + cumFP[i] != 0) ? cumTP[i] / (cumTP[i] + cumFP[i]) : 0;
 	}
 
 	vector<double> recallVec(tp.size());
-	for (int i = 0; i < tp.size(); i++){
+	for (int i = 0; i < tp.size(); i++) {
 		recallVec[i] = (groundTruthBboxesCat.size() != 0) ? cumTP[i] / groundTruthBboxesCat.size() : 1;
 	}
 
-
 	// Compute the Average Precision
 	double AP = 0;
-	for (int t = 0; t <= 10; t++){
+	for (int t = 0; t <= 10; t++) {
 		double maxPrecision = 0;
-		for (int i = 0; i < tp.size(); i++){	// pick the maximum precision for each recall step
-			if (recallVec[i] >= static_cast<double>(t) / 10.0 && precisionVec[i] > maxPrecision){
+		for (int i = 0; i < tp.size(); i++) { // pick the maximum precision for each recall step
+			if (recallVec[i] >= static_cast<double>(t) / 10.0 && precisionVec[i] > maxPrecision) {
 				maxPrecision = precisionVec[i];
 			}
 		}
@@ -323,8 +314,8 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
  * @return double IoU value.
  * @throw invalid_argument if the segmented image is empty or if the ground truth mask is empty.
  */
-double IoUCategory(const Mat &segmentedImage, const Mat &groundTruthMask, Category cat){
-	if(segmentedImage.empty() || groundTruthMask.empty())
+double IoUCategory(const Mat &segmentedImage, const Mat &groundTruthMask, const Category &cat) {
+	if (segmentedImage.empty() || groundTruthMask.empty())
 		throw invalid_argument("Empty image");
 
 	Mat segmentedImageCat = (segmentedImage == static_cast<unsigned char>(cat));
@@ -345,8 +336,8 @@ double IoUCategory(const Mat &segmentedImage, const Mat &groundTruthMask, Catego
  * @return double IoU value.
  * @throw invalid_argument if one of the two Rect is empty.
  */
-double IoU(const Rect &rect1, const Rect &rect2){
-	if(rect1.empty() || rect2.empty())
+double IoU(const Rect &rect1, const Rect &rect2) {
+	if (rect1.empty() || rect2.empty())
 		throw invalid_argument("Empty rectangle");
 	Rect i = rect1 & rect2;
 	Rect u = rect1 | rect2;
@@ -360,8 +351,8 @@ double IoU(const Rect &rect1, const Rect &rect2){
  * @return double IoU value.
  * @throw invalid_argument if one of the two masks is empty.
  */
-double IoU(const Mat &mask1, const Mat &mask2){
-	if(mask1.empty() || mask2.empty())
+double IoU(const Mat &mask1, const Mat &mask2) {
+	if (mask1.empty() || mask2.empty())
 		throw invalid_argument("Empty mask");
 
 	Mat i = mask1 & mask2;

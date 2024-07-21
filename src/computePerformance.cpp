@@ -1,6 +1,5 @@
 // Author: Michele Sprocatti
 
-#include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
 #include <iostream>
 #include <filesystem>
@@ -9,7 +8,6 @@
 #include "table.h"
 #include "detection.h"
 #include "segmentation.h"
-#include "minimapConstants.h"
 #include "metrics.h"
 #include "util.h"
 
@@ -52,7 +50,7 @@ int main(){
 								"/game4_clip2"};
 
 
-	for(int i = 0; i < filename.size(); i++){
+	for (int i = 0; i < filename.size(); i++) {
 
 		VideoCapture vid = VideoCapture("../Dataset"+filename[i]+filename[i]+".mp4");
 		vid.read(frame);

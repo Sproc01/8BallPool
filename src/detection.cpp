@@ -1,16 +1,14 @@
 // Author: Michele Sprocatti
 
 #include <opencv2/opencv.hpp>
-#include <iostream>
-#include <opencv2/features2d.hpp>
-#include <math.h>
+#include <cmath>
 #include <stdexcept>
 
 #include "table.h"
 #include "ball.h"
 #include "detection.h"
 #include "util.h"
-#include "minimapConstants.h"
+#include "minimap.h"
 
 using namespace cv;
 using namespace std;
@@ -130,7 +128,7 @@ Category classificationBall(const Mat& img, double radius){
  * @throw invalid_argument if the img is empty, if the image has less than 3 channels,
  *  		if the vector pointed by balls is empty or if balls is nullptr
  */
-void nonMaximaSuppressionWhiteBlack(const Mat &img, const Ptr<vector<Ball>> balls)
+void nonMaximaSuppressionWhiteBlack(const Mat &img, Ptr<vector<Ball>> balls)
 {
 	if(img.empty())
 		throw invalid_argument("Empty input image");
@@ -138,7 +136,7 @@ void nonMaximaSuppressionWhiteBlack(const Mat &img, const Ptr<vector<Ball>> ball
 		throw invalid_argument("Wrong number of channels");
 	if(balls == nullptr)
 		throw invalid_argument("Null pointer");
-	if(balls->size() == 0)
+	if(balls->empty())
 		throw invalid_argument("Empty vector of balls");
 
 	vector<int> whiteFound;
@@ -158,12 +156,12 @@ void nonMaximaSuppressionWhiteBlack(const Mat &img, const Ptr<vector<Ball>> ball
 			Mat subImgA = img(BboxA);
 			Mat subImgB = img(BboxB);
 
-			double radius = (BboxA.br().y - BboxA.tl().y) / 2;
+			double radius = (BboxA.br().y - BboxA.tl().y) / 2.0;
 			Point center = Point(subImgA.cols/2, subImgA.rows/2);
 			Mat maskA = Mat::zeros(subImgA.size(), CV_8U);
 			circle(maskA, center, radius, 255, -1);
 
-			radius = (BboxB.br().y - BboxB.tl().y) / 2;
+			radius = (BboxB.br().y - BboxB.tl().y) / 2.0;
 			center = Point(subImgB.cols/2, subImgB.rows/2);
 			Mat maskB = Mat::zeros(subImgB.size(), CV_8U);
 			circle(maskB, center, radius, 255, -1);
@@ -187,12 +185,12 @@ void nonMaximaSuppressionWhiteBlack(const Mat &img, const Ptr<vector<Ball>> ball
 			Mat subImgA = img(BboxA);
 			Mat subImgB = img(BboxB);
 
-			double radius = (BboxA.br().y - BboxA.tl().y) / 2;
+			double radius = (BboxA.br().y - BboxA.tl().y) / 2.0;
 			Point center = Point(subImgA.cols/2, subImgA.rows/2);
 			Mat maskA = Mat::zeros(subImgA.size(), CV_8U);
 			circle(maskA, center, radius, 255, -1);
 
-			radius = (BboxB.br().y - BboxB.tl().y) / 2;
+			radius = (BboxB.br().y - BboxB.tl().y) / 2.0;
 			center = Point(subImgB.cols/2, subImgB.rows/2);
 			Mat maskB = Mat::zeros(subImgB.size(), CV_8U);
 			circle(maskB, center, radius, 255, -1);
@@ -273,10 +271,9 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
 	HoughLinesP(imgBorder, lines, 1, CV_PI/180, THRESHOLD_HOUGH, MIN_LINE_LENGTH, MAX_LINE_GAP);
 
 	// lines drawing
-	Point pt1, pt2, pt3, pt4;
 	float aLine, bLine, cLine;
 	for(size_t i = 0; i < lines.size(); i++){
-
+		Point pt1, pt2;
 		pt1.x = lines[i][0];
 		pt1.y = lines[i][1];
 		pt2.x = lines[i][2];
@@ -450,7 +447,6 @@ void detectBalls(const Mat &frame, Table &table, Mat &frameRect){
 	int radius;
 	Vec3i c;
 	Rect rect;
-	bool ballFound;
 	Mat subImg;
 	vector<Vec3f> lines;
 	double meanRadius = 0;
@@ -475,7 +471,6 @@ void detectBalls(const Mat &frame, Table &table, Mat &frameRect){
 	meanRadius /= counter;
 
 	for(size_t i = 0; i < circles.size(); i++ ){
-		ballFound = true;
 		c = circles[i];
 	 	center = Point(c[0], c[1]);
 	 	radius = c[2];

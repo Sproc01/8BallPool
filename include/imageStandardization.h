@@ -8,7 +8,7 @@
 #include "util.h"
 #include "table.h"
 
-void calculateInscriptionParameters(const cv::Mat &img, int targetWidth, int targetHeight, bool &toRotate, bool &toResize, short &leftBorderLength, short &rightBorderLength);
+void calculateStandardizationParameters(const cv::Mat &img, int targetWidth, int targetHeight, bool &toRotate, bool &toResize, short &leftBorderLength, short &rightBorderLength);
 
 void doInscriptImage(cv::Mat &img, int targetWidth, int targetHeight, const bool &toRotate, const bool &toResize, const short &leftBorderLength, const short &rightBorderLength);
 void undoInscriptImage(cv::Mat &img, int originalWidth, int originalHeight, const bool &toRotate, const bool &toResize, const short &leftBorderLength, const short &rightBorderLength);

@@ -71,7 +71,7 @@ int main(int argc, char* argv[]){
 	const unsigned short ORIGINAL_WIDTH = frame.cols;
 	const unsigned short ORIGINAL_HEIGHT = frame.rows;
 
-	calculateInscriptionParameters(frame, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
+	calculateStandardizationParameters(frame, TABLE_WIDTH, TABLE_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 
 	string videoName = videoPath.stem().string();
 	string outputVideoName = videoName + "_output.mp4";

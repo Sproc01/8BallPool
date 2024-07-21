@@ -21,9 +21,8 @@ void detectTable(const cv::Mat &frame, cv::Vec<cv::Point2f, 4> &tableCorners, cv
  * @brief detect balls in an image given some information about the table.
  * @param frame image where there are the balls to be detected, BGR format requested.
  * @param table initialized object that contains the corner and the color, the balls are added in this function.
- * @param frameRect output image containing the input image with the rectangles superimposed.
  * @throw invalid_argument if frame is empty or if frame has a number of channels different from 3.
  */
-void detectBalls(const cv::Mat &frame, Table &table, cv::Mat &frameRect);
+void detectBalls(const cv::Mat &frame, Table &table);
 
 #endif // DETECTION_H

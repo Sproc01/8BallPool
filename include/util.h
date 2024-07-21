@@ -6,6 +6,7 @@
 #include <opencv2/opencv.hpp>
 #include "category.h"
 #include "ball.h"
+#include "table.h"
 
 /**
  * @brief Compute the center between two points.
@@ -108,4 +109,22 @@ void separateResultGT(std::vector<std::pair<cv::Rect, Category>> gt, std::vector
  */
 void separateResultBalls(cv::Ptr<std::vector<Ball>> balls, std::vector<Ball> &white, std::vector<Ball> &black,
 							std::vector<Ball> &solid, std::vector<Ball> &striped);
+
+
+void drawBoundingBoxes(const cv::Mat &img, Table &table, cv::Mat &output);
+
+/**
+ * @brief Helper function which enlarges a rectangle by a given amount of pixels on all sides.
+ * @param rect rectangle to enlarge.
+ * @param px number of pixels to add to each side.
+ */
+void enlargeRect(cv::Rect &rect, int px);
+
+/**
+ * @brief Helper function which shrinks a rectangle by a given amount of pixels on all sides.
+ * @param rect rectangle to shrink.
+ * @param px number of pixels to remove to each side.
+ */
+void shrinkRect(cv::Rect &rect, int px);
+
 #endif //UTIL_H

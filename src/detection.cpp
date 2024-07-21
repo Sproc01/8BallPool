@@ -354,10 +354,9 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
  * To isolate the good circles exploit the information of the table.
  * @param frame image where there are the balls to be detected, BGR format requested.
  * @param table initialized object that contains the corner and the color, the balls are added in this function.
- * @param frameRect output image containing the input image with the rectangles superimposed.
  * @throw invalid_argument if frame is empty or if frame has a number of channels different from 3.
  */
-void detectBalls(const Mat &frame, Table &table, Mat &frameRect){
+void detectBalls(const Mat &frame, Table &table){
 
 	if(frame.empty())
 		throw invalid_argument("Empty image in input");
@@ -384,7 +383,7 @@ void detectBalls(const Mat &frame, Table &table, Mat &frameRect){
 	const float RANGE_RADIUS = 0.3;
 
 
-	Scalar border_color = Scalar(0, 255, 255); // color of the borders of the table
+
 	vector<Vec3b> colors = {
 		Vec3b(0, 0, 255),
 		Vec3b(0, 255, 0),
@@ -395,7 +394,6 @@ void detectBalls(const Mat &frame, Table &table, Mat &frameRect){
 
 	// variables
 	Mat gray, HSVImg, mask, smooth, kernelMorphological, resClustering, resClusteringSmooth;
-	frameRect = frame.clone();
 	Mat poly = Mat::zeros(frame.size(), CV_8UC1);
 	vector<Vec3f> circles;
 
@@ -497,29 +495,4 @@ void detectBalls(const Mat &frame, Table &table, Mat &frameRect){
 	}
 
 	nonMaximaSuppressionWhiteBlack(HSVImg, balls);
-
-	for(const Ball &ball : *balls){
-		Rect a = ball.getBbox();
-		switch(ball.getCategory()){
-			case SOLID_BALL:
-				rectangle(frameRect, a, SOLID_BGR_COLOR, 1, LINE_AA);
-			break;
-			case STRIPED_BALL:
-				rectangle(frameRect, a, STRIPED_BGR_COLOR, 1, LINE_AA);
-			break;
-			case WHITE_BALL:
-				rectangle(frameRect, a, WHITE_BGR_COLOR, 1, LINE_AA);
-			break;
-			case BLACK_BALL:
-				rectangle(frameRect, a, BLACK_BGR_COLOR, 1, LINE_AA);
-			break;
-			default:
-				// do nothing if not a ball
-				break;
-		}
-	}
-	for(int i = 0; i < tableCornersInt.size()-1; i++)
-		line(frameRect, tableCornersInt[i], tableCornersInt[i+1], border_color, 2, LINE_AA);
-
-	line(frameRect, tableCornersInt[0], tableCornersInt[3], border_color, 2, LINE_AA);
 }

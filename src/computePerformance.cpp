@@ -58,7 +58,8 @@ int main(){
 		vid.read(frame);
 		detectTable(frame, tableCorners, colorTable);
 		table = Table(tableCorners, colorTable);
-		detectBalls(frame, table, detected);
+		detectBalls(frame, table);
+		drawBoundingBoxes(frame, table, detected);
 		segmentTable(frame, table, segmented);
 		segmentBalls(frame, table.ballsPtr(), segmented);
 
@@ -87,7 +88,8 @@ int main(){
 
 		// last frame
 		table.clearBalls();
-		detectBalls(previousFrame, table, detected);
+		detectBalls(previousFrame, table);
+		drawBoundingBoxes(frame, table, detected);
 		segmentTable(previousFrame, table, segmented);
 		segmentBalls(segmented, table.ballsPtr(), segmented);
 

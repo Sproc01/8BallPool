@@ -5,23 +5,9 @@
 #include <opencv2/tracking.hpp>
 #include <iostream>
 #include "metrics.h"
+#include "util.h"
 
 using namespace cv;
-
-/**
- * @brief Helper function which enlarges a rectangle by a given amount of pixels on all sides.
- * @param rect rectangle to enlarge.
- * @param px number of pixels to add to each side.
- */
-void enlargeRect(Rect &rect, int px) {
-	if (rect.x - px < 0 || rect.y - px < 0) {
-		px = std::min(rect.x, rect.y);
-	}	// cannot protect from exiting the image on the right and bottom
-	rect.x -= px;
-	rect.y -= px;
-	rect.width += 2 * px;
-	rect.height += 2 * px;
-}
 
 /**
  * @brief Constructor.

@@ -76,6 +76,8 @@ target_link_libraries(Tracking
 
 target_link_libraries(Utils
     ${OpenCV_LIBS}
+    Table
+    Ball
 )
 
 

@@ -51,7 +51,8 @@ int main(int argc, char* argv[]){
 		cout << "--------------" << endl;
 		cout << name[i] << endl;
 		cout << "------ First frame -------" << endl;
-		detectBalls(frame, table, detected);
+		detectBalls(frame, table);
+		drawBoundingBoxes(frame, table, detected);
 		//imshow("detected balls", detected);
 		imwrite("../Output/Detection"+name[i]+"_detected_balls_first_frame.jpg", detected);
 		segmentTable(frame, table, segmented);
@@ -75,7 +76,8 @@ int main(int argc, char* argv[]){
 		}
 		cout << "------ Last frame --------" << endl;
 		table.clearBalls();
-		detectBalls(previousFrame, table, detected);
+		detectBalls(previousFrame, table);
+		drawBoundingBoxes(frame, table, detected);
 		//imshow("detected balls", detected);
 		imwrite("../Output/Detection"+name[i]+"_detected_balls_last_frame.jpg", detected);
 		segmentTable(previousFrame, table, segmented);

@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
 	vidOutput.write(res);
 
 	//TRACKER
-	BallTracker tracker = BallTracker(table.ballsPtr());
+	BilliardTracker tracker = BilliardTracker(table.ballsPtr());
 	tracker.trackAll(frame);
 
 	//VIDEO WITH MINIMAP

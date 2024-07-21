@@ -13,7 +13,7 @@ using namespace cv;
  * @brief Constructor.
  * @param balls pointer to the vector of balls to track.
  */
-BallTracker::BallTracker(Ptr<std::vector<Ball>> balls) { // NOLINT(*-unnecessary-value-param)
+BilliardTracker::BilliardTracker(Ptr<std::vector<Ball>> balls) { // NOLINT(*-unnecessary-value-param)
 	//std::cout<<"constructor balltracker"<<std::endl;
 	isInitialized_ = false;
 
@@ -27,7 +27,7 @@ BallTracker::BallTracker(Ptr<std::vector<Ball>> balls) { // NOLINT(*-unnecessary
  * @brief Create the trackers for all the balls in the vector.
  * Used the first time tracker is called.
 */
-void BallTracker::createTrackers() {
+void BilliardTracker::createTrackers() {
 	for (unsigned short i = 0; i < ballsVec_->size(); i++) {
 		Ptr<Tracker> tracker = TrackerCSRT::create();    //parameters go here if necessary
 		ballTrackers_.push_back(tracker);
@@ -40,14 +40,14 @@ void BallTracker::createTrackers() {
 
 /**
  * @brief Track the ball with the given index in the input frame.
-* It performs OpenCV Tracker initialization the first time it is called.
+ * It performs OpenCV Tracker initialization the first time it is called.
  * The returned bounding box is not updated if the IoU with the previous one is too high.
  * @param ballIndex index of the ball to track.
  * @param frame input frame.
  * @param callInit flag that indicates if the tracker has to be initialized.
  * @return the bounding box of the tracked ball.
  */
-Rect BallTracker::trackOne(unsigned short ballIndex, const Mat &frame, bool callInit /*= false*/) {
+Rect BilliardTracker::trackOne(unsigned short ballIndex, const Mat &frame, bool callInit /*= false*/) {
 	Rect bbox = ballsVec_->at(ballIndex).getBbox();
 	ballsVec_->at(ballIndex).setBbox_prec(bbox);
 
@@ -56,7 +56,7 @@ Rect BallTracker::trackOne(unsigned short ballIndex, const Mat &frame, bool call
 		enlargeRect(bbox, 10);  // enlarge bbox to enhance tracking performance
 		ballTrackers_[ballIndex]->init(frame, bbox);
 	} else {
-		if(ballsVec_->at(ballIndex).getVisibility())
+		if(ballsVec_->at(ballIndex).getVisibility())	// track only visible balls
 		{
 			isBboxUpdated = ballTrackers_[ballIndex]->update(frame, bbox);
 			const float IOU_THRESHOLD = 0.7;
@@ -80,7 +80,7 @@ Rect BallTracker::trackOne(unsigned short ballIndex, const Mat &frame, bool call
  * @param frame input frame.
  * @return a pointer to the vector of the tracked balls. It is the same as the one provided to the constructor.
  */
-Ptr<std::vector<Ball>> BallTracker::trackAll(const Mat &frame) {
+Ptr<std::vector<Ball>> BilliardTracker::trackAll(const Mat &frame) {
 	//std::cout<<"trackAll, initialized: "<<isInitialized_<<std::endl;
 	if (!isInitialized_) {
 		createTrackers();

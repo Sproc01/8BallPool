@@ -133,7 +133,6 @@ bool checkHorizontalTable(const Mat &tableImg, Vec<Point2f, 4> corners){
 	inRange(frameHSV, Scalar(backgroundColor[0], 50, 90),
 				Scalar(backgroundColor[1], 255, 255), maskImg);
 	//imshow("Mask img", maskImg);
-	//waitKey(0);
 
 	//print the rectangles on the pool of the masked img (just for testing)
 	/*

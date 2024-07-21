@@ -129,8 +129,8 @@ target_link_libraries(ComputePerformance
     Metrics
 )
 
-add_executable(RotateBbox src/rotateBboxesFile.cpp)
-target_link_libraries(RotateBbox
+add_executable(ManipulateDataset src/manipulateDataset.cpp)
+target_link_libraries(ManipulateDataset
     ${OpenCV_LIBS}
     Utils
 )

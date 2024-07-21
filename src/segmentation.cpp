@@ -1,13 +1,12 @@
 // Author: Michele Sprocatti
 
 #include <opencv2/opencv.hpp>
-#include <iostream>
 #include <stdexcept>
 
 #include "segmentation.h"
 #include "ball.h"
 #include "table.h"
-#include "minimapConstants.h"
+#include "minimap.h"
 #include "util.h"
 
 using namespace cv;
@@ -34,7 +33,7 @@ void segmentTable(const Mat &frame, const Table& table, Mat& segmented){
 	vector<Point> tableCornersInt;
 
 	// table properties
-	Vec2b colorTable = table.getColor();
+	Vec2b colorTable = table.getColorRange();
 	Vec<Point2f, 4> tableCorners = table.getBoundaries();
 
 	// needed otherwise error
@@ -50,11 +49,11 @@ void segmentTable(const Mat &frame, const Table& table, Mat& segmented){
 	inRange(HSVimg, Scalar(colorTable[0], S_CHANNEL_COLOR_THRESHOLD, V_CHANNEL_COLOR_THRESHOLD),
 				Scalar(colorTable[1], 255, 255), mask);
 	//imshow("mask", mask);
-	vector<Vec3b> colors = {
+	const vector<Vec3b> COLORS = {
 		Vec3b(0, 0, 0),
 		Vec3b(255, 255, 255)
 	};
-	kMeansClustering(frame, colors, clustered);
+	kMeansClustering(frame, COLORS, clustered);
 	//imshow("cluster", clustered);
 	Vec3b color;// = clustered.at<Vec3b>(frame.rows/2, frame.cols/2);
 	for(int i = frame.rows/4; i < 3*frame.rows/4; i++)
@@ -87,7 +86,7 @@ void segmentTable(const Mat &frame, const Table& table, Mat& segmented){
  * @param segmented output image where each category of the ball correspond to a different color
  * @throw invalid_argument if frame is empty, if frame has less than 3 channels, if balls is nullptr, if balls point to an empty vector.
  */
-void segmentBalls(const Mat &frame, const Ptr<vector<Ball>> balls, Mat& segmented){
+void segmentBalls(const Mat &frame, Ptr<vector<Ball>> balls, Mat& segmented){
 
 	if(balls == nullptr)
 		throw invalid_argument("Null pointer");
@@ -98,11 +97,9 @@ void segmentBalls(const Mat &frame, const Ptr<vector<Ball>> balls, Mat& segmente
 	if(frame.channels() != 3)
 		throw invalid_argument("Invalid number of channels for the input image");
 
-	if(balls->size()==0)
+	if(balls->empty())
 		throw invalid_argument("Empty vector of balls");
 
-	float radius;
-	Point center;
 	Scalar c = Scalar(0, 0, 0);
 	for (const Ball &ball : *balls){
 
@@ -117,8 +114,8 @@ void segmentBalls(const Mat &frame, const Ptr<vector<Ball>> balls, Mat& segmente
 			else if(ball.getCategory() == Category::STRIPED_BALL)
 				c = STRIPED_BGR_COLOR;
 			Rect b = ball.getBbox();
-			radius = b.width / 2;
-			center = Point(b.tl().x + radius, b.tl().y + radius);
+			float radius = b.width / 2.0;
+			Point center = Point(b.tl().x + radius, b.tl().y + radius);
 			circle(segmented, center, radius, c, -1);
 		}
 

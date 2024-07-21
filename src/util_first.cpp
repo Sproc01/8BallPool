@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <opencv2/opencv.hpp>
 #include "util.h"
-#include "minimapConstants.h"
+#include "minimap.h"
 #include "ball.h"
 #include "table.h"
 
@@ -117,7 +117,7 @@ Vec2b mostFrequentHueColor(const Mat &img){
 	// find the argmax
 	reduceArgMax(hist, argmax, 0);
 	int start = range[1] / numberOfBins * argmax.at<int>(0);
-	int diameter = (range[1] / numberOfBins);
+	int diameter = range[1] / numberOfBins;
 	return Vec2b(start, start + diameter);
 }
 
@@ -161,7 +161,7 @@ void createOutputImage(const Mat &frame, const Mat &minimap_with_balls, Mat &res
  */
 void kMeansClustering(const Mat &inputImage, const vector<Vec3b> &colors, Mat &clusteredImage){
 
-	if(colors.size() == 0)
+	if(colors.empty())
 		throw invalid_argument("Empty color vector");
 	if(inputImage.empty())
 		throw invalid_argument("Empty input image");
@@ -169,45 +169,45 @@ void kMeansClustering(const Mat &inputImage, const vector<Vec3b> &colors, Mat &c
 		throw invalid_argument("Invalid number of channels for the input image");
 
 	int clusterCount = colors.size();
-    Mat samples, labels;
-	int attempts = 10;
-    samples = Mat(inputImage.total(), 3, CV_32F);
+	Mat samples, labels;
+	const int ATTEMPTS = 10;
+	samples = Mat(inputImage.total(), 3, CV_32F);
 	theRNG().state = 123456789; //fixed random state to have centers used to tune the rest of the program
 
-    int index = 0;
-    for(int i = 0; i < inputImage.rows; i++){
+	int index = 0;
+	for(int i = 0; i < inputImage.rows; i++){
 
-        for(int j = 0; j < inputImage.cols; j++){
-            samples.at<float>(index, 0) = inputImage.at<Vec3b>(i, j)[0];
-            samples.at<float>(index, 1) = inputImage.at<Vec3b>(i, j)[1];
-            samples.at<float>(index, 2) = inputImage.at<Vec3b>(i, j)[2];
-            index++;
-        }
-    }
+		for(int j = 0; j < inputImage.cols; j++){
+			samples.at<float>(index, 0) = inputImage.at<Vec3b>(i, j)[0];
+			samples.at<float>(index, 1) = inputImage.at<Vec3b>(i, j)[1];
+			samples.at<float>(index, 2) = inputImage.at<Vec3b>(i, j)[2];
+			index++;
+		}
+	}
 
-    TermCriteria criteria = TermCriteria(TermCriteria::EPS, 0, 1.0);
-    kmeans(samples, clusterCount, labels, criteria, attempts, KMEANS_PP_CENTERS);
-    clusteredImage = Mat(inputImage.size(), CV_8UC3);
+	const TermCriteria CRITERIA = TermCriteria(TermCriteria::EPS, 0, 1.0);
+	kmeans(samples, clusterCount, labels, CRITERIA, ATTEMPTS, KMEANS_PP_CENTERS);
+	clusteredImage = Mat(inputImage.size(), CV_8UC3);
 
 	int cluster_idx = -1;
-    for(int i = 0; i < inputImage.rows; i++){
+	for(int i = 0; i < inputImage.rows; i++){
 
-        for(int j = 0; j < inputImage.cols; j++){
+		for(int j = 0; j < inputImage.cols; j++){
 
-            cluster_idx = labels.at<int>(i * inputImage.cols + j);
-            clusteredImage.at<Vec3b>(i, j) = colors[cluster_idx];
-        }
-    }
+			cluster_idx = labels.at<int>(i * inputImage.cols + j);
+			clusteredImage.at<Vec3b>(i, j) = colors[cluster_idx];
+		}
+	}
 }
 
 /**
  * @brief push the elements of the first vector in the right vector according to the category.
- * @param gt input vector containing the elements to be separated.
- * @param white output vector containing the white elements.
- * @param black output vector containing the black elements.
- * @param solid output vector containing the solid elements.
- * @param striped output vector containing the striped elements.
- * @throw invalid_argument if gt is empty.
+ * @param balls input pointer to a vector a balls that needs to be separated.
+ * @param white output vector containing the white balls.
+ * @param black output vector containing the black balls.
+ * @param solid output vector containing the solid balls.
+ * @param striped output vector containing the striped balls.
+ * @throw invalid_argument if balls is nullptr or if balls point to an empty vector.
  */
 void separateResultBalls(Ptr<vector<Ball>> balls, vector<Ball> &white, vector<Ball> &black,
 							vector<Ball> &solid, vector<Ball> &striped) {
@@ -239,16 +239,18 @@ void separateResultBalls(Ptr<vector<Ball>> balls, vector<Ball> &white, vector<Ba
 
 /**
  * @brief push the elements of the first vector in the right vector according to the category.
- * @param balls input pointer to a vector a balls that needs to be separated.
- * @param white output vector containing the white balls.
- * @param black output vector containing the black balls.
- * @param solid output vector containing the solid balls.
- * @param striped output vector containing the striped balls.
- * @throw invalid_argument if balls is nullptr or if balls point to an empty vector.
+ * @param gt input vector containing the elements to be separated.
+ * @param white output vector containing the white elements.
+ * @param black output vector containing the black elements.
+ * @param solid output vector containing the solid elements.
+ * @param striped output vector containing the striped elements.
+ * @throw invalid_argument if gt is empty.
  */
-void separateResultGT(vector<pair<Rect, Category>> gt, vector<pair<Rect, Category>> &white,
-						vector<pair<Rect, Category>> &black, vector<pair<Rect, Category>> &solid,
-						vector<pair<Rect, Category>> &striped) {
+void separateResultGT(const vector<pair<Rect, Category>> &gt,
+                      vector<pair<Rect, Category>> &white,
+                      vector<pair<Rect, Category>> &black,
+                      vector<pair<Rect, Category>> &solid,
+                      vector<pair<Rect, Category>> &striped) {
 	if (gt.empty())
 		throw invalid_argument("Empty ground truth vector");
 

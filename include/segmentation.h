@@ -24,6 +24,6 @@ void segmentTable(const cv::Mat &frame, const Table& table, cv::Mat& segmented);
  * @param segmented output image where each category of the ball correspond to a different color.
  * @throw invalid_argument if frame is empty, if frame has less than 3 channels, if balls is nullptr, if balls point to an empty vector.
  */
-void segmentBalls(const cv::Mat &frame, const cv::Ptr<std::vector<Ball>> balls, cv::Mat &segmented);
+void segmentBalls(const cv::Mat &frame, cv::Ptr<std::vector<Ball>> balls, cv::Mat &segmented);
 
 #endif // SEGMENTATION_H

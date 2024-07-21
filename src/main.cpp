@@ -23,8 +23,7 @@ using namespace chrono;
 /* 	Given a video it detects table and balls in the first frame and track the balls over different frame.
 	Using this information then it creates the output video with a minimap superimposed and then detect the balls
 	in the last frame. For the detection of the table and of the balls it computes also some performance metrics. */
-int main(int argc, char* argv[]){
-
+int main(int argc, char *argv[]) {
 	//VARIABLES
 	filesystem::path videoPath;
 	filesystem::path outputPath = "../Output";
@@ -41,7 +40,7 @@ int main(int argc, char* argv[]){
 	vector<double> metricsIoU;
 
 	//INPUT
-	if (argc == 2){
+	if (argc == 2) {
 		videoPath = filesystem::path(argv[1]);
 	}
 	else if (argc == 1) { //TODO: remove at the end
@@ -56,7 +55,7 @@ int main(int argc, char* argv[]){
 	//START THE VIDEO
 	VideoCapture vid = VideoCapture(videoPath.string());
 	// work on first frame
-	if (!vid.isOpened() || !vid.read(frame)){
+	if (!vid.isOpened() || !vid.read(frame)) {
 		cout << "Error opening video file" << endl;
 		return -1;
 	}
@@ -88,15 +87,14 @@ int main(int argc, char* argv[]){
 	cout << "Metrics first frame:" << endl;
 	metricsAP = compareMetricsAP(table, videoPath.parent_path().string(), FIRST);
 	metricsIoU = compareMetricsIoU(segmented, videoPath.parent_path().string(), FIRST);
-	for(int i = 0; i < metricsAP.size(); i++)
-		cout << "AP for category " << i+1 << ": " << metricsAP[i] << endl;
+	for (int c = 0; c < metricsAP.size(); c++)
+		cout << "AP for category " << c + 1 << ": " << metricsAP[c] << endl;
 
-	for(int i = 0; i < metricsIoU.size(); i++)
-		cout << "IoU for category " << i << ": " << metricsIoU[i] << endl;
-
+	for (int c = 0; c < metricsIoU.size(); c++)
+		cout << "IoU for category " << c << ": " << metricsIoU[c] << endl;
 
 	//TRANSFORMATION
-	Vec<Point2f, 4>  img_corners = table.getBoundaries();
+	Vec<Point2f, 4> img_corners = table.getBoundaries();
 	table.setTransform(computeTransformation(segmented, img_corners));
 	table.setBoundaries(img_corners);
 
@@ -109,7 +107,7 @@ int main(int argc, char* argv[]){
 	Mat minimap_with_balls = minimap.clone();
 	// imshow("minimap", minimap);
 
-	Mat transform =  table.getTransform();
+	Mat transform = table.getTransform();
 	minimap_with_balls = drawMinimap(minimap_with_track, transform, table.ballsPtr());
 	//imshow("Minimap with balls", minimap_with_balls);
 	createOutputImage(frame, minimap_with_balls, res);
@@ -123,7 +121,7 @@ int main(int argc, char* argv[]){
 	//VIDEO WITH MINIMAP
 	time_point start = high_resolution_clock::now();
 	bool ret = vid.read(frame);
-	while (vid.isOpened() && ret){  // work on middle frames
+	while (vid.isOpened() && ret) { // work on middle frames
 		//cout << "Frame number: " << ++frameCount << endl;
 		++frameCount;
  		//VIDEO WITH MINIMAP
@@ -133,8 +131,6 @@ int main(int argc, char* argv[]){
 		//imshow("result", res);
 		vidOutput.write(res);
 		// show minimap status every 10 frame
-		if((frameCount % 60) == 0) {
-			for(int i = 0; i < table.ballsPtr()->size(); i++){
 				Rect r = table.ballsPtr()->at(i).getBbox();
 				shrinkRect(r, 10);
 				table.ballsPtr()->at(i).setBbox(r);
@@ -144,6 +140,7 @@ int main(int argc, char* argv[]){
 			drawBoundingBoxes(frame, table, detected);
 			imshow("segmentedBalls " + to_string(frameCount), segmented);
 			imshow("detected balls " + to_string(frameCount), detected);
+			for(int i = 0; i < table.ballsPtr()->size(); i++){
 			imshow("frame " + to_string(frameCount), frame);
 			imshow("Minimap with balls " + to_string(frameCount), minimap_with_balls);
 			for(int i = 0; i < table.ballsPtr()->size(); i++){
@@ -160,7 +157,7 @@ int main(int argc, char* argv[]){
 
 	time_point stop = high_resolution_clock::now();
 	minutes duration = duration_cast<minutes>(stop - start);
-	cout << "Time to create the video: " << duration.count() <<" minutes" << endl;
+	cout << "Time to create the video: " << duration.count() << " minutes" << endl;
 	vidOutput.release();
 
 	imwrite("../Output/minimap/" + videoName + "_minimap.png", minimap_with_balls);
@@ -177,11 +174,11 @@ int main(int argc, char* argv[]){
 	metricsAP = compareMetricsAP(table, videoPath.parent_path().string(), LAST);
 	metricsIoU = compareMetricsIoU(segmented, videoPath.parent_path().string(), LAST);
 
-	for(int i = 0; i < metricsAP.size(); i++)
-		cout << "AP for category " << static_cast<Category>(i+1) << ": " << metricsAP[i] << endl;
+	for (int c = 0; c < metricsAP.size(); c++)
+		cout << "AP for category " << c + 1 << ": " << metricsAP[c] << endl;
 
-	for(int i = 0; i < metricsIoU.size(); i++)
-		cout << "IoU for category " << static_cast<Category>(i) << ": " << metricsIoU[i] << endl;
+	for (int c = 0; c < metricsIoU.size(); c++)
+		cout << "IoU for category " << c << ": " << metricsIoU[c] << endl;
 
 	// write to a temp file first, then rename to the final name
 	filesystem::copy(tempOutputPath, outputPath, filesystem::copy_options::overwrite_existing);

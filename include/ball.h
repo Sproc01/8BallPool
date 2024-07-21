@@ -78,13 +78,13 @@ public:
 	 * @brief Set a value to the rectangle of the ball.
 	 * @param bbox the new bbox position.
 	 */
-	void setBbox(cv::Rect bbox);
+	void setBbox(const cv::Rect &bbox);
 
 	/**
 	 * @brief Set a value to the rectangle of the ball in the previous frame.
 	 * @param bbox_prec the new bbox position of the previous frame.
 	 */
-	void setBbox_prec(cv::Rect bbox_prec);
+	void setBbox_prec(const cv::Rect &bbox_prec);
 
 	/**
 	 * @brief Set a value to the category of the ball.

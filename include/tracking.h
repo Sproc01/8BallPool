@@ -9,14 +9,11 @@
 
 /**
  * @brief Class that tracks all the balls in the input image, it relies on OpenCV TrackerCSRT class.
- * @param ballTrackers_ vector of OpenCV Tracker objects, one for each ball. The index in the vector is the same as the index in ballsVec_.
- * @param ballsVec_ pointer to the vector of balls to track.
- * @param isInitialized_ flag that indicates if the trackers have already been initialized.
  */
 class BallTracker {
-	std::vector<cv::Ptr<cv::Tracker>> ballTrackers_;
-	cv::Ptr<std::vector<Ball>> ballsVec_;
-	bool isInitialized_;
+	std::vector<cv::Ptr<cv::Tracker>> ballTrackers_;	// vector of OpenCV Tracker objects, one for each ball. The index in the vector is the same as the index in ballsVec_.
+	cv::Ptr<std::vector<Ball>> ballsVec_;	// pointer to the vector of balls to track.
+	bool isInitialized_;	// flag that indicates if the trackers have already been initialized.
 
 	/**
 	 * @brief Create the trackers for all the balls in the vector.

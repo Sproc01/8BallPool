@@ -1,6 +1,5 @@
 // Author: Michele Sprocatti
 
-#include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
 #include <iostream>
 #include <filesystem>
@@ -9,17 +8,15 @@
 #include "table.h"
 #include "detection.h"
 #include "segmentation.h"
-#include "minimapConstants.h"
 #include "metrics.h"
-#include "util.h"
 
 using namespace std;
 using namespace cv;
 
-/* simple main to test in all videos the detection of the table in all the first frames
+/* Simple main function to test in all videos the detection of the table in all the first frames
  and the detection of the balls in all the first and last frames
  and compute the performance */
-int main(int argc, char* argv[]){
+int main(int argc, char *argv[]){
 
 	Mat frame;
 	Vec2b colorTable;
@@ -41,8 +38,7 @@ int main(int argc, char* argv[]){
 	// vector<string> nameOther = {"video1_768_580.mp4", "video1_1024_576.mp4", "video1_1726_1080.mp4",
 	//  							"video2_1024_576.mp4", "video2_1920_1080.mp4"};
 
-	for(int i = 0; i < name.size(); i++){
-
+	for (int i = 0; i < name.size(); i++){
 		VideoCapture vid = VideoCapture("../Dataset"+name[i]+name[i]+".mp4");
 		//VideoCapture vid = VideoCapture("../Dataset/other_videos_not_deliver/" + nameOther[i]);
 		vid.read(frame);
@@ -61,11 +57,11 @@ int main(int argc, char* argv[]){
 		//imshow("seg", segmented);
 		metricsAP = compareMetricsAP(table, "../Dataset"+name[i] , FIRST);
 		metricsIoU = compareMetricsIoU(segmented, "../Dataset"+name[i], FIRST);
-		for(int i = 0; i < metricsAP.size(); i++)
-			cout << "AP for category " << static_cast<Category>(i+1) << ": " << metricsAP[i] << endl;
+		for(int c = 0; c < metricsAP.size(); c++)
+			cout << "AP for category " << c+1 << ": " << metricsAP[c] << endl;
 
-		for(int i = 0; i < metricsIoU.size(); i++)
-			cout << "IoU for category " << static_cast<Category>(i) << ": " << metricsIoU[i] << endl;
+		for(int c = 0; c < metricsIoU.size(); c++)
+			cout << "IoU for category " << c << ": " << metricsIoU[c] << endl;
 		//waitKey(0);
 		previousFrame = frame.clone();
 		ret = vid.read(frame);
@@ -87,12 +83,12 @@ int main(int argc, char* argv[]){
 		metricsAP = compareMetricsAP(table, "../Dataset"+name[i], LAST);
 		metricsIoU = compareMetricsIoU(segmented, "../Dataset"+name[i], LAST);
 
-		for(int i = 0; i < metricsAP.size(); i++)
-			cout << "AP for category " << static_cast<Category>(i+1) << ": " << metricsAP[i] << endl;
+		for(int c = 0; c < metricsAP.size(); c++)
+			cout << "AP for category " << c+1 << ": " << metricsAP[c] << endl;
 
-		for(int i = 0; i < metricsIoU.size(); i++)
-			cout << "IoU for category " << static_cast<Category>(i) << ": " << metricsIoU[i] << endl;
-			//waitKey(0);
-		}
+		for(int c = 0; c < metricsIoU.size(); c++)
+			cout << "IoU for category " << c << ": " << metricsIoU[c] << endl;
+		//waitKey(0);
+	}
 	return 0;
 }

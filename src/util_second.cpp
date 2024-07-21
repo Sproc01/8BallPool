@@ -8,7 +8,7 @@ using namespace std;
 using namespace cv;
 
 /**
- * @brief compute the center between two points.
+ * @brief Compute the center between two points.
  * @param p1 first point.
  * @param p2 second point.
  * @return the point which is the center of p1 and p2.
@@ -26,7 +26,7 @@ Point2f getCenter(const Point2f &p1, const Point2f &p2) {
 }
 
 /**
- * @brief compute the color of a specific category.
+ * @brief Compute the color of a specific category.
  * @param category element of type Category.
  * @return the color associated to the category in input.
  */
@@ -45,7 +45,7 @@ Vec3b getColorFromCategory(Category category) {
 }
 
 /**
- * @brief rotate the corners of the table clockwise.
+ * @brief Rotate the corners of the table clockwise.
  * In each position i, the corner in position i+1 is stored. And in the last position the first corner is stored.
  * In this way all the corners are rotated clockwise.
  * @param corners vector of four corners.
@@ -65,7 +65,7 @@ void rotateCornersClockwise(Vec<Point2f, 4> &corners) {
 }
 
 /**
- * @brief compute an interval min/max for the radius with respect to the distance and the perspecdtive of the table
+ * @brief Compute an interval min/max for the radius with respect to the distance and the perspecdtive of the table
  * To compute the interval, first a mean value is computed by using a proportion between the diagonal of the table in
  * pixel and the dimensions of the diagonal of the table and the balls in centimeters. Then, a percentage of slope
  * between the camera direction and the table is computed, by using one of the angle that the detected table creates;

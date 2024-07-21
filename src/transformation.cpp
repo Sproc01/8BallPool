@@ -9,7 +9,7 @@ using namespace cv;
 using namespace std;
 
 /**
- * @brief compute the original image transformed and cropped to the table.
+ * @brief Compute the original image transformed and cropped to the table.
  * Apply the transformation (warpPerspective) to the image in input and crop it in the minimap
  * table coordinates.
  * @param img original image to transform.
@@ -38,7 +38,7 @@ Mat imgTransformedCropped(const Mat &img, const Mat &transform) {
 }
 
 /**
- * @brief compute the transformation matrix.
+ * @brief Compute the transformation matrix.
  * Compute the transformation matrix using the corners of the table in the original image and the corners of the table
  * in the minimap image and with that compute the corrispondent perspective transform. After the first computation,
  * the correctness of the table orientation is checked, if it is not correct, the transformation is recomputed.
@@ -80,7 +80,7 @@ Mat computeTransformation(const Mat& img, Vec<Point2f, 4>  &img_corners) {
 }
 
 /**
- * @brief draw the balls and their tracking on the minimap.
+ * @brief Draw the balls and their tracking on the minimap.
  * First compute the current and previous positions of the balls using the transformation matrix.
  * Draw the tracking lines in the image that will be reused in the next frames. Use a copy of the
  * previous image to draw the balls with their correct colors.

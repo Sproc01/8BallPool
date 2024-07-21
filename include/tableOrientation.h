@@ -6,7 +6,7 @@
 #include <opencv2/opencv.hpp>
 
 /**
- * @brief check if the table image (transformed and cropped) is horizontal
+ * @brief Check if the table image (transformed and cropped) is horizontal
  * @param table_img image of the table transformed and cropped to the minimap dimension
  * @param corners corners of the table in the table_img
  * @return true if the image is horizontal, false otherwise

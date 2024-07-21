@@ -8,7 +8,7 @@
 #include "ball.h"
 
 /**
- * @brief compute the center between two points.
+ * @brief Compute the center between two points.
  * @param p1 first point.
  * @param p2 second point.
  * @return the point which is the center of p1 and p2.
@@ -16,20 +16,20 @@
 cv::Point2f getCenter(const cv::Point2f &p1, const cv::Point2f &p2);
 
 /**
- * @brief compute the color of a specific category.
+ * @brief Compute the color of a specific category.
  * @param category element of type Category.
  * @return the color associated to the category in input.
  */
 cv::Vec3b getColorFromCategory(Category category);
 
 /**
- * @brief rotate the corners of the table clockwise.
+ * @brief Rotate the corners of the table clockwise.
  * @param corners vector of four corners.
  */
 void rotateCornersClockwise(cv::Vec<cv::Point2f, 4> &corners);
 
 /**
- * @brief compute an interval min/max for the radius with respect to the distance and the perspecdtive of the table
+ * @brief Compute an interval min/max for the radius with respect to the distance and the perspecdtive of the table
  * @param min_radius parameter that will store the minimum radius.
  * @param max_radius parameter that will store the maximum radius.
  * @param img_corners corners of the table in the frame

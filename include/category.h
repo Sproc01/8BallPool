@@ -3,6 +3,9 @@
 #ifndef CATEGORY_H
 #define CATEGORY_H
 
+/**
+ * Categories of the balls and the table.
+ */
 enum Category{
 		BACKGROUND      = 0,
 		WHITE_BALL      = 1,

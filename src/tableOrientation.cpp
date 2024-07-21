@@ -10,8 +10,9 @@
 using namespace cv;
 using namespace std;
 
-/* edge that contains the corners, its center, a rect centered in its center and the
- * percentile of background in the rectangle*/
+/*
+ Edge that contains the corners, its center, a rect centered in its center and the percentile of background in the rectangle.
+ */
 struct Edge{
     Point2f corner1;
     Point2f corner2;
@@ -21,7 +22,7 @@ struct Edge{
 };
 
 /**
- * @brief compare two edges by their percentile of background color.
+ * @brief Compare two edges by their percentile of background color.
  * Compare two edges by their percentile of background in the center pool.
  * @param e1 first edge to compare.
  * @param e2 second edge to compare.
@@ -33,14 +34,14 @@ bool compareByPercentile(const Edge &e1, const Edge &e2)
 }
 
 /**
- * @brief compute the percentile of white pixels in the rectangle
+ * @brief Compute the percentile of white pixels in the rectangle.
  * Count the number of pixels of the rect inside the image and the number of pixels which color is
- * white in the mask (which correspond to the table)
- * @param mask_img image with the table masked
- * @param rect rectangle in which compute the percentile
- * @return percentile of white pixels in the rect
- * @throw invalid_argument if the image in input is empty
- * @throw invalid_argument if the rect in input is empty
+ * white in the mask (which correspond to the table).
+ * @param mask_img image with the table masked.
+ * @param rect rectangle in which compute the percentile.
+ * @return percentile of white pixels in the rect.
+ * @throw invalid_argument if the image in input is empty.
+ * @throw invalid_argument if the rect in input is empty.
  */
 double computeTablePercentile(const Mat &mask_img, const Rect &rect) {
 
@@ -65,8 +66,8 @@ double computeTablePercentile(const Mat &mask_img, const Rect &rect) {
 }
 
 /**
- * @brief check if two edges are opposite to each other in a quadrangle.
- * Check if two edges are opposite to each other by using the value of their corners
+ * @brief Check if two edges are opposite to each other in a quadrangle.
+ * Check if two edges are opposite to each other by using the value of their corners.
  * @param e1 first edge.
  * @param e2 second edge.
  * @return true if e1 and e2 are opposite to each other, false otherwise
@@ -81,7 +82,7 @@ bool oppositeEdges(const Edge &e1, const Edge &e2) {
 }
 
 /**
- * @brief check if the table image (transformed and cropped) is horizontal
+ * @brief Check if the table image (transformed and cropped) is horizontal.
  * Compute the edges of the image and for each of them compute: the center, the rect around the center,
  * the percentile of background in the rect. Verify which of the four centers are the pools of the longest
  * table edges, using the background percentile.
@@ -136,12 +137,13 @@ bool checkHorizontalTable(const Mat &table_img, Vec<Point2f, 4> corners){
     //waitKey(0);
 
 	//print the rectangles on the pool of the masked img (just for testing)
-
+    /*
     Mat mask_img_rectangles = mask_img.clone();
     for(int i = 0; i < 4; i++) {
         rectangle(mask_img_rectangles, edges[i].center_rect, Scalar(0, 0, 255), 1, LINE_AA);
     }
     //imshow("Rectangles on pools (mask)", mask_img_rectangles);
+    */
 
     //compute the rects with and without the pools
     //compute the percentile of rectangle with color close to the table background

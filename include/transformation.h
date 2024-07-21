@@ -11,7 +11,7 @@
 #include "ball.h"
 
 /**
- * @brief compute the transformation matrix.
+ * @brief Compute the transformation matrix.
  * @param img original image used to check the orientation of the table.
  * @param img_corners corners of the table in the original image.
  * @return transformation matrix.
@@ -20,7 +20,7 @@
 cv::Mat computeTransformation(const cv::Mat& img, cv::Vec<cv::Point2f, 4>  &img_corners);
 
 /**
- * @brief draw the balls and their tracking on the minimap.
+ * @brief Draw the balls and their tracking on the minimap.
  * @param minimap_with_track minimap image in which the tracking lines are kept.
  * @param transform transformation matrix.
  * @param balls vector of balls containing their positions in the original image.

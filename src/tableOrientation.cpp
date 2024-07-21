@@ -17,8 +17,8 @@ struct Edge{
 	Point2f corner1;
 	Point2f corner2;
 	Point2f center;
-	Rect center_rect;
-	double background_percentile;
+	Rect centerRect;
+	double backgroundPercentile;
 };
 
 /**
@@ -30,39 +30,39 @@ struct Edge{
  */
 bool compareByPercentile(const Edge &e1, const Edge &e2)
 {
-	return e1.background_percentile < e2.background_percentile;
+	return e1.backgroundPercentile < e2.backgroundPercentile;
 }
 
 /**
  * @brief Compute the percentile of white pixels in the rectangle.
  * Count the number of pixels of the rect inside the image and the number of pixels which color is
  * white in the mask (which correspond to the table).
- * @param mask_img image with the table masked.
+ * @param maskImg image with the table masked.
  * @param rect rectangle in which compute the percentile.
  * @return percentile of white pixels in the rect.
  * @throw invalid_argument if the image in input is empty.
  * @throw invalid_argument if the rect in input is empty.
  */
-double computeTablePercentile(const Mat &mask_img, const Rect &rect) {
+double computeTablePercentile(const Mat &maskImg, const Rect &rect) {
 
-	if(mask_img.empty())
+	if(maskImg.empty())
 		throw invalid_argument("Empty image in input");
 
 	if(rect.empty())
 		throw invalid_argument("Empty rect in input");
 	double count = 0;
-	double count_tot = 0;
+	double countTot = 0;
 	for(int x = rect.x; x < rect.x + rect.width; x++) {
 		for(int y = rect.y; y < rect.y + rect.height; y++) {
-			if(x >= 0 && x < mask_img.cols && y >= 0 && y < mask_img.rows) {
-				if(mask_img.at<uchar>(y, x) == 255) {
+			if(x >= 0 && x < maskImg.cols && y >= 0 && y < maskImg.rows) {
+				if(maskImg.at<uchar>(y, x) == 255) {
 					count++;
 				}
-				count_tot++;
+				countTot++;
 			}
 		}
 	}
-	return count/count_tot;
+	return count/countTot;
 }
 
 /**
@@ -86,13 +86,13 @@ bool oppositeEdges(const Edge &e1, const Edge &e2) {
  * Compute the edges of the image and for each of them compute: the center, the rect around the center,
  * the percentile of background in the rect. Verify which of the four centers are the pools of the longest
  * table edges, using the background percentile.
- * @param table_img image of the table transformed and cropped to the minimap dimension
- * @param corners corners of the table in the table_img
+ * @param tableImg image of the table transformed and cropped to the minimap dimension
+ * @param corners corners of the table in the tableImg
  * @return true if the image is horizontal, false otherwise
  * @throw invalid_argument if the image in input is empty
  */
-bool checkHorizontalTable(const Mat &table_img, Vec<Point2f, 4> corners){
-	if(table_img.empty())
+bool checkHorizontalTable(const Mat &tableImg, Vec<Point2f, 4> corners){
+	if(tableImg.empty())
 		throw invalid_argument("Empty image in input");
 
 	//compute the centers of each table edge
@@ -111,67 +111,67 @@ bool checkHorizontalTable(const Mat &table_img, Vec<Point2f, 4> corners){
 	}
 
 	//compute the rects around the centers
-	const int RECT_WIDTH = (POOL_DIAMETER_CM/TABLE_LONGEST_EDGE_CM)*table_img.cols;
-	const int RECT_HEIGHT = (POOL_DIAMETER_CM/TABLE_LONGEST_EDGE_CM)*table_img.cols;
+	const int RECT_WIDTH = (POOL_DIAMETER_CM/TABLE_LONGEST_EDGE_CM)*tableImg.cols;
+	const int RECT_HEIGHT = (POOL_DIAMETER_CM/TABLE_LONGEST_EDGE_CM)*tableImg.cols;
 
 	for(int i = 0; i < 4; i++) {
-		edges[i].center_rect = Rect(edges[i].center.x - RECT_WIDTH/2.0, edges[i].center.y - RECT_HEIGHT/2.0, RECT_WIDTH, RECT_HEIGHT);
+		edges[i].centerRect = Rect(edges[i].center.x - RECT_WIDTH/2.0, edges[i].center.y - RECT_HEIGHT/2.0, RECT_WIDTH, RECT_HEIGHT);
 	}
 
 	//print the rectangles on the pools
-	Mat img_pools_rectangles = table_img.clone();
+	Mat imgPoolsRectangles = tableImg.clone();
 	for(int i = 0; i < 4; i++) {
-		rectangle(img_pools_rectangles, edges[i].center_rect, Scalar(0, 0, 255), 1, LINE_AA);
+		rectangle(imgPoolsRectangles, edges[i].centerRect, Scalar(0, 0, 255), 1, LINE_AA);
 	}
-	//imshow("Rectangles on pools", img_pools_rectangles);
+	//imshow("Rectangles on pools", imgPoolsRectangles);
 
 	// mask the image
-	Mat mask_img;
+	Mat maskImg;
 	Mat frameHSV;
-	Vec2b background_color = mostFrequentHueColor(table_img);
-	cvtColor(table_img, frameHSV, COLOR_BGR2HSV);
-	inRange(frameHSV, Scalar(background_color[0], 50, 90),
-				Scalar(background_color[1], 255, 255), mask_img);
-	//imshow("Mask img", mask_img);
+	Vec2b backgroundColor = mostFrequentHueColor(tableImg);
+	cvtColor(tableImg, frameHSV, COLOR_BGR2HSV);
+	inRange(frameHSV, Scalar(backgroundColor[0], 50, 90),
+				Scalar(backgroundColor[1], 255, 255), maskImg);
+	//imshow("Mask img", maskImg);
 	//waitKey(0);
 
 	//print the rectangles on the pool of the masked img (just for testing)
 	/*
-	Mat mask_img_rectangles = mask_img.clone();
+	Mat maskImgRectangles = maskImg.clone();
 	for(int i = 0; i < 4; i++) {
-		rectangle(mask_img_rectangles, edges[i].center_rect, Scalar(0, 0, 255), 1, LINE_AA);
+		rectangle(maskImgRectangles, edges[i].centerRect, Scalar(0, 0, 255), 1, LINE_AA);
 	}
-	//imshow("Rectangles on pools (mask)", mask_img_rectangles);
+	//imshow("Rectangles on pools (mask)", maskImgRectangles);
 	*/
 
 	//compute the rects with and without the pools
 	//compute the percentile of rectangle with color close to the table background
 	for(int i = 0; i < 4; i++) {
-		edges[i].background_percentile = computeTablePercentile(mask_img, edges[i].center_rect);
+		edges[i].backgroundPercentile = computeTablePercentile(maskImg, edges[i].centerRect);
 	}
 
 	//order the edges by the percentile of background in the rectangle around the center of the edge
-	vector<Edge> ordered_edges;
-	copy(edges.begin(), edges.end(), back_inserter(ordered_edges));
-	sort(ordered_edges.begin(), ordered_edges.end(), compareByPercentile);
+	vector<Edge> orderedEdges;
+	copy(edges.begin(), edges.end(), back_inserter(orderedEdges));
+	sort(orderedEdges.begin(), orderedEdges.end(), compareByPercentile);
 
-	if(oppositeEdges(ordered_edges[0], ordered_edges[1])) {
+	if(oppositeEdges(orderedEdges[0], orderedEdges[1])) {
 		//the ones with "more pool" are opposite edges -> they are the longest edges
-		if(ordered_edges[0].center == edges[0].center || ordered_edges[1].center == edges[0].center)
+		if(orderedEdges[0].center == edges[0].center || orderedEdges[1].center == edges[0].center)
 			return true;
 		else
 			return false;
 	}
-	else if (oppositeEdges(ordered_edges[0], ordered_edges[3])) {
+	else if (oppositeEdges(orderedEdges[0], orderedEdges[3])) {
 		//the one with "more pool" is opposite to the one with "less pool" --> they are not the longest edges
-		if(ordered_edges[0].center == edges[0].center || ordered_edges[3].center == edges[0].center)
+		if(orderedEdges[0].center == edges[0].center || orderedEdges[3].center == edges[0].center)
 			return false;
 		else
 			return true;
 	}
 	else {
 		//there is uncertainty, probably the one with "more pool" is the longest edge
-		if(ordered_edges[0].center == edges[0].center)
+		if(orderedEdges[0].center == edges[0].center)
 			return true;
 		else
 			return false;

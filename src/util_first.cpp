@@ -124,25 +124,25 @@ Vec2b mostFrequentHueColor(const Mat &img){
 /**
  * @brief Create a Output Image object.
  * @param frame input image.
- * @param minimap_with_balls minimap that must be superimposed onto the input image.
+ * @param minimapWithBalls minimap that must be superimposed onto the input image.
  * @param res output image containing the input image with superimposition of the minimap.
- * @throw invalid_argument if frame or minimap_with_balls are empty or if the two images have different number of channels.
+ * @throw invalid_argument if frame or minimapWithBalls are empty or if the two images have different number of channels.
  */
-void createOutputImage(const Mat &frame, const Mat &minimap_with_balls, Mat &res){
+void createOutputImage(const Mat &frame, const Mat &minimapWithBalls, Mat &res){
 
-	if(frame.empty() || minimap_with_balls.empty())
+	if(frame.empty() || minimapWithBalls.empty())
 		throw invalid_argument("Empty frame or minimap in input");
 
-	if(frame.channels() != minimap_with_balls.channels())
+	if(frame.channels() != minimapWithBalls.channels())
 		throw invalid_argument("Different number of channels between the images");
 
-	float scaling_factor = 0.3 * frame.cols / minimap_with_balls.cols;
-	float percentage = (frame.rows - scaling_factor * minimap_with_balls.rows) / frame.rows;
+	float scaling_factor = 0.3 * frame.cols / minimapWithBalls.cols;
+	float percentage = (frame.rows - scaling_factor * minimapWithBalls.rows) / frame.rows;
 	int offset = static_cast<int>(percentage * frame.rows);
 
 	Mat resized;
 	res = frame.clone();
-	resize(minimap_with_balls, resized, Size(), scaling_factor, scaling_factor, INTER_LINEAR);
+	resize(minimapWithBalls, resized, Size(), scaling_factor, scaling_factor, INTER_LINEAR);
 	for(int i = 0; i < resized.rows; i++)
 		for(int j = 0; j < resized.cols; j++)
 			res.at<Vec3b>(i+offset,j) = resized.at<Vec3b>(i,j);

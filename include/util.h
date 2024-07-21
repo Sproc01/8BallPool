@@ -31,11 +31,11 @@ void rotateCornersClockwise(cv::Vec<cv::Point2f, 4> &corners);
 
 /**
  * @brief Compute an interval min/max for the radius with respect to the distance and the perspecdtive of the table
- * @param min_radius parameter that will store the minimum radius.
- * @param max_radius parameter that will store the maximum radius.
- * @param img_corners corners of the table in the frame
+ * @param minRadius parameter that will store the minimum radius.
+ * @param maxRadius parameter that will store the maximum radius.
+ * @param imgCorners corners of the table in the frame
  */
-void radiusInterval(float &min_radius, float &max_radius, const cv::Vec<cv::Point2f, 4>  &img_corners);
+void radiusInterval(float &minRadius, float &maxRadius, const cv::Vec<cv::Point2f, 4>  &imgCorners);
 
 /**
  * @brief calculate the most frequent value of Hue in the input image.
@@ -69,11 +69,11 @@ void equationFormula(float x1, float y1, float x2, float y2, float &a, float &b,
 /**
  * @brief Create a Output Image object.
  * @param frame input image.
- * @param minimap_with_balls minimap that must be superimposed onto the input image.
+ * @param minimapWithBalls minimap that must be superimposed onto the input image.
  * @param res output image containing the input image with superimposition of the minimap.
- * @throw invalid_argument if frame or minimap_with_balls are empty or if the two images have different number of channels.
+ * @throw invalid_argument if frame or minimapWithBalls are empty or if the two images have different number of channels.
  */
-void createOutputImage(const cv::Mat &frame, const cv::Mat &minimap_with_balls, cv::Mat &res);
+void createOutputImage(const cv::Mat &frame, const cv::Mat &minimapWithBalls, cv::Mat &res);
 
 /**
  * @brief do the clustering by using only color information on the input image.

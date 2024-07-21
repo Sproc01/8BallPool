@@ -421,10 +421,9 @@ void detectBalls(const Mat &frame, Table &table){
 	// imshow("Kmeans gray", gray);
 	// imshow("Kmeans", resClustering);
 
-	/*
-	float minRadius, maxRadius;
-	radiusInterval(min_temp, max_temp, tableCorners);
-	*/
+	/*float minRadius, maxRadius;
+	radiusInterval(min_temp, max_temp, tableCorners);*/
+
 	// Hough transform
 	HoughCircles(gray, circles, HOUGH_GRADIENT, INVERSE_ACCUMULATOR_RESOLUTION,
 					MIN_DISTANCE, HOUGH_PARAM1, HOUGH_PARAM2, MIN_RADIUS, MAX_RADIUS);
@@ -440,7 +439,6 @@ void detectBalls(const Mat &frame, Table &table){
 	double meanRadius = 0;
 	int counter = 0;
 	for(size_t i = 0; i < circles.size(); i++ ){
-
 		c = circles[i];
 	 	center = Point(c[0], c[1]);
 	 	radius = c[2];

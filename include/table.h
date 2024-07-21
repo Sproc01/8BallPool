@@ -15,7 +15,7 @@
  */
 class Table {
 	cv::Vec<cv::Point2f, 4> boundaries_;
-	cv::Vec2b colorRange_;	// color range of the table expressed as the 2 V boundaries of the range in HSV format
+	cv::Vec2b colorRange_;	// color range of the table expressed as the 2 Hue boundaries of the range in HSV format
 	cv::Mat transform_;
 	cv::Ptr<std::vector<Ball>> balls_;
 
@@ -23,7 +23,7 @@ public:
 	/**
 	* @brief Constructor of Table when the boundaries, the color of the table, the transformation matrix and the vector of balls are known.
 	* @param boundaries boundaries of the table.
-	* @param colorRange color range of the table. Expressed as the 2 V boundaries of the range in HSV format.
+	* @param colorRange color range of the table. Expressed as the 2 Hue boundaries of the range in HSV format.
 	* @param transform transformation matrix.
 	* @param balls vector of balls.
 	*/
@@ -31,14 +31,14 @@ public:
 	/**
 	* @brief Constructor of Table when the boundaries, the color of the table and the transformation matrix are known.
 	* @param boundaries boundaries of the table.
-	* @param colorRange color range of the table. Expressed as the 2 V boundaries of the range in HSV format.
+	* @param colorRange color range of the table. Expressed as the 2 Hue boundaries of the range in HSV format.
 	* @param transform transformation matrix.
 	*/
 	Table(cv::Vec<cv::Point2f, 4> boundaries, cv::Vec2b colorRange, cv::Mat transform): Table(boundaries, colorRange, transform, nullptr) {}
 	/**
 	* @brief Constructor of Table when the boundaries and the color of the table are known.
 	* @param boundaries boundaries of the table.
-	* @param colorRange color range of the table. Expressed as the 2 V boundaries of the range in HSV format.
+	* @param colorRange color range of the table. Expressed as the 2 Hue boundaries of the range in HSV format.
 	*/
 	Table(cv::Vec<cv::Point2f, 4> boundaries, cv::Vec2b colorRange): Table(boundaries, colorRange, cv::Mat::eye(3, 3, CV_64F)) {}
 	/**
@@ -61,7 +61,7 @@ public:
 
 	/**
 	 * @brief Return the color range of the Table.
-	 * @return the color range of the Table expressed as the 2 V boundaries of the range in HSV format.
+	 * @return the color range of the Table expressed as the 2 Hue boundaries of the range in HSV format.
 	 * @throw runtime_error if the color is uninitialized.
 	 */
 	cv::Vec2b getColorRange() const;
@@ -88,7 +88,7 @@ public:
 
 	/**
 	 * @brief Set the color range of the Table.
-	 * @param colorRange color range of the Table expressed as the 2 V boundaries of the range in HSV format.
+	 * @param colorRange color range of the Table expressed as the 2 Hue boundaries of the range in HSV format.
 	 */
 	void setColorRange(cv::Vec2b colorRange);
 

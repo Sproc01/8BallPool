@@ -63,16 +63,16 @@ void rotateCornersClockwise(Vec<Point2f, 4> &corners) {
 }
 
 /**
- * @brief Compute an interval min/max for the radius with respect to the distance and the perspecdtive of the table
+ * @brief Compute an interval min/max for the radius with respect to the distance and the perspective of the table
  * To compute the interval, first a mean value is computed by using a proportion between the diagonal of the table in
  * pixel and the dimensions of the diagonal of the table and the balls in centimeters. Then, a percentage of slope
  * between the camera direction and the table is computed, by using one of the angle that the detected table creates;
  * this angle is compared with the PI/2 angle, and a value between 0 and 1 is computed. If the value is 1, then the
- * camera is parallel to the table, if it is 0, then the camera is perpendicular to it. To compute the final interval, the
+ * camera is parallel to the table, if it is 0, then the camera is perpendicular to it. For computing the final interval, the
  * minimum and the maximum value are computed by subtracting and incrementing a value, which increases with the percentage
  * of slope (more the slope, more the variance), and a precision value is added due to some other variables in the images.
- * @param minRadius parameter that will store the minimum radius.
- * @param maxRadius parameter that will store the maximum radius.
+ * @param minRadius parameter to store the minimum radius.
+ * @param maxRadius parameter to store the maximum radius.
  * @param imgCorners corners of the table in the frame
  */
 void radiusInterval(float &minRadius, float &maxRadius, const Vec<Point2f, 4>  &imgCorners) {

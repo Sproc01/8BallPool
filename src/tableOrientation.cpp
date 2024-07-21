@@ -11,7 +11,7 @@ using namespace cv;
 using namespace std;
 
 /*
- Edge that contains the corners, its center, a rect centered in its center and the percentile of background in the rectangle.
+ Edge that contains the corners, its center, a rectangle centered in its center and the percentile of background in the rectangle.
  */
 struct Edge{
 	Point2f corner1;
@@ -35,8 +35,8 @@ bool compareByPercentile(const Edge &e1, const Edge &e2)
 
 /**
  * @brief Compute the percentile of white pixels in the rectangle.
- * Count the number of pixels of the rect inside the image and the number of pixels which color is
- * white in the mask (which correspond to the table).
+ * Count the number of pixels of the rectangle inside the image and the number of pixels which color is
+ * white in the mask (which corresponds to the table).
  * @param maskImg image with the table masked.
  * @param rect rectangle in which compute the percentile.
  * @return percentile of white pixels in the rect.

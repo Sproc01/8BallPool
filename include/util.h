@@ -30,9 +30,9 @@ cv::Vec3b getColorFromCategory(const Category &category);
 void rotateCornersClockwise(cv::Vec<cv::Point2f, 4> &corners);
 
 /**
- * @brief Compute an interval min/max for the radius with respect to the distance and the perspecdtive of the table
- * @param minRadius parameter that will store the minimum radius.
- * @param maxRadius parameter that will store the maximum radius.
+ * @brief Compute an interval min/max for the radius with respect to the distance and the perspective of the table
+ * @param minRadius parameter to store the minimum radius.
+ * @param maxRadius parameter to store the maximum radius.
  * @param imgCorners corners of the table in the frame
  */
 void radiusInterval(float &minRadius, float &maxRadius, const cv::Vec<cv::Point2f, 4>  &imgCorners);

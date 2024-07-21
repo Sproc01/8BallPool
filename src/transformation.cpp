@@ -39,7 +39,7 @@ Mat imgTransformedCropped(const Mat &img, const Mat &transform) {
 /**
  * @brief Compute the transformation matrix.
  * Compute the transformation matrix using the corners of the table in the original image and the corners of the table
- * in the minimap image, and with that compute the corrispondent perspective transform. After the first computation,
+ * in the minimap image, and with that compute the corrisponding perspective transform. After the first computation,
  * the correctness of the table orientation is checked, if it is not correct, the transformation is recomputed with a
  * new corners order.
  * @param img original image used to check the orientation of the table.
@@ -123,7 +123,7 @@ Mat drawMinimap(Mat &minimapWithTrack, const Mat &transform, Ptr<vector<Ball>> b
 
 	//draw tracking lines
 	for(int i = 0; i < balls->size(); i++) {
-		//check if a precedent ball exists, otherwise do not draw a line
+		//check if a previous ball exists, otherwise do not draw a line
 		if(imgPrecBallsPos[i].x != -1 && imgPrecBallsPos[i].y != -1 && (balls->at(i)).getVisibility()) {
 			if(pointPolygonTest	(MAP_CORNERS, mapBallsPos[i], false) >= 0
 				&& pointPolygonTest	(MAP_CORNERS, mapPrecBallsPos[i], false) >= 0) {

@@ -122,7 +122,7 @@ int main(int argc, char *argv[]) {
 	tracker.trackAll(frame);
 
 	//VIDEO WITH MINIMAP
-	time_point start = high_resolution_clock::now();
+	// time_point start = high_resolution_clock::now();
 	bool ret = vid.read(frame);
 	while (vid.isOpened() && ret) { // work on middle frames
 
@@ -136,7 +136,7 @@ int main(int argc, char *argv[]) {
 		// show status every X frame
 		if (frameCount % FRAME_VISUALITAION_STEP == 0) {
 			// enlarge and shrink are needed because for the tracking
-			// we enlarge the bounding box to have a better detection
+			// we enlarge the bounding box to have better tracking performances
 			for(int i = 0; i < table.ballsPtr()->size(); i++){
 				Rect r = table.ballsPtr()->at(i).getBbox();
 				shrinkRect(r, 10);
@@ -161,9 +161,9 @@ int main(int argc, char *argv[]) {
 		ret = vid.read(frame);
 	}
 
-	time_point stop = high_resolution_clock::now();
-	minutes duration = duration_cast<minutes>(stop - start);
-	cout << "Time to create the video: " << duration.count() << " minutes" << endl;
+	// time_point stop = high_resolution_clock::now();
+	// minutes duration = duration_cast<minutes>(stop - start);
+	// cout << "Time to create the video: " << duration.count() << " minutes" << endl;
 	vidOutput.release();
 
 	imwrite("../Output/minimap/" + videoName + "_minimap.png", minimapWithBalls);

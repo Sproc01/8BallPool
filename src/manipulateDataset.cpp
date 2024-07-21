@@ -131,6 +131,7 @@ void rotateVideo() {
 
 	do {
 		rotate(frame, frame, ROTATE_90_CLOCKWISE);
+		out.write(frame);
 	} while(!in.read(frame));
 
 	in.release();
@@ -191,7 +192,7 @@ void rotateVideo() {
 
 void cropVideo () {
 	Size outputSize(900, 576);
-	filesystem::path filename("../Dataset/game1_clip1_1000_576/game1_clip1_1000_576.mp4");
+	filesystem::path filename("../Dataset/game1_clip1_900_576/game1_clip1_900_576.mp4");
 
 	// VIDEO
 	VideoCapture in(filename.string());
@@ -202,8 +203,10 @@ void cropVideo () {
 	VideoWriter out(filename.string()+"temp.mp4", VideoWriter::fourcc('m', 'p', '4', 'v'),  in.get(CAP_PROP_FPS), outputSize);
 
 	Mat frame;
+	Mat prevFrame;
 	while (in.read(frame)) {
 		out.write(frame(Rect((frame.cols-outputSize.width)/2, (frame.rows-outputSize.height)/2, outputSize.width, outputSize.height)));
+		frame.copyTo(prevFrame);
 	}
 
 	in.release();
@@ -223,10 +226,10 @@ void cropVideo () {
 	Mat mask_first = imread(mask_first_filename, IMREAD_GRAYSCALE);
 	Mat mask_last = imread(mask_last_filename, IMREAD_GRAYSCALE);
 
-	imwrite(frame_first_filename, frame_first(Rect((frame_first.cols-outputSize.width)/2, (frame.rows-outputSize.height)/2, outputSize.width, outputSize.height)));
-	imwrite(frame_last_filename, frame_last(Rect((frame_last.cols-outputSize.width)/2, (frame.rows-outputSize.height)/2, outputSize.width, outputSize.height)));
-	imwrite(mask_first_filename, mask_first(Rect((mask_first.cols-outputSize.width)/2, (frame.rows-outputSize.height)/2, outputSize.width, outputSize.height)));
-	imwrite(mask_last_filename, mask_last(Rect((mask_last.cols-outputSize.width)/2, (frame.rows-outputSize.height)/2, outputSize.width, outputSize.height)));
+	imwrite(frame_first_filename, frame_first(Rect((frame_first.cols-outputSize.width)/2, (prevFrame.rows-outputSize.height)/2, outputSize.width, outputSize.height)));
+	imwrite(frame_last_filename, frame_last(Rect((frame_last.cols-outputSize.width)/2, (prevFrame.rows-outputSize.height)/2, outputSize.width, outputSize.height)));
+	imwrite(mask_first_filename, mask_first(Rect((mask_first.cols-outputSize.width)/2, (prevFrame.rows-outputSize.height)/2, outputSize.width, outputSize.height)));
+	imwrite(mask_last_filename, mask_last(Rect((mask_last.cols-outputSize.width)/2, (prevFrame.rows-outputSize.height)/2, outputSize.width, outputSize.height)));
 
 
 	// BBOXES
@@ -339,7 +342,7 @@ void resizeVideo () {
 int main() {
 	/* PREPARE FOLDERS AND VIDEO FILES WITH CHANGED NAMES FIRST */
 	// rotateVideo();
-	// cropVideo();
-	resizeVideo();
+	cropVideo();
+	// resizeVideo();
 	return 0;
 }

@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
 		videoPath = filesystem::path(argv[1]);
 	}
 	else if (argc == 1) { //TODO: remove at the end
-		videoPath = filesystem::path("../Dataset/game1_clip2/game1_clip2.mp4");
+		videoPath = filesystem::path("../Dataset/game3_clip2/game3_clip2.mp4");
 	}
 	else {
 		cout << "Error of number of parameters: insert one parameter" << endl;
@@ -130,28 +130,30 @@ int main(int argc, char *argv[]) {
 		createOutputImage(frame, minimapWithBalls, res);
 		//imshow("result", res);
 		vidOutput.write(res);
-		// show minimap status every 60 frame
-		// if (frameCount % 60 == 0) {
-		// 	for(int i = 0; i < table.ballsPtr()->size(); i++){
-		// 		Rect r = table.ballsPtr()->at(i).getBbox();
-		// 		shrinkRect(r, 10);
-		// 		table.ballsPtr()->at(i).setBbox(r);
-		// 	}
-		// 	segmentTable(frame, table, segmented);
-		// 	segmentBalls(segmented, table.ballsPtr(), segmented);
-		// 	drawBoundingBoxes(frame, table, detected);
-		// 	imshow("frame " + to_string(frameCount), frame);
-		// 	imshow("segmentedBalls " + to_string(frameCount), segmented);
-		// 	imshow("detected balls " + to_string(frameCount), detected);
-		// 	imshow("Minimap with balls " + to_string(frameCount), minimapWithBalls);
-		// 	for(int i = 0; i < table.ballsPtr()->size(); i++){
-		// 		Rect r = table.ballsPtr()->at(i).getBbox();
-		// 		enlargeRect(r, 10);
-		// 		table.ballsPtr()->at(i).setBbox(r);
-		// 	}
-		// 	waitKey(0);
-		// }
-		//waitKey(0);
+		// show status every X frame
+		if (frameCount % 100 == 0) {
+			// enlarge and shrink are needed because for the tracking
+			// we enlarge the bounding box to have a better detection
+			for(int i = 0; i < table.ballsPtr()->size(); i++){
+				Rect r = table.ballsPtr()->at(i).getBbox();
+				shrinkRect(r, 10);
+				table.ballsPtr()->at(i).setBbox(r);
+			}
+			segmentTable(frame, table, segmented);
+			segmentBalls(segmented, table.ballsPtr(), segmented);
+			drawBoundingBoxes(frame, table, detected);
+			imshow("frame " + to_string(frameCount), frame);
+			imshow("segmentedBalls " + to_string(frameCount), segmented);
+			imshow("detected balls " + to_string(frameCount), detected);
+			imshow("Minimap with balls " + to_string(frameCount), minimapWithBalls);
+			for(int i = 0; i < table.ballsPtr()->size(); i++){
+				Rect r = table.ballsPtr()->at(i).getBbox();
+				enlargeRect(r, 10);
+				table.ballsPtr()->at(i).setBbox(r);
+			}
+			waitKey(0);
+		}
+
 		previousFrame = frame.clone();
 		ret = vid.read(frame);
 	}
@@ -184,6 +186,6 @@ int main(int argc, char *argv[]) {
 	// write to a temp file first, then rename to the final name
 	filesystem::copy(tempOutputPath, outputPath, filesystem::copy_options::overwrite_existing);
 	filesystem::remove(tempOutputPath);
-	//waitKey(0);
+	waitKey(0);
 	return 0;
 }

@@ -32,9 +32,6 @@ void enlargeRect(Rect &rect, int px) {
  * @param px number of pixels to remove to each side.
  */
 void shrinkRect(Rect &rect, int px) {
-	if (rect.x - px < 0 || rect.y - px < 0) {
-		px = std::min(rect.x, rect.y);
-	}
 	rect.x += px;
 	rect.y += px;
 	rect.width -= 2 * px;
@@ -285,23 +282,23 @@ void drawBoundingBoxes(const Mat &img, Table &table, Mat &output) {
 	Scalar border_color = Scalar(0, 255, 255); // color of the borders of the table
 	for(const Ball &ball : *table.ballsPtr()) {
 		Rect bbox = ball.getBbox();
-		switch (ball.getCategory())
-		{
-			case WHITE_BALL:
-					rectangle(output, bbox, getColorFromCategory(ball.getCategory()), 1, LINE_AA);
-				break;
-			case BLACK_BALL:
-					rectangle(output, bbox, getColorFromCategory(ball.getCategory()), 1, LINE_AA);
-				break;
-			case SOLID_BALL:
-					rectangle(output, bbox, getColorFromCategory(ball.getCategory()), 1, LINE_AA);
-				break;
-			case STRIPED_BALL:
-					rectangle(output, bbox, getColorFromCategory(ball.getCategory()), 1, LINE_AA);
-				break;
-			default:
-				break;
-		}
+		if(ball.getVisibility())
+			switch (ball.getCategory()){
+				case WHITE_BALL:
+						rectangle(output, bbox, getColorFromCategory(ball.getCategory()), 1, LINE_AA);
+					break;
+				case BLACK_BALL:
+						rectangle(output, bbox, getColorFromCategory(ball.getCategory()), 1, LINE_AA);
+					break;
+				case SOLID_BALL:
+						rectangle(output, bbox, getColorFromCategory(ball.getCategory()), 1, LINE_AA);
+					break;
+				case STRIPED_BALL:
+						rectangle(output, bbox, getColorFromCategory(ball.getCategory()), 1, LINE_AA);
+					break;
+				default:
+					break;
+			}
 	}
 
 	Vec<Point2f, 4> corners = table.getBoundaries();

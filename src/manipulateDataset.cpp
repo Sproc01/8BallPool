@@ -336,9 +336,10 @@ void resizeVideo () {
 	}
 }
 
-void main() {
+int main() {
 	/* PREPARE FOLDERS AND VIDEO FILES WITH CHANGED NAMES FIRST */
 	// rotateVideo();
 	// cropVideo();
 	resizeVideo();
+	return 0;
 }

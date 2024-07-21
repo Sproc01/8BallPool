@@ -92,7 +92,7 @@ target_link_libraries(${PROJECT_NAME}
     Transformation
     Tracking
     Metrics
-    ImageRotation
+    ImageStandardization
     Utils
 )
 

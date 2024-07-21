@@ -8,7 +8,7 @@
 using namespace std;
 using namespace cv;
 
-// TODO FIX to accept images with aspect ratio > 16/9
+// TODO FIX to accept images with aspect ratio > 16/9 (borders > 0 -> black borders; borders < 0 -> additional image length in sides)
 void calculateStandardizationParameters(const Mat &img, int targetWidth, int targetHeight, bool &toRotate, bool &toResize, short &leftBorderLength, short &rightBorderLength) {
 	// TODO see if it is possible to avoid cloning the image so many times
 	Mat test = img.clone();

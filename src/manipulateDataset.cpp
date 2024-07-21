@@ -122,7 +122,7 @@ void rotateVideo() {
 	// VIDEO
 	VideoCapture in(filename.string());
 	Mat frame;
-	if (!in.isOpened() && !in.read(frame)){
+	if (!in.isOpened() || !in.read(frame)){
 		throw invalid_argument("Video not found");
 	}
 
@@ -132,7 +132,7 @@ void rotateVideo() {
 	do {
 		rotate(frame, frame, ROTATE_90_CLOCKWISE);
 		out.write(frame);
-	} while(!in.read(frame));
+	} while(in.read(frame));
 
 	in.release();
 	out.release();
@@ -260,6 +260,7 @@ void cropVideo () {
 	}
 }
 
+
 void resizeVideo () {
 	float ratio = 2;
 	filesystem::path filename("../Dataset/game1_clip1_2048_1152/game1_clip1_2048_1152.mp4");
@@ -267,7 +268,7 @@ void resizeVideo () {
 	// VIDEO
 	VideoCapture in(filename.string());
 	Mat frame;
-	if (!in.isOpened() & !in.read(frame)){
+	if (!in.isOpened() || !in.read(frame)){
 		throw invalid_argument("Video not found");
 	}
 
@@ -341,8 +342,8 @@ void resizeVideo () {
 
 int main() {
 	/* PREPARE FOLDERS AND VIDEO FILES WITH CHANGED NAMES FIRST */
-	// rotateVideo();
-	cropVideo();
+	rotateVideo();
+	// cropVideo();
 	// resizeVideo();
 	return 0;
 }

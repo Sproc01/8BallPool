@@ -46,7 +46,7 @@ void doInscriptImage(Mat &img, int targetWidth, int targetHeight, const bool &to
 	}
 
 	if (toResize) {
-		resize(img, img, Size(round(targetHeight/targetWidth * img.cols), targetHeight));
+		resize(img, img, Size(round(static_cast<double>(targetHeight)/targetWidth * img.cols), targetHeight), 0, 0);
 	}
 
 	if (leftBorderLength > 0 || rightBorderLength > 0) {

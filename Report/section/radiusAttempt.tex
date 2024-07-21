@@ -2,7 +2,7 @@
 
 To try to increase the performance of the ball detection, it has been attempted to compute an interval of values for the ball radius relative to the pixels of the image and the position of the camera with respect to the table; this would have been used in the \texttt{HoughCircles()}. For that purpose, the \texttt{radiusInterval()} method has been written. This method starts by computing the mean radius value by using a proportion between the diagonal of the table in pixels and the approximate dimensions of the diagonal of the table and the balls in centimeters. 
 \begin{equation}
-	mean\_radius =  \frac{ball\_radius\_cm}{table\_diagonal\_cm} longest\_diagonal\_px
+	mean\_radius =  \frac{ball\_radius\_cm}{table\_diagonal\_cm} \times longest\_diagonal\_px
 \end{equation}
 Then, a percentage of the slope between the camera direction and the table has been computed, by using one of the angles (<90°) that the detected table creates; this angle is compared with the PI/2 angle, and a value between 0 and 1 is computed:
 
@@ -18,13 +18,10 @@ Then, a percentage of the slope between the camera direction and the table has b
 	
 To compute the final interval, the minimum and maximum values are computed by subtracting and incrementing a value, which increases with the percentage of slope (more the slope, more the variance) by multiplying the percentage of slope with the mean radius previously computed, and a precision value is added due to some other variables in the images.
 \begin{equation}
-	half\_interval = mean\_radius*percentage\_slope + prec
+	min\_radius = mean\_radius - mean\_radius \times percentage\_slope - precision
 \end{equation}
 \begin{equation}
-	min\_radius = mean\_radius - half\_interval
-\end{equation}
-\begin{equation}
-	max\_radius = mean\_radius + half\_interval
+	max\_radius = mean\_radius + mean\_radius \times percentage\_slope + precision
 \end{equation}
 
 \

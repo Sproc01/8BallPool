@@ -1,25 +1,23 @@
 \subsection{Video creation}
-To create the output video we take the minimap and the current frame and Michele decide to do as follows:
-At the beginning the function compute two values: the scaling factor for the minimap and the offset
-(the first row where the minimap is placed). For the scaling factor Michele thought that
-the minimap should have 0.3 of the total columns of the frame, so the scaling factor is computed as follows:
-\begin{equation}
-	scaling\_factor = \frac{(0.3 \times frame.col)}{minimap\_with\_balls.cols}
-\end{equation}
-Instead for the offset, Michele thought that the minimap should be placed at the bottom right of the frame
-and it must be attached to the bottom border so first a factor is computed as follows:
-\begin{equation}
-    value = scaling\_factor \times minimap\_with\_balls.rows
-\end{equation}
-\begin{equation}
-    percentage = \frac{frame.rows - value}{frame.rows}
-\end{equation}
-Then the offset is computed as follows:
-\begin{equation}
-	offset = percentage \times frame.rows
-\end{equation}
-After that the minimap is resized and placed in bottom right corner of the output frame that
-is saved in the output video.
-To avoid creating the output video file and then run in some exception resulting in a not readable file,
-Alberto thought about using a temporary file and then rename it to the output file only at the end where
-it is sure that the file is readable.
+To create the output video Michele used the \texttt{VideoWriter} class of OpenCV.
+For each frame of the input video tracking is performed and the minimap is created, then the minimap is superimposed on the frame and the frame is saved in the output video.
+
+To avoid creating the output video file and then run in some exception resulting in a non-readable file, Alberto thought about using a temporary file and then renaming it to the output file only at the end if no exception has been thrown and the program is sure that the file is complete and readable.
+
+% To create the output video we take the minimap and the current frame and Michele decide to do as follows:
+% At the beginning the function computes two values: the scaling factor for the minimap and the offset (the first row where the minimap is placed). For the scaling factor Michele thought that the minimap should have 0.3 of the total columns of the frame, so the scaling factor is computed as follows:
+% \begin{equation}
+% 	scaling\_factor = \frac{(0.3 \times frame.col)}{minimap\_with\_balls.cols}
+% \end{equation}
+% Instead for the offset, Michele thought that the minimap should be placed at the bottom left of the frame and it must be attached to the bottom border so first a factor is computed as follows:
+% \begin{equation}
+% 	value = scaling\_factor \times minimap\_with\_balls.rows
+% \end{equation}
+% \begin{equation}
+% 	percentage = \frac{frame.rows - value}{frame.rows}
+% \end{equation}
+% Then the offset is computed as follows:
+% \begin{equation}
+% 	offset = percentage \times frame.rows
+% \end{equation}
+% After that the minimap is resized and placed in bottom right corner of the output frame that is saved in the output video.

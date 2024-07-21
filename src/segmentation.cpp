@@ -59,16 +59,13 @@ void segmentTable(const Mat &frame, const Table& table, Mat& segmented){
 	for(int i = frame.rows/4; i < 3*frame.rows/4; i++)
 		for(int j = frame.cols/4; j < 3*frame.cols/4; j++)
 			if(polyImage.at<uchar>(i,j) == 255 && mask.at<uchar>(i,j) == 255){
-
 				color = clustered.at<Vec3b>(i, j);
 				break;
 			}
 
 	segmented = Mat::zeros(frame.size(), CV_8UC3);
 	for(int i = 0; i < segmented.rows; i++){
-
 		for(int j = 0; j < segmented.cols; j++){
-
 			if(polyImage.at<uchar>(i, j) == 255 && (clustered.at<Vec3b>(i, j) == color || mask.at<uchar>(i,j) == 255))
 				segmented.at<Vec3b>(i, j) = PLAYING_FIELD_BGR_COLOR;
 			else

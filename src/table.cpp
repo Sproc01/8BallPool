@@ -22,7 +22,7 @@ Vec<Point2f, 4> Table::getBoundaries() const {
 
 /**
  * @brief Return the color range of the Table.
- * @return the color range of the Table expressed as the 2 V boundaries of the range in HSV format.
+ * @return the color range of the Table expressed as the 2 Hue boundaries of the range in HSV format.
  * @throw runtime_error if the color is uninitialized.
  */
 Vec2b Table::getColorRange() const {
@@ -62,7 +62,7 @@ void Table::setBoundaries(const Vec<Point2f, 4> &boundaries) {
 
 /**
  * @brief Set the color range of the Table.
- * @param colorRange color range of the Table expressed as the 2 V boundaries of the range in HSV format.
+ * @param colorRange color range of the Table expressed as the 2 Hue boundaries of the range in HSV format.
  */
 void Table::setColorRange(Vec2b colorRange) { // NOLINT(*-unnecessary-value-param)
 	colorRange_ = colorRange;

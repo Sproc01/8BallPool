@@ -94,23 +94,23 @@ int main(int argc, char *argv[]) {
 		cout << "IoU for category " << c << ": " << metricsIoU[c] << endl;
 
 	//TRANSFORMATION
-	Vec<Point2f, 4> img_corners = table.getBoundaries();
-	table.setTransform(computeTransformation(segmented, img_corners));
-	table.setBoundaries(img_corners);
+	Vec<Point2f, 4> imgCorners = table.getBoundaries();
+	table.setTransform(computeTransformation(segmented, imgCorners));
+	table.setBoundaries(imgCorners);
 
 	//MINIMAP
 	// The original is the png provided but we converted it to an header
 	// Mat minimap = imread(MINIMAP_PATH);
 	vector<unsigned char> minimapVec(MINIMAP_DATA, MINIMAP_DATA + MINIMAP_DATA_SIZE);
 	Mat minimap = imdecode(minimapVec, IMREAD_COLOR);
-	Mat minimap_with_track = minimap.clone();
-	Mat minimap_with_balls = minimap.clone();
+	Mat minimapWithTrack = minimap.clone();
+	Mat minimapWithBalls = minimap.clone();
 	// imshow("minimap", minimap);
 
 	Mat transform = table.getTransform();
-	minimap_with_balls = drawMinimap(minimap_with_track, transform, table.ballsPtr());
-	//imshow("Minimap with balls", minimap_with_balls);
-	createOutputImage(frame, minimap_with_balls, res);
+	minimapWithBalls = drawMinimap(minimapWithTrack, transform, table.ballsPtr());
+	//imshow("Minimap with balls", minimapWithBalls);
+	createOutputImage(frame, minimapWithBalls, res);
 	//imshow("result", res);
 	vidOutput.write(res);
 
@@ -126,8 +126,8 @@ int main(int argc, char *argv[]) {
 		++frameCount;
  		//VIDEO WITH MINIMAP
 		tracker.trackAll(frame);
-		minimap_with_balls = drawMinimap(minimap_with_track, transform, table.ballsPtr());
-		createOutputImage(frame, minimap_with_balls, res);
+		minimapWithBalls = drawMinimap(minimapWithTrack, transform, table.ballsPtr());
+		createOutputImage(frame, minimapWithBalls, res);
 		//imshow("result", res);
 		vidOutput.write(res);
 		// show minimap status every 60 frame
@@ -143,7 +143,7 @@ int main(int argc, char *argv[]) {
 		// 	imshow("frame " + to_string(frameCount), frame);
 		// 	imshow("segmentedBalls " + to_string(frameCount), segmented);
 		// 	imshow("detected balls " + to_string(frameCount), detected);
-		// 	imshow("Minimap with balls " + to_string(frameCount), minimap_with_balls);
+		// 	imshow("Minimap with balls " + to_string(frameCount), minimapWithBalls);
 		// 	for(int i = 0; i < table.ballsPtr()->size(); i++){
 		// 		Rect r = table.ballsPtr()->at(i).getBbox();
 		// 		enlargeRect(r, 10);
@@ -161,7 +161,7 @@ int main(int argc, char *argv[]) {
 	cout << "Time to create the video: " << duration.count() << " minutes" << endl;
 	vidOutput.release();
 
-	imwrite("../Output/minimap/" + videoName + "_minimap.png", minimap_with_balls);
+	imwrite("../Output/minimap/" + videoName + "_minimap.png", minimapWithBalls);
 
 	// work on last frame
 	table.clearBalls();

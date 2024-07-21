@@ -431,7 +431,7 @@ void detectBalls(const Mat &frame, Table &table){
 	//imshow("Kmeans", resClustering);
 
 	/*
-	float min_radius, max_radius;
+	float minRadius, maxRadius;
 	radiusInterval(min_temp, max_temp, tableCorners);
 	*/
 	// Hough transform

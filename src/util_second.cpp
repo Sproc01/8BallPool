@@ -14,13 +14,13 @@ using namespace cv;
  * @return the point which is the center of p1 and p2.
  */
 Point2f getCenter(const Point2f &p1, const Point2f &p2) {
-	int dx_half = abs(p1.x - p2.x)/2;
-	int dy_half = abs(p1.y - p2.y)/2;
+	int dxHalf = abs(p1.x - p2.x)/2;
+	int dyHalf = abs(p1.y - p2.y)/2;
 	if(p1.x > p2.x)
-		dx_half *= -1;
+		dxHalf *= -1;
 	if(p1.y > p2.y)
-		dy_half *= -1;
-	return Point2f(p1.x + dx_half, p1.y + dy_half);
+		dyHalf *= -1;
+	return Point2f(p1.x + dxHalf, p1.y + dyHalf);
 }
 
 /**
@@ -49,15 +49,15 @@ Vec3b getColorFromCategory(const Category &category) {
  * @param corners vector of four corners.
  */
 void rotateCornersClockwise(Vec<Point2f, 4> &corners) {
-	Vec<Point2f, 4> img_vertices_temp = corners;
+	Vec<Point2f, 4> imgVerticesTemp = corners;
 	for(int i = 0; i < 4; i++) {
 		if(i+1 < 4) {
-			corners[i].x = img_vertices_temp[i+1].x;
-			corners[i].y = img_vertices_temp[i+1].y;
+			corners[i].x = imgVerticesTemp[i+1].x;
+			corners[i].y = imgVerticesTemp[i+1].y;
 		}
 		else {
-			corners[i].x = img_vertices_temp[0].x;
-			corners[i].y = img_vertices_temp[0].y;
+			corners[i].x = imgVerticesTemp[0].x;
+			corners[i].y = imgVerticesTemp[0].y;
 		}
 	}
 }
@@ -71,47 +71,47 @@ void rotateCornersClockwise(Vec<Point2f, 4> &corners) {
  * camera is parallel to the table, if it is 0, then the camera is perpendicular to it. To compute the final interval, the
  * minimum and the maximum value are computed by subtracting and incrementing a value, which increases with the percentage
  * of slope (more the slope, more the variance), and a precision value is added due to some other variables in the images.
- * @param min_radius parameter that will store the minimum radius.
- * @param max_radius parameter that will store the maximum radius.
- * @param img_corners corners of the table in the frame
+ * @param minRadius parameter that will store the minimum radius.
+ * @param maxRadius parameter that will store the maximum radius.
+ * @param imgCorners corners of the table in the frame
  */
-void radiusInterval(float &min_radius, float &max_radius, const Vec<Point2f, 4>  &img_corners) {
+void radiusInterval(float &minRadius, float &maxRadius, const Vec<Point2f, 4>  &imgCorners) {
 	//compute longer diagonal
-	float diag1_px = norm(img_corners[0] - img_corners[2]);
-	float diag2_px = norm(img_corners[1] - img_corners[3]);
-	float long_diag_px;
-	if (diag1_px > diag2_px)
-		long_diag_px = diag1_px;
+	float diag1Px = norm(imgCorners[0] - imgCorners[2]);
+	float diag2Px = norm(imgCorners[1] - imgCorners[3]);
+	float longDiagPx;
+	if (diag1Px > diag2Px)
+		longDiagPx = diag1Px;
 	else
-		long_diag_px = diag2_px;
+		longDiagPx = diag2Px;
 
 	//compute mean radius
-	float mean_radius = (BALL_RADIUS_CM/TABLE_DIAMETER_CM) * long_diag_px;
+	float meanRadius = (BALL_RADIUS_CM/TABLE_DIAMETER_CM) * longDiagPx;
 
-	//compute smaller angle (two angles will be <= 90°, the other two will be 180°-min_angle=
-	float angle1 = atan2(img_corners[0].y - img_corners[1].y, img_corners[0].x - img_corners[1].x);
+	//compute smaller angle (two angles will be <= 90°, the other two will be 180°-minAngle=
+	float angle1 = atan2(imgCorners[0].y - imgCorners[1].y, imgCorners[0].x - imgCorners[1].x);
 	angle1 = angle1 >= 0 ? angle1 : abs(angle1) - CV_PI;
-	float angle2 = atan2(img_corners[1].y - img_corners[2].y, img_corners[1].x - img_corners[2].x);
+	float angle2 = atan2(imgCorners[1].y - imgCorners[2].y, imgCorners[1].x - imgCorners[2].x);
 	angle2 = angle2 >= 0 ? angle2 : abs(abs(angle2) - CV_PI);
-	float min_angle = abs(angle1 - angle2);
-	if(min_angle > (CV_PI/2))
-		min_angle = CV_PI - min_angle;
+	float minAngle = abs(angle1 - angle2);
+	if(minAngle > (CV_PI/2))
+		minAngle = CV_PI - minAngle;
 
 	//compute the percentage of slope
-	float percentage_slope = 1 - (min_angle/(CV_PI/2));
-	//percentage_slope = 1 -> (angle of 180°) the camera is parallel to the table (ideally radius from 0 to infinite)
-	//percentage_slope = 0.5 -> the camera is 45° to the table (radius can change)
-	//percentage_slope = 0 -> (angles of 90°) the camera is perpendicular to the table (ideally radius always mean_radius)
+	float percentageSlope = 1 - (minAngle/(CV_PI/2));
+	//percentageSlope = 1 -> (angle of 180°) the camera is parallel to the table (ideally radius from 0 to infinite)
+	//percentageSlope = 0.5 -> the camera is 45° to the table (radius can change)
+	//percentageSlope = 0 -> (angles of 90°) the camera is perpendicular to the table (ideally radius always meanRadius)
 
 	//compute the minimum and maximum radius
 	const float PRECISION = 1;
-	min_radius = mean_radius - (mean_radius*percentage_slope) - PRECISION;
-	max_radius = mean_radius + (mean_radius*percentage_slope) + PRECISION;
+	minRadius = meanRadius - (meanRadius*percentageSlope) - PRECISION;
+	maxRadius = meanRadius + (meanRadius*percentageSlope) + PRECISION;
 
-	if(abs(min_radius - max_radius) < 3) {
-		min_radius -= 2;
-		max_radius += 2;
+	if(abs(minRadius - maxRadius) < 3) {
+		minRadius -= 2;
+		maxRadius += 2;
 	}
 
-	//cout << "RADIUS: min: " << min_radius << ", medium: " << mean_radius << ", max: " << max_radius << endl;
+	//cout << "RADIUS: min: " << minRadius << ", medium: " << meanRadius << ", max: " << maxRadius << endl;
 }

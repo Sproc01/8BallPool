@@ -30,8 +30,8 @@ Mat imgTransformedCropped(const Mat &img, const Mat &transform) {
 	warpPerspective(img, imgTransformed, transform, Size(MINIMAP_IMG_WIDTH, MINIMAP_IMG_HEIGHT));
 
 	//img transformed cropped
-	Mat imgTransformedCrop = imgTransformed.rowRange(map_corners[0].y, map_corners[3].y)
-											.colRange(map_corners[0].x, map_corners[1].x);
+	Mat imgTransformedCrop = imgTransformed.rowRange(MAP_CORNERS[0].y, MAP_CORNERS[3].y)
+											.colRange(MAP_CORNERS[0].x, MAP_CORNERS[1].x);
 
 	return imgTransformedCrop;
 }
@@ -52,7 +52,7 @@ Mat computeTransformation(const Mat& img, Vec<Point2f, 4>  &imgCorners) {
 		throw invalid_argument("Empty image in input");
 
 	//compute perspective transform
-	Mat transform = getPerspectiveTransform(imgCorners, map_corners);
+	Mat transform = getPerspectiveTransform(imgCorners, MAP_CORNERS);
 
 	//apply transformation considering corners such as top-left is the first one, followed by a long table side
 	Mat tableSegmentedTransformed = imgTransformedCropped(img, transform);
@@ -72,8 +72,8 @@ Mat computeTransformation(const Mat& img, Vec<Point2f, 4>  &imgCorners) {
 		rotateCornersClockwise(imgCorners);
 
 		//compute perspective transform with corners correctly ordered
-		transform = getPerspectiveTransform(imgCorners, map_corners);
-		//imgTransformed = imgTransformedCropped(img, transform, map_corners);
+		transform = getPerspectiveTransform(imgCorners, MAP_CORNERS);
+		//imgTransformed = imgTransformedCropped(img, transform, MAP_CORNERS);
 		//imshow("Img transformed cropped", imgTransformed);
 	}
 	return transform;
@@ -125,8 +125,8 @@ Mat drawMinimap(Mat &minimapWithTrack, const Mat &transform, Ptr<vector<Ball>> b
 	for(int i = 0; i < balls->size(); i++) {
 		//check if a precedent ball exists, otherwise do not draw a line
 		if(imgPrecBallsPos[i].x != -1 && imgPrecBallsPos[i].y != -1 && (balls->at(i)).getVisibility()) {
-			if(pointPolygonTest	(map_corners, mapBallsPos[i], false) >= 0
-				&& pointPolygonTest	(map_corners, mapPrecBallsPos[i], false) >= 0) {
+			if(pointPolygonTest	(MAP_CORNERS, mapBallsPos[i], false) >= 0
+				&& pointPolygonTest	(MAP_CORNERS, mapPrecBallsPos[i], false) >= 0) {
 				line(minimapWithTrack, mapPrecBallsPos[i], mapBallsPos[i], Vec3d(0, 0, 0), 2);
 			}
 			else {
@@ -139,7 +139,7 @@ Mat drawMinimap(Mat &minimapWithTrack, const Mat &transform, Ptr<vector<Ball>> b
 	Mat minimapWithBalls = minimapWithTrack.clone();
 	for(int i = 0; i < balls->size(); i++) {
 		if((balls->at(i)).getVisibility()) {
-			if(pointPolygonTest	(map_corners, mapBallsPos[i], false) >= 0) {
+			if(pointPolygonTest	(MAP_CORNERS, mapBallsPos[i], false) >= 0) {
 				circle(minimapWithBalls, mapBallsPos[i], MAP_BALL_RADIUS, ballColors[i], -1);
 				circle(minimapWithBalls, mapBallsPos[i], MAP_BALL_RADIUS, Vec3d(0, 0, 0), 2);
 			}

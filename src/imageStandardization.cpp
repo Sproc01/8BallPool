@@ -1,6 +1,6 @@
 // Author: Alberto Pasqualetto
 
-#include "imageRotation.h"
+#include "imageStandardization.h"
 
 #include "table.h"
 #include "util.h"

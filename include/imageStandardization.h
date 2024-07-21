@@ -1,7 +1,7 @@
 // Author: Alberto Pasqualetto
 
-#ifndef IMAGEROTATION_H
-#define IMAGEROTATION_H
+#ifndef IMAGESTANDARDIZATION_H
+#define IMAGESTANDARDIZATION_H
 
 #include <opencv2/core/mat.hpp>
 
@@ -16,4 +16,4 @@ void undoInscriptImage(cv::Mat &img, int originalWidth, int originalHeight, cons
 void doInscriptTableObject(Table &table, int targetWidth, int targetHeight, int originalWidth, int originalHeight, const bool &toRotate, const bool &toResize, const short &leftBorderLength, const short &rightBorderLength, bool changeBboxPrec  = false);
 void undoInscriptTableObject(Table &table, int targetWidth, int targetHeight, int originalWidth, int originalHeight, const bool &toRotate, const bool &toResize, const short &leftBorderLength, const short &rightBorderLength, bool changeBboxPrec  = false);
 
-#endif //IMAGEROTATION_H
+#endif //IMAGESTANDARDIZATION_H

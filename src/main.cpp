@@ -10,7 +10,7 @@
 #include "ball.h"
 #include "table.h"
 #include "detection.h"
-#include "imageRotation.h"
+#include "imageStandardization.h"
 #include "segmentation.h"
 #include "transformation.h"
 #include "minimapConstants.h"

@@ -113,7 +113,12 @@ void separateResultGT(const std::vector<std::pair<cv::Rect_<int>, Category>> &gt
 void separateResultBalls(cv::Ptr<std::vector<Ball>> balls, std::vector<Ball> &white, std::vector<Ball> &black,
 							std::vector<Ball> &solid, std::vector<Ball> &striped);
 
-
+/**
+ * @brief Draw the bounding boxes of the balls and the table boundaries on the output image.
+ * @param img input image.
+ * @param table table containing the boundaries and the balls.
+ * @param output output image containing the input image with the bounding boxes.
+ */
 void drawBoundingBoxes(const cv::Mat &img, Table &table, cv::Mat &output);
 
 /**

@@ -198,7 +198,7 @@ double APBallCategory(const Ptr<vector<Ball>> &detectedBalls, const vector<pair<
 	if (detectedBallsBboxesCat.empty() && groundTruthBboxesCat.empty())
 		return 1; // if there are no balls with that category in both gt and detected return 1
 
-	if (detectedBallsBboxesCat.empty() && groundTruthBboxesCat.empty())
+	if (detectedBallsBboxesCat.empty() && !groundTruthBboxesCat.empty())
 		return 0; // if there are no balls with that category in detected but not in gt return 0
 
 	vector<bool> assignedGroundTruths(groundTruthBboxesCat.size(), false);

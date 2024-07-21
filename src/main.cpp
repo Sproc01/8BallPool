@@ -130,26 +130,27 @@ int main(int argc, char *argv[]) {
 		createOutputImage(frame, minimap_with_balls, res);
 		//imshow("result", res);
 		vidOutput.write(res);
-		// show minimap status every 10 frame
-				Rect r = table.ballsPtr()->at(i).getBbox();
-				shrinkRect(r, 10);
-				table.ballsPtr()->at(i).setBbox(r);
-			}
-			segmentTable(frame, table, segmented);
-			segmentBalls(segmented, table.ballsPtr(), segmented);
-			drawBoundingBoxes(frame, table, detected);
-			imshow("segmentedBalls " + to_string(frameCount), segmented);
-			imshow("detected balls " + to_string(frameCount), detected);
-			for(int i = 0; i < table.ballsPtr()->size(); i++){
-			imshow("frame " + to_string(frameCount), frame);
-			imshow("Minimap with balls " + to_string(frameCount), minimap_with_balls);
-			for(int i = 0; i < table.ballsPtr()->size(); i++){
-				Rect r = table.ballsPtr()->at(i).getBbox();
-				enlargeRect(r, 10);
-				table.ballsPtr()->at(i).setBbox(r);
-			}
-			waitKey(0);
-		}
+		// show minimap status every 60 frame
+		// if (frameCount % 60 == 0) {
+		// 	for(int i = 0; i < table.ballsPtr()->size(); i++){
+		// 		Rect r = table.ballsPtr()->at(i).getBbox();
+		// 		shrinkRect(r, 10);
+		// 		table.ballsPtr()->at(i).setBbox(r);
+		// 	}
+		// 	segmentTable(frame, table, segmented);
+		// 	segmentBalls(segmented, table.ballsPtr(), segmented);
+		// 	drawBoundingBoxes(frame, table, detected);
+		// 	imshow("frame " + to_string(frameCount), frame);
+		// 	imshow("segmentedBalls " + to_string(frameCount), segmented);
+		// 	imshow("detected balls " + to_string(frameCount), detected);
+		// 	imshow("Minimap with balls " + to_string(frameCount), minimap_with_balls);
+		// 	for(int i = 0; i < table.ballsPtr()->size(); i++){
+		// 		Rect r = table.ballsPtr()->at(i).getBbox();
+		// 		enlargeRect(r, 10);
+		// 		table.ballsPtr()->at(i).setBbox(r);
+		// 	}
+		// 	waitKey(0);
+		// }
 		//waitKey(0);
 		previousFrame = frame.clone();
 		ret = vid.read(frame);
@@ -165,7 +166,7 @@ int main(int argc, char *argv[]) {
 	// work on last frame
 	table.clearBalls();
 	detectBalls(previousFrame, table);
-	drawBoundingBoxes(frame, table, detected);
+	drawBoundingBoxes(previousFrame, table, detected);
 	imshow("detected balls", detected);
 	segmentTable(previousFrame, table, segmented);
 	segmentBalls(segmented, table.ballsPtr(), segmented);

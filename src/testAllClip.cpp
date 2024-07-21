@@ -9,6 +9,7 @@
 #include "detection.h"
 #include "segmentation.h"
 #include "metrics.h"
+#include "util.h"
 
 using namespace std;
 using namespace cv;
@@ -49,7 +50,7 @@ int main(int argc, char *argv[]){
 		cout << "------ First frame -------" << endl;
 		detectBalls(frame, table);
 		drawBoundingBoxes(frame, table, detected);
-		//imshow("detected balls", detected);
+		imshow("detected balls", detected);
 		imwrite("../Output/Detection"+name[i]+"_detected_balls_first_frame.jpg", detected);
 		segmentTable(frame, table, segmented);
 		segmentBalls(frame, table.ballsPtr(), segmented);
@@ -62,7 +63,7 @@ int main(int argc, char *argv[]){
 
 		for(int c = 0; c < metricsIoU.size(); c++)
 			cout << "IoU for category " << c << ": " << metricsIoU[c] << endl;
-		//waitKey(0);
+		waitKey(0);
 		previousFrame = frame.clone();
 		ret = vid.read(frame);
 		while (vid.isOpened() && ret){
@@ -73,8 +74,8 @@ int main(int argc, char *argv[]){
 		cout << "------ Last frame --------" << endl;
 		table.clearBalls();
 		detectBalls(previousFrame, table);
-		drawBoundingBoxes(frame, table, detected);
-		//imshow("detected balls", detected);
+		drawBoundingBoxes(previousFrame, table, detected);
+		imshow("detected balls", detected);
 		imwrite("../Output/Detection"+name[i]+"_detected_balls_last_frame.jpg", detected);
 		segmentTable(previousFrame, table, segmented);
 		segmentBalls(segmented, table.ballsPtr(), segmented);
@@ -82,13 +83,12 @@ int main(int argc, char *argv[]){
 		//imshow("seg", segmented);
 		metricsAP = compareMetricsAP(table, "../Dataset"+name[i], LAST);
 		metricsIoU = compareMetricsIoU(segmented, "../Dataset"+name[i], LAST);
-
 		for(int c = 0; c < metricsAP.size(); c++)
 			cout << "AP for category " << c+1 << ": " << metricsAP[c] << endl;
 
 		for(int c = 0; c < metricsIoU.size(); c++)
 			cout << "IoU for category " << c << ": " << metricsIoU[c] << endl;
-		//waitKey(0);
+		waitKey(0);
 	}
 	return 0;
 }

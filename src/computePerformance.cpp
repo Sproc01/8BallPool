@@ -87,7 +87,7 @@ int main(){
 		// last frame
 		table.clearBalls();
 		detectBalls(previousFrame, table);
-		drawBoundingBoxes(frame, table, detected);
+		drawBoundingBoxes(previousFrame, table, detected);
 		segmentTable(previousFrame, table, segmented);
 		segmentBalls(segmented, table.ballsPtr(), segmented);
 
@@ -111,12 +111,16 @@ int main(){
 	Ptr<vector<Ball>> detectedBallBlackPtr = makePtr<vector<Ball>>(detectedBallBlack);
 	Ptr<vector<Ball>> detectedBallSolidPtr = makePtr<vector<Ball>>(detectedBallSolid);
 	Ptr<vector<Ball>> detectedBallStripedPtr = makePtr<vector<Ball>>(detectedBallStriped);
-	double mAP = 0;
-	mAP += APBallCategory(detectedBallWhitePtr, groundTruthBboxWhite, WHITE_BALL, 0.5);
-	mAP += APBallCategory(detectedBallBlackPtr, groundTruthBboxBlack, BLACK_BALL, 0.5);
-	mAP += APBallCategory(detectedBallSolidPtr, groundTruthBboxSolid, SOLID_BALL, 0.5);
-	mAP += APBallCategory(detectedBallStripedPtr, groundTruthBboxStriped, STRIPED_BALL, 0.5);
-	mAP /= 4;
+
+	double AP_white = APBallCategory(detectedBallWhitePtr, groundTruthBboxWhite, WHITE_BALL, 0.5);
+	double AP_black = APBallCategory(detectedBallBlackPtr, groundTruthBboxBlack, BLACK_BALL, 0.5);
+	double AP_solid = APBallCategory(detectedBallSolidPtr, groundTruthBboxSolid, SOLID_BALL, 0.5);
+	double AP_striped = APBallCategory(detectedBallStripedPtr, groundTruthBboxStriped, STRIPED_BALL, 0.5);
+	double mAP = (AP_white + AP_black + AP_solid + AP_striped) / 4;
+	cout << "AP white: " << AP_white << endl;
+	cout << "AP black: " << AP_black << endl;
+	cout << "AP solid: " << AP_solid << endl;
+	cout << "AP striped: " << AP_striped << endl;
 	cout << "mAP: " << mAP << endl;
 
 

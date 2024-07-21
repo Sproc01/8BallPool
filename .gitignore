@@ -33,8 +33,17 @@
 
 **/.DS_Store
 
+# IDE files
 .idea/
 .vscode/
 
+# Cmake build files
 cmake-build-debug/
 build/
+
+# Latex
+Report/*.log
+Report/*.fls
+Report/*.fdb_latexmk
+Report/*.aux
+Report/*.synctex*

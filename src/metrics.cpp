@@ -105,7 +105,7 @@ vector<pair<Rect, Category>> readGroundTruthBboxFile(const string &filename) {
  * @return std::vector<double> vector of AP values for each category.
  * @throw invalid_argument if the vector of detected balls is empty.
  */
-vector<double> APDetection(Ptr<vector<Ball>> &detectedBalls, const string &groundTruthBboxPath, float iouThreshold /*= MAP_IOU_THRESHOLD*/){
+vector<double> APDetection(Ptr<vector<Ball>> detectedBalls, const string &groundTruthBboxPath, float iouThreshold /*= MAP_IOU_THRESHOLD*/){
 	if(detectedBalls->empty())
 		throw invalid_argument("Empty detectedBalls");
 

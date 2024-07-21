@@ -57,7 +57,7 @@ std::vector<std::pair<cv::Rect, Category>> readGroundTruthBboxFile(const std::st
  * @return std::vector<double> vector of AP values for each category.
  * @throw invalid_argument if the vector of detected balls is empty.
  */
-std::vector<double> APDetection(cv::Ptr<std::vector<Ball>> &detectedBalls, const std::string &groundTruthBboxPath, float iouThreshold = MAP_IOU_THRESHOLD);
+std::vector<double> APDetection(cv::Ptr<std::vector<Ball>> detectedBalls, const std::string &groundTruthBboxPath, float iouThreshold = MAP_IOU_THRESHOLD);
 
 /**
  * @brief Compute the Intersection over Union between the segmented image and the ground truth mask.

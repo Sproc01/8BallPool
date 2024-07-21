@@ -23,7 +23,7 @@ struct Edge{
 
 /**
  * @brief Compare two edges by their percentile of background color.
- * Compare two edges by their percentile of background in the center pool.
+ * Compare two edges by their percentile of background in the center pocket.
  * @param e1 first edge to compare.
  * @param e2 second edge to compare.
  * @return true if e1 has less background color than e2, false otherwise.
@@ -84,7 +84,7 @@ bool oppositeEdges(const Edge &e1, const Edge &e2) {
 /**
  * @brief Check if the table image (transformed and cropped) is horizontal.
  * Compute the edges of the image and for each of them compute: the center, the rect around the center,
- * the percentile of background in the rect. Verify which of the four centers are the pools of the longest
+ * the percentile of background in the rect. Verify which of the four centers are the pockets of the longest
  * table edges, using the background percentile.
  * @param tableImg image of the table transformed and cropped to the minimap dimension
  * @param corners corners of the table in the tableImg
@@ -111,19 +111,19 @@ bool checkHorizontalTable(const Mat &tableImg, Vec<Point2f, 4> corners){
 	}
 
 	//compute the rects around the centers
-	const int RECT_WIDTH = (POOL_DIAMETER_CM/TABLE_LONGEST_EDGE_CM)*tableImg.cols;
-	const int RECT_HEIGHT = (POOL_DIAMETER_CM/TABLE_LONGEST_EDGE_CM)*tableImg.cols;
+	const int RECT_WIDTH = (POCKET_DIAMETER_CM/TABLE_LONGEST_EDGE_CM)*tableImg.cols;
+	const int RECT_HEIGHT = (POCKET_DIAMETER_CM/TABLE_LONGEST_EDGE_CM)*tableImg.cols;
 
 	for(int i = 0; i < 4; i++) {
 		edges[i].centerRect = Rect(edges[i].center.x - RECT_WIDTH/2.0, edges[i].center.y - RECT_HEIGHT/2.0, RECT_WIDTH, RECT_HEIGHT);
 	}
 
-	//print the rectangles on the pools
-	Mat imgPoolsRectangles = tableImg.clone();
+	//print the rectangles on the pockets
+	Mat imgPocketsRectangles = tableImg.clone();
 	for(int i = 0; i < 4; i++) {
-		rectangle(imgPoolsRectangles, edges[i].centerRect, Scalar(0, 0, 255), 1, LINE_AA);
+		rectangle(imgPocketsRectangles, edges[i].centerRect, Scalar(0, 0, 255), 1, LINE_AA);
 	}
-	//imshow("Rectangles on pools", imgPoolsRectangles);
+	//imshow("Rectangles on pockets", imgPocketsRectangles);
 
 	// mask the image
 	Mat maskImg;
@@ -134,16 +134,16 @@ bool checkHorizontalTable(const Mat &tableImg, Vec<Point2f, 4> corners){
 				Scalar(backgroundColor[1], 255, 255), maskImg);
 	//imshow("Mask img", maskImg);
 
-	//print the rectangles on the pool of the masked img (just for testing)
+	//print the rectangles on the pocket of the masked img (just for testing)
 	/*
 	Mat maskImgRectangles = maskImg.clone();
 	for(int i = 0; i < 4; i++) {
 		rectangle(maskImgRectangles, edges[i].centerRect, Scalar(0, 0, 255), 1, LINE_AA);
 	}
-	//imshow("Rectangles on pools (mask)", maskImgRectangles);
+	//imshow("Rectangles on pockets (mask)", maskImgRectangles);
 	*/
 
-	//compute the rects with and without the pools
+	//compute the rects with and without the pockets
 	//compute the percentile of rectangle with color close to the table background
 	for(int i = 0; i < 4; i++) {
 		edges[i].backgroundPercentile = computeTablePercentile(maskImg, edges[i].centerRect);
@@ -155,21 +155,21 @@ bool checkHorizontalTable(const Mat &tableImg, Vec<Point2f, 4> corners){
 	sort(orderedEdges.begin(), orderedEdges.end(), compareByPercentile);
 
 	if(oppositeEdges(orderedEdges[0], orderedEdges[1])) {
-		//the ones with "more pool" are opposite edges -> they are the longest edges
+		//the ones with "more pocket" are opposite edges -> they are the longest edges
 		if(orderedEdges[0].center == edges[0].center || orderedEdges[1].center == edges[0].center)
 			return true;
 		else
 			return false;
 	}
 	else if (oppositeEdges(orderedEdges[0], orderedEdges[3])) {
-		//the one with "more pool" is opposite to the one with "less pool" --> they are not the longest edges
+		//the one with "more pocket" is opposite to the one with "less pocket" --> they are not the longest edges
 		if(orderedEdges[0].center == edges[0].center || orderedEdges[3].center == edges[0].center)
 			return false;
 		else
 			return true;
 	}
 	else {
-		//there is uncertainty, probably the one with "more pool" is the longest edge
+		//there is uncertainty, probably the one with "more pocket" is the longest edge
 		if(orderedEdges[0].center == edges[0].center)
 			return true;
 		else

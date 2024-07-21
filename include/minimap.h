@@ -33,7 +33,7 @@ const cv::Vec3b PLAYING_FIELD_BGR_COLOR = cv::Vec3b(0, 255, 0); // green
 
 
 //some real table dimensions (approximates)
-const float POOL_DIAMETER_CM = 15;
+const float POCKET_DIAMETER_CM = 15;
 const float TABLE_LONGEST_EDGE_CM = 250;
 const float BALL_RADIUS_CM = 2.86;
 const float TABLE_DIAMETER_CM = 215;

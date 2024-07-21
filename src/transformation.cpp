@@ -57,7 +57,6 @@ Mat computeTransformation(const Mat& img, Vec<Point2f, 4>  &imgCorners) {
 	//apply transformation considering corners such as top-left is the first one, followed by a long table side
 	Mat tableSegmentedTransformed = imgTransformedCropped(img, transform);
 	//imshow("Img transformed cropped", tableSegmentedTransformed);
-	//waitKey(0);
 
 	Vec<Point2f, 4> tableSegmentedTransformedCorners =  {Point2f(0, 0),
 								Point2f(tableSegmentedTransformed.cols, 0),
@@ -73,8 +72,8 @@ Mat computeTransformation(const Mat& img, Vec<Point2f, 4>  &imgCorners) {
 
 		//compute perspective transform with corners correctly ordered
 		transform = getPerspectiveTransform(imgCorners, MAP_CORNERS);
-		//imgTransformed = imgTransformedCropped(img, transform, MAP_CORNERS);
-		//imshow("Img transformed cropped", imgTransformed);
+		//tableSegmentedTransformed = imgTransformedCropped(img, transform);
+		//imshow("Img transformed cropped", tableSegmentedTransformed);
 	}
 	return transform;
 }

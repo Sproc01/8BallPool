@@ -1,5 +1,5 @@
 \subsubsection{Attempt to find the ball radius relative to the distance and perspective of the camera with respect to the table}
-To try to increase the performance of the ball detection, Michela had the idea of to computing an interval of values for the ball radius relative to the pixels of the image and the position of the camera with respect to the table; this would have been used in the \texttt{HoughCircles}.
+To try to increase the performance of the ball detection, Michela had the idea of computing an interval of values for the ball radius relative to the pixels of the image and the position of the camera with respect to the table; this would have been used in the \texttt{HoughCircles}.
 For that purpose, she wrote the method \texttt{radiusInterval}.
 
 This method starts by computing the mean radius value by using a proportion between the diagonal of the table in pixels and the dimensions of the diagonal of the table and the balls in centimeters (such dimensions in centimeters are not standard, so an average value has been selected).

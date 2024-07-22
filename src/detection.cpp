@@ -316,8 +316,11 @@ void detectTable(const Mat &frame, Vec<Point2f, 4> &corners, Vec2b &colorRange){
 		intersectionsGood.push_back(*it);
 
 	// at least 4 corners of the table
-	if(intersectionsGood.size() < 4)
+	if(intersectionsGood.size() < 4){
+		imshow("Line", imgLine);
+		waitKey(0);
 		throw runtime_error("Not enough unique intersections found");
+	}
 
 	if(intersectionsGood.size() > 4) // if more take the 4 nearest the center
 		sort(intersectionsGood.begin(), intersectionsGood.end(), [&center](Point a, Point b) -> bool {

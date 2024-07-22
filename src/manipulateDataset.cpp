@@ -117,7 +117,7 @@ Rect unrotateRect(Rect rect, const Mat &destImg) {
 
 void rotateVideo() {
 	// Clockwise
-	filesystem::path filename("../Dataset/game1_clip1_576_1024/game1_clip1_576_1024.mp4");
+	filesystem::path filename("../Dataset/game1_clip2_576_1024/game1_clip2_576_1024.mp4");
 
 	// VIDEO
 	VideoCapture in(filename.string());
@@ -192,7 +192,7 @@ void rotateVideo() {
 
 void cropVideo () {
 	Size outputSize(900, 576);
-	filesystem::path filename("../Dataset/game1_clip1_900_576/game1_clip1_900_576.mp4");
+	filesystem::path filename("../Dataset/game1_clip2_900_576/game1_clip2_900_576.mp4");
 
 	// VIDEO
 	VideoCapture in(filename.string());
@@ -263,7 +263,7 @@ void cropVideo () {
 
 void resizeVideo () {
 	float ratio = 2;
-	filesystem::path filename("../Dataset/game1_clip1_2048_1152/game1_clip1_2048_1152.mp4");
+	filesystem::path filename("../Dataset/game1_clip2_2048_1152/game1_clip2_2048_1152.mp4");
 
 	// VIDEO
 	VideoCapture in(filename.string());
@@ -342,8 +342,8 @@ void resizeVideo () {
 
 int main() {
 	/* PREPARE FOLDERS AND VIDEO FILES WITH CHANGED NAMES FIRST */
-	rotateVideo();
+	//rotateVideo();
 	// cropVideo();
-	// resizeVideo();
+	resizeVideo();
 	return 0;
 }

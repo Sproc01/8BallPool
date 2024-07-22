@@ -9,7 +9,11 @@ using namespace cv;
 
 Rect Ball::getBbox() const {
 	if (bbox_.empty())
+	{
+		std::cout << "bbox is uninitialized: "<< bbox_ << std::endl;
 		throw std::runtime_error("bbox is uninitialized");
+	}
+
 
 	return bbox_;
 }

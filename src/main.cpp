@@ -50,7 +50,7 @@ int main(int argc, char* argv[]){
 	}
 	else if (argc == 1) { //TODO: remove at the end
 		// videoPath = filesystem::path("../Dataset/game1_clip1/game1_clip1.mp4");
-		videoPath = filesystem::path("../Dataset/game1_clip1_vertical/game1_clip1_vertical.mp4");
+		videoPath = filesystem::path("../Dataset/game1_clip2_2048_1152/game1_clip2_2048_1152.mp4");
 	}
 	else {
 		cout << "Error of number of parameters: insert one parameter" << endl;
@@ -101,9 +101,11 @@ int main(int argc, char* argv[]){
 	undoInscriptImage(segmented, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
 	imshow("segmentedBalls", segmented);
 
-
 	cout << "Metrics first frame:" << endl;
 	undoInscriptTableObject(table, TABLE_WIDTH, TABLE_HEIGHT, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
+	for(int i = 0; i < table.ballsPtr()->size(); i++)
+		cout << "Ball " << i << ": " << (table.ballsPtr()->at(i)).getBbox() << endl;
+	waitKey(0);
 	metricsAP = compareMetricsAP(table, videoPath.parent_path().string(), FIRST);
 	metricsIoU = compareMetricsIoU(segmented, videoPath.parent_path().string(), FIRST);
 	for(int i = 0; i < metricsAP.size(); i++)
@@ -112,7 +114,7 @@ int main(int argc, char* argv[]){
 	for(int i = 0; i < metricsIoU.size(); i++)
 		cout << "IoU for category " << i << ": " << metricsIoU[i] << endl;
 	doInscriptTableObject(table, TABLE_WIDTH, TABLE_HEIGHT, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, toRotate, toResize, leftBorderLength, rightBorderLength);
-
+	waitKey(0);
 
 	//TRANSFORMATION
 	Vec<Point2f, 4>  img_corners = table.getBoundaries();

@@ -60,7 +60,7 @@ void undoInscriptImage(Mat &img, int originalWidth, int originalHeight, const bo
 	}
 
 	if (toResize) {
-		resize(img, img, Size(originalWidth, originalHeight));
+		resize(img, img, Size(originalWidth, originalHeight), 0, 0, INTER_NEAREST_EXACT);
 	}
 
 	if (toRotate) {
@@ -143,15 +143,15 @@ void doInscriptTableObject(Table &table, int targetWidth, int targetHeight, int 
 
 	if (toResize) {
 		for (size_t i = 0; i < 4; ++i) {
-			boundaries[i].x = boundaries[i].x/originalHeight*targetHeight;
-			boundaries[i].y = boundaries[i].y/originalHeight*targetHeight;
+			boundaries[i].x = static_cast<double>(boundaries[i].x)/originalHeight * targetHeight;
+			boundaries[i].y = static_cast<double>(boundaries[i].y)/originalHeight * targetHeight;
 		}
 		table.setBoundaries(boundaries);
 
 		for (Ball &ball : *balls) {
-			ball.setBbox(Rect(ball.getBbox().tl().x/originalHeight*targetHeight, ball.getBbox().tl().y/originalHeight*targetHeight, ball.getBbox().width/originalHeight*targetHeight, ball.getBbox().height/originalHeight*targetHeight));
+			ball.setBbox(Rect(ball.getBbox().tl().x/static_cast<double>(originalHeight) * targetHeight, ball.getBbox().tl().y/static_cast<double>(originalHeight) * targetHeight, ball.getBbox().width/static_cast<double>(originalHeight) * targetHeight, ball.getBbox().height/static_cast<double>(originalHeight) * targetHeight));
 			if (changeBboxPrec) {
-				ball.setBbox_prec(Rect(ball.getBbox_prec().tl().x/originalHeight*targetHeight, ball.getBbox_prec().tl().y/originalHeight*targetHeight, ball.getBbox_prec().width/originalHeight*targetHeight, ball.getBbox_prec().height/originalHeight*targetHeight));
+				ball.setBbox_prec(Rect(ball.getBbox_prec().tl().x/static_cast<double>(originalHeight) * targetHeight, ball.getBbox_prec().tl().y/static_cast<double>(originalHeight) * targetHeight, ball.getBbox_prec().width/static_cast<double>(originalHeight) * targetHeight, ball.getBbox_prec().height/static_cast<double>(originalHeight) * targetHeight));
 			}
 		}
 	}
@@ -192,15 +192,15 @@ void undoInscriptTableObject(Table &table, int targetWidth, int targetHeight, in
 
 	if (toResize) {
 		for (size_t i = 0; i < 4; ++i) {
-			boundaries[i].x = boundaries[i].x/targetHeight*originalHeight;
-			boundaries[i].y = boundaries[i].y/targetHeight*originalHeight;
+			boundaries[i].x = static_cast<double>(boundaries[i].x)/targetHeight * originalHeight;
+			boundaries[i].y = static_cast<double>(boundaries[i].y)/targetHeight * originalHeight;
 		}
 		table.setBoundaries(boundaries);
 
 		for (Ball &ball : *balls) {
-			ball.setBbox(Rect(ball.getBbox().tl().x/targetHeight*originalHeight, ball.getBbox().tl().y/targetHeight*originalHeight, ball.getBbox().width/targetHeight*originalHeight, ball.getBbox().height/targetHeight*originalHeight));
+			ball.setBbox(Rect(ball.getBbox().tl().x/static_cast<double>(targetHeight) * originalHeight, ball.getBbox().tl().y/static_cast<double>(targetHeight) * originalHeight, ball.getBbox().width/static_cast<double>(targetHeight) * originalHeight, ball.getBbox().height/static_cast<double>(targetHeight) * originalHeight));
 			if (changeBboxPrec) {
-				ball.setBbox_prec(Rect(ball.getBbox_prec().tl().x/targetHeight*originalHeight, ball.getBbox_prec().tl().y/targetHeight*originalHeight, ball.getBbox_prec().width/targetHeight*originalHeight, ball.getBbox_prec().height/targetHeight*originalHeight));
+				ball.setBbox_prec(Rect(ball.getBbox_prec().tl().x/static_cast<double>(targetHeight) * originalHeight, ball.getBbox_prec().tl().y/static_cast<double>(targetHeight) * originalHeight, ball.getBbox_prec().width/static_cast<double>(targetHeight) * originalHeight, ball.getBbox_prec().height/static_cast<double>(targetHeight) * originalHeight));
 			}
 		}
 	}

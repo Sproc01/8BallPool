@@ -268,7 +268,8 @@ double IoUCategory(const Mat &segmentedImage, const Mat &groundTruthMask, Catego
 vector<double> IoUSegmentation(const Mat &segmentedImage, const string& groundTruthMaskPath){
 	if(segmentedImage.empty())
 		throw invalid_argument("Empty segmentedImage");
-
+	imshow("segmentedImageIoU", segmentedImage);
+	waitKey(0);
 	// Convert the segmented image from BGR colors to grayscale category-related colors
 	Mat segmentedImageGray = Mat::zeros(segmentedImage.size(), CV_8UC1);
 	for (int i = 0; i < segmentedImage.rows; i++){
